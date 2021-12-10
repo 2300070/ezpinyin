@@ -9,8 +9,8 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SignAssembly>false</SignAssembly>
-    <PackageLicenseUrl>https://gitee.com/s230/ez-pinyin/raw/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://gitee.com/s230/ez-pinyin/</PackageProjectUrl>
+    <PackageLicenseUrl>https://gitee.com/s230/ezpinyin/raw/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://gitee.com/s230/ezpinyin/</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
