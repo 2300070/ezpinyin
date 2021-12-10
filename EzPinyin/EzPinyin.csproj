@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net20</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>wudexiang</Authors>
+    <Description>提供汉字到拼音的快速转换，特色是极快的速度、较小的体积、自带经过优化的字典与词典、支持繁简、支持自定义。</Description>
+    <Copyright>Copyright 2021 wudexiang, all rights reserved.</Copyright>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <SignAssembly>false</SignAssembly>
+    <PackageLicenseUrl>https://gitee.com/s230/ez-pinyin/raw/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://gitee.com/s230/ez-pinyin/</PackageProjectUrl>
+    <RepositoryUrl></RepositoryUrl>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>
