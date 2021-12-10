@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EzPinyin.UnitTest", "EzPiny
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "项目文件", "项目文件", "{8832A539-76C4-4A81-9FD9-C05AED0D6F82}"
 	ProjectSection(SolutionItems) = preProject
+		icon.png = icon.png
 		README.md = README.md
 	EndProjectSection
 EndProject
