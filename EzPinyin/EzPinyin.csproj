@@ -11,7 +11,7 @@
     <SignAssembly>false</SignAssembly>
     <PackageLicenseUrl>https://gitee.com/s230/ezpinyin/raw/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://gitee.com/s230/ezpinyin/</PackageProjectUrl>
-    <RepositoryUrl></RepositoryUrl>
+    <RepositoryUrl>https://gitee.com/s230/ezpinyin/</RepositoryUrl>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <PackageIconUrl>https://gitee.com/s230/ezpinyin/raw/master/icon.png</PackageIconUrl>
@@ -20,5 +20,8 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-
+  <ItemGroup>
+    <None Include="../readme.md" Pack="true" PackagePath="\" />
+    <None Include="../icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
