@@ -34,9 +34,9 @@
 
 #### 引用本项目
 
-除了直接下载项目之外，还可以通过nuget来添加并使用本项目。
-可以通过visual studio的界面来搜索“ezpinyin”来引用本项目，也可以在nuget管理控制台输入此命令来添加项目引用：Install-Package EzPinyin -Version 1.0.0
-本项目的nuget地址为 https://www.nuget.org/packages/EzPinyin/
+除了直接下载项目之外，还可以通过nuget来添加并使用本项目。本项目的nuget地址为 https://www.nuget.org/packages/EzPinyin/ 。
+可以通过visual studio的界面来搜索“ezpinyin”来引用本项目，也可以在nuget管理控制台输入命令来添加项目引用：“Install-Package EzPinyin -Version 1.0.0”。
+
 
 
 #### 示例

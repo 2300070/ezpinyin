@@ -14,11 +14,11 @@ namespace EzPinyin
 		{
 			try
 			{
-				Dictionary = App.LoadDictionary("dict_ext_a", App.Utf16NodeTemplates);
+				Dictionary = Common.LoadDictionary("dict_ext_a", Common.Utf16NodeTemplates);
 			}
 			finally
 			{
-				App.ResourceManager.ReleaseAllResources();
+				Common.ResourceManager.ReleaseAllResources();
 			}
 
 #if DEBUG

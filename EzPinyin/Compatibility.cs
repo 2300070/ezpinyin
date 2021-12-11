@@ -13,11 +13,11 @@ namespace EzPinyin
 		{
 			try
 			{
-				Dictionary = App.LoadDictionary("dict_cmp", App.Utf16NodeTemplates);
+				Dictionary = Common.LoadDictionary("dict_cmp", Common.Utf16NodeTemplates);
 			}
 			finally
 			{
-				App.ResourceManager.ReleaseAllResources();
+				Common.ResourceManager.ReleaseAllResources();
 			}
 #if DEBUG
 			Console.WriteLine("Compatibility dictionary is loaded.");

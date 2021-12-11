@@ -29,18 +29,18 @@ namespace EzPinyin
 			{
 				if (length > 1)
 				{
-					StringBuilder buffer = App.AllocateBuffer();
+					StringBuilder buffer = Common.AcquireBuffer();
 					char* cursor = p;
 					char* final = p + length - 1;
 
 					/**
 					 * 循环读取每个字符对应的节点，写入处理结果，并且自动移动游标到下一个字符的位置。
-					 * 在没有读到最后一个字符之前时，可能得到一个UTF-16或者UTF-32的字符，所以调用<see cref="App.MapAnyNode(char*)"/>方法。
+					 * 在没有读到最后一个字符之前时，可能得到一个UTF-16或者UTF-32的字符，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
 					 */
 					do
 					{
 
-						App.MapAnyNode(cursor).WritePinyin(ref cursor, final, buffer, separator);
+						Common.MapAnyNode(cursor).WritePinyin(ref cursor, final, buffer, separator);
 
 					} while (cursor < final);
 
@@ -50,18 +50,18 @@ namespace EzPinyin
 					if (cursor == final)
 					{
 						/**
-						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="App.MapUtf16Node(char*)"/>方法即可。
+						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="Common.MapUtf16Node(char*)"/>方法即可。
 						 */
-						buffer.Append(App.MapUtf16Node(cursor).GetPinyin(cursor));
+						buffer.Append(Common.MapUtf16Node(cursor).GetPinyin(cursor));
 					}
 
-					return App.FreeBuffer(buffer);
+					return Common.ReturnBuffer(buffer);
 
 				}
 
 				if (length == 1)
 				{
-					return App.MapUtf16Node(p).GetPinyin(p);
+					return Common.MapUtf16Node(p).GetPinyin(p);
 				}
 
 				return string.Empty;
@@ -97,11 +97,11 @@ namespace EzPinyin
 
 					/**
 					 * 循环读取每个字符对应的节点，写入处理结果，并且自动移动游标到下一个字符的位置。
-					 * 在没有读到最后一个字符之前时，可能得到一个UTF-16或者UTF-32的字符，所以调用<see cref="App.MapAnyNode(char*)"/>方法。
+					 * 在没有读到最后一个字符之前时，可能得到一个UTF-16或者UTF-32的字符，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
 					 */
 					do
 					{
-						App.MapAnyNode(cursor).WritePinyin(ref cursor, final, buffer, ref index);
+						Common.MapAnyNode(cursor).WritePinyin(ref cursor, final, buffer, ref index);
 
 					} while (cursor < final);
 
@@ -111,9 +111,9 @@ namespace EzPinyin
 					if (cursor == final)
 					{
 						/**
-						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="App.MapUtf16Node(char*)"/>方法即可。
+						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="Common.MapUtf16Node(char*)"/>方法即可。
 						 */
-						buffer[index++] = App.MapUtf16Node(cursor).GetPinyin(cursor);
+						buffer[index++] = Common.MapUtf16Node(cursor).GetPinyin(cursor);
 					}
 
 					/**
@@ -131,10 +131,10 @@ namespace EzPinyin
 
 				if (length == 1)
 				{
-					return new[] { App.MapUtf16Node(p).GetPinyin(p) };
+					return new[] { Common.MapUtf16Node(p).GetPinyin(p) };
 				}
 
-				return App.EmptyArray;
+				return Common.EmptyArray;
 			}
 
 		}
@@ -162,17 +162,17 @@ namespace EzPinyin
 			{
 				if (length > 1)
 				{
-					StringBuilder buffer = App.AllocateBuffer();
+					StringBuilder buffer = Common.AcquireBuffer();
 					char* cursor = p;
 					char* final = p + length - 1;
 
 					/**
 					 * 循环读取每个字符对应的节点，写入处理结果，并且自动移动游标到下一个字符的位置。
-					 * 在没有读到最后一个字符之前时，可能得到一个UTF-16或者UTF-32的字符，所以调用<see cref="App.MapAnyNode(char*)"/>方法。
+					 * 在没有读到最后一个字符之前时，可能得到一个UTF-16或者UTF-32的字符，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
 					 */
 					do
 					{
-						App.MapAnyNode(cursor).WriteFirstLetter(ref cursor, final, buffer, separator);
+						Common.MapAnyNode(cursor).WriteFirstLetter(ref cursor, final, buffer, separator);
 
 					} while (cursor < final);
 
@@ -182,18 +182,18 @@ namespace EzPinyin
 					if (cursor == final)
 					{
 						/**
-						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="App.MapUtf16Node(char*)"/>方法即可。
+						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="Common.MapUtf16Node(char*)"/>方法即可。
 						 */
-						buffer.Append(App.MapUtf16Node(cursor).GetFirstLetter(cursor));
+						buffer.Append(Common.MapUtf16Node(cursor).GetFirstLetter(cursor));
 					}
 
-					return App.FreeBuffer(buffer);
+					return Common.ReturnBuffer(buffer);
 
 				}
 
 				if (length == 1)
 				{
-					return App.MapUtf16Node(p).GetFirstLetter(p);
+					return Common.MapUtf16Node(p).GetFirstLetter(p);
 				}
 
 				return string.Empty;

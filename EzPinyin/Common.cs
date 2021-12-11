@@ -11,13 +11,13 @@ namespace EzPinyin
 	/// <summary>
 	/// 应用程序所需使用的公共的杂项功能集合。
 	/// </summary>
-	internal static class App
+	internal static class Common
 	{
 		private const int BUFFER_SIZE = 0x100;
 		private static readonly StringBuilder[] buffers = new StringBuilder[Environment.ProcessorCount];
 		private static readonly Dictionary<char, char> traditional = new Dictionary<char, char>();
 
-		internal static readonly int[] PrimeTable = { 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249, 1259, 1277, 1279, 1283, 1289, 1291, 1297, 1301, 1303, 1307, 1319, 1321, 1327, 1361, 1367, 1373, 1381, 1399, 1409, 1423, 1427, 1429, 1433, 1439, 1447, 1451, 1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499, 1511 };
+		internal static readonly int[] PrimeTable = { 3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919, 1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591, 17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437, 187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263, 1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369 };
 
 		internal static readonly char[] SeparatorCharacters = { ' ', '	', ' ' };
 
@@ -29,7 +29,7 @@ namespace EzPinyin
 
 		internal static readonly string[] EmptyArray = new string[0];
 
-		static App()
+		static Common()
 		{
 			/**
 			 * 初始化缓冲区
@@ -45,7 +45,7 @@ namespace EzPinyin
 			 */
 			List<PinyinNode> list16 = new List<PinyinNode> { Utf16EmptyNode.Instance };
 			List<PinyinNode> list32 = new List<PinyinNode> { Utf32EmptyNode.Instance };
-			using (StringReader sr = new StringReader(App.ResourceManager.GetString("pinyin")))
+			using (StringReader sr = new StringReader(Common.ResourceManager.GetString("pinyin")))
 			{
 				while (true)
 				{
@@ -62,13 +62,13 @@ namespace EzPinyin
 				}
 			}
 
-			App.Utf16NodeTemplates = list16.ToArray();
-			App.Utf32NodeTemplates = list32.ToArray();
+			Common.Utf16NodeTemplates = list16.ToArray();
+			Common.Utf32NodeTemplates = list32.ToArray();
 
 			/**
 			 * 加载繁体字字典
 			 */
-			App.LoadTradionalDictionary();
+			Common.LoadTradionalDictionary();
 		}
 
 		internal static PinyinNode[] LoadDictionary(string resourceName, PinyinNode[] templates)
@@ -76,7 +76,7 @@ namespace EzPinyin
 			/**
 			 * 从指定的资源字典加载拼音集合作为字典。
 			 */
-			byte[] buffer = (byte[])App.ResourceManager.GetObject(resourceName);
+			byte[] buffer = (byte[])Common.ResourceManager.GetObject(resourceName);
 
 			int length = buffer.Length;
 			PinyinNode[] result = new PinyinNode[length >> 1];
@@ -97,18 +97,18 @@ namespace EzPinyin
 			/**
 			 * 先加载主要的词典内容。
 			 */
-			App.LoadLexicon(nodes, "lex_basic_2", min, 2);
-			App.LoadLexicon(nodes, "lex_basic_3", min, 3);
-			App.LoadLexicon(nodes, "lex_basic_4", min, 4);
-			App.LoadExtraLexicon(nodes, "lex_basic_x", min);
+			Common.LoadLexicon(nodes, "lex_basic_2", min, 2);
+			Common.LoadLexicon(nodes, "lex_basic_3", min, 3);
+			Common.LoadLexicon(nodes, "lex_basic_4", min, 4);
+			Common.LoadExtraLexicon(nodes, "lex_basic_x", min);
 
 			/**
 			 * 接着加载交叉词典内容。
 			 */
-			App.LoadIntersectionLexicon(nodes, "lex_it_2", min, 2);
-			App.LoadIntersectionLexicon(nodes, "lex_it_3", min, 3);
-			App.LoadIntersectionLexicon(nodes, "lex_it_4", min, 4);
-			App.LoadExtraIntersectionLexicon(nodes, "lex_it_x", min);
+			Common.LoadIntersectionLexicon(nodes, "lex_it_2", min, 2);
+			Common.LoadIntersectionLexicon(nodes, "lex_it_3", min, 3);
+			Common.LoadIntersectionLexicon(nodes, "lex_it_4", min, 4);
+			Common.LoadExtraIntersectionLexicon(nodes, "lex_it_x", min);
 		}
 
 		internal static string FixPinyin(string pinyin)
@@ -428,7 +428,7 @@ namespace EzPinyin
 			return Utf16EmptyNode.Instance;
 		}
 
-		internal static StringBuilder AllocateBuffer()
+		internal static StringBuilder AcquireBuffer()
 		{
 			/**
 			 * 从共享的数据池中提取一个空闲的可变字符串。
@@ -450,7 +450,7 @@ namespace EzPinyin
 			return new StringBuilder(BUFFER_SIZE);
 		}
 
-		internal static string FreeBuffer(StringBuilder buffer)
+		internal static string ReturnBuffer(StringBuilder buffer)
 		{
 			/**
 			 * 将不再使用的可变字符串返回共享池，并返回该字符串的内容。
@@ -489,31 +489,31 @@ namespace EzPinyin
 			if (ch > 0x4DFF && ch < 0xA000)
 			{
 				cursor += 1;
-				return App.LoadPinyinTemparory("dict_basic", ch - 0x4E00);
+				return Common.LoadPinyinTemparory("dict_basic", ch - 0x4E00);
 			}
 
 			if (ch == '〇')
 			{
 				cursor += 1;
-				return App.LoadPinyinTemparory("dict_basic", 0x5200);
+				return Common.LoadPinyinTemparory("dict_basic", 0x5200);
 			}
 
 			if (ch > 0x33FF && ch < 0x4DC0)
 			{
 				cursor += 1;
-				return App.LoadPinyinTemparory("dict_ext_a", ch - 0x3400);
+				return Common.LoadPinyinTemparory("dict_ext_a", ch - 0x3400);
 			}
 
 			if (ch > 0xF8FF && ch < 0xFB00)
 			{
 				cursor += 1;
-				return App.LoadPinyinTemparory("dict_cmp", ch - 0xF900);
+				return Common.LoadPinyinTemparory("dict_cmp", ch - 0xF900);
 			}
 
 			if (ch > 0x2E7F && ch < 0x2FE0)
 			{
 				cursor += 1;
-				return App.LoadPinyinTemparory("dict_rad", ch - 0x2E80);
+				return Common.LoadPinyinTemparory("dict_rad", ch - 0x2E80);
 			}
 			char ch2;
 			if (ch > 0xD7FF && ch < 0xDE00 && cursor + 1 < last && (ch2 = *(cursor + 1)) > 0xDBFF && ch2 < 0xE000)
@@ -526,7 +526,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x1FFFF && code < 0x2A6E0)
 				{
-					return App.LoadPinyinTemparory("dict_ext_b", code - 0x20000);
+					return Common.LoadPinyinTemparory("dict_ext_b", code - 0x20000);
 				}
 
 				/**
@@ -534,7 +534,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2A6FF && code < 0x2B739)
 				{
-					return App.LoadPinyinTemparory("dict_ext_c", code - 0x2A700);
+					return Common.LoadPinyinTemparory("dict_ext_c", code - 0x2A700);
 				}
 
 				/**
@@ -542,7 +542,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2B73F && code < 0x2B81E)
 				{
-					return App.LoadPinyinTemparory("dict_ext_d", code - 0x2B740);
+					return Common.LoadPinyinTemparory("dict_ext_d", code - 0x2B740);
 				}
 
 				/**
@@ -550,7 +550,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2B81F && code < 0x2CEA2)
 				{
-					return App.LoadPinyinTemparory("dict_ext_e", code - 0x2B820);
+					return Common.LoadPinyinTemparory("dict_ext_e", code - 0x2B820);
 				}
 
 				/**
@@ -558,7 +558,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2CEAF && code < 0x2EBE1)
 				{
-					return App.LoadPinyinTemparory("dict_ext_f", code - 0x2CEB0);
+					return Common.LoadPinyinTemparory("dict_ext_f", code - 0x2CEB0);
 				}
 
 				/**
@@ -566,7 +566,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2FFFF && code < 0x3134B)
 				{
-					return App.LoadPinyinTemparory("dict_ext_g", code - 0x30000);
+					return Common.LoadPinyinTemparory("dict_ext_g", code - 0x30000);
 				}
 
 				/**
@@ -574,7 +574,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2F7FF && code < 0x2FA20)
 				{
-					return App.LoadPinyinTemparory("dict_cmp_sup", code - 0x2F800);
+					return Common.LoadPinyinTemparory("dict_cmp_sup", code - 0x2F800);
 				}
 
 				if (Miscellaneous.Dictionary32.TryGetValue(code, out node))
@@ -598,9 +598,9 @@ namespace EzPinyin
 			/**
 			 * 从指定的资源名称中临时读取一个拼音。
 			 */
-			byte[] buffer = (byte[])App.ResourceManager.GetObject(name);
+			byte[] buffer = (byte[])Common.ResourceManager.GetObject(name);
 			index = index << 1;
-			return App.Utf16NodeTemplates[(buffer[index] << 8) | buffer[index + 1]].Pinyin;
+			return Common.Utf16NodeTemplates[(buffer[index] << 8) | buffer[index + 1]].Pinyin;
 		}
 		private static bool TryParseTradional(string simplified, out string result)
 		{
@@ -612,7 +612,7 @@ namespace EzPinyin
 
 			for (int i = chars.Length - 1; i > -1; i--)
 			{
-				if (App.traditional.TryGetValue(chars[i], out char ch))
+				if (Common.traditional.TryGetValue(chars[i], out char ch))
 				{
 					succ = true;
 					chars[i] = ch;
@@ -681,7 +681,7 @@ namespace EzPinyin
 					 */
 					if (caption.Length == 1 || caption.Length == 2 && char.IsHighSurrogate(caption[0]) && char.IsLowSurrogate(caption[1]))
 					{
-						if (!App.AddCustomCharacter(caption, App.FixPinyin(pinyin)))
+						if (!Common.OverrideDictionary(caption, Common.FixPinyin(pinyin)))
 						{
 							if (Check.IsIdeEnvironment)
 							{
@@ -691,7 +691,7 @@ namespace EzPinyin
 					}
 					else
 					{
-						if (!App.AddCustomWord(caption, App.FixPinyin(pinyin).Split(SeparatorCharacters, StringSplitOptions.RemoveEmptyEntries)))
+						if (!Common.OverrideLexicon(caption, Common.FixPinyin(pinyin).Split(SeparatorCharacters, StringSplitOptions.RemoveEmptyEntries)))
 						{
 							if (Check.IsIdeEnvironment)
 							{
@@ -703,7 +703,7 @@ namespace EzPinyin
 			}
 		}
 
-		private static bool AddCustomCharacter(string character, string pinyin)
+		private static bool OverrideDictionary(string character, string pinyin)
 		{
 			PinyinNode node;
 
@@ -713,10 +713,10 @@ namespace EzPinyin
 
 			if (character.Length == 1)
 			{
-				index = Array.FindIndex<PinyinNode>(App.Utf16NodeTemplates, searcher);
+				index = Array.FindIndex<PinyinNode>(Common.Utf16NodeTemplates, searcher);
 				if (index > 0)
 				{
-					node = App.Utf16NodeTemplates[index];
+					node = Common.Utf16NodeTemplates[index];
 				}
 				else
 				{
@@ -752,10 +752,10 @@ namespace EzPinyin
 
 			if (character.Length == 2)
 			{
-				index = Array.FindIndex<PinyinNode>(App.Utf32NodeTemplates, searcher);
+				index = Array.FindIndex<PinyinNode>(Common.Utf32NodeTemplates, searcher);
 				if (index > 0)
 				{
-					node = App.Utf32NodeTemplates[index];
+					node = Common.Utf32NodeTemplates[index];
 				}
 				else
 				{
@@ -828,7 +828,7 @@ namespace EzPinyin
 			return false;
 		}
 
-		private static bool AddCustomWord(string word, string[] pinyin)
+		private static bool OverrideLexicon(string word, string[] pinyin)
 		{
 
 			int code;
@@ -841,12 +841,12 @@ namespace EzPinyin
 				 */
 				if (code > 0x4DFF && code < 0xA000)
 				{
-					App.AddLexiconNode(Basic.Dictionary, code - 0x4E00, word, pinyin);
+					Common.AddLexiconNode(Basic.Dictionary, code - 0x4E00, word, pinyin);
 					return true;
 				}
 				if (code == '〇')
 				{
-					App.AddLexiconNode(Basic.Dictionary, 0x5200, word, pinyin);
+					Common.AddLexiconNode(Basic.Dictionary, 0x5200, word, pinyin);
 					return true;
 				}
 				if (code > 0x33FF && code < 0x4DC0)
@@ -854,7 +854,7 @@ namespace EzPinyin
 					/**
 					 * 扩展A区汉字
 					 */
-					App.AddLexiconNode(ExtensionA.Dictionary, code - 0x3400, word, pinyin);
+					Common.AddLexiconNode(ExtensionA.Dictionary, code - 0x3400, word, pinyin);
 					return true;
 				}
 
@@ -886,7 +886,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x1FFFF && code < 0x2A6E0)
 				{
-					App.AddLexiconNode(ExtensionB.Dictionary, code - 0x20000, word, pinyin);
+					Common.AddLexiconNode(ExtensionB.Dictionary, code - 0x20000, word, pinyin);
 					return true;
 				}
 
@@ -895,7 +895,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2A6FF && code < 0x2B739)
 				{
-					App.AddLexiconNode(ExtensionC.Dictionary, code - 0x2A700, word, pinyin);
+					Common.AddLexiconNode(ExtensionC.Dictionary, code - 0x2A700, word, pinyin);
 					return true;
 				}
 
@@ -904,7 +904,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2B73F && code < 0x2B81E)
 				{
-					App.AddLexiconNode(ExtensionD.Dictionary, code - 0x2B740, word, pinyin);
+					Common.AddLexiconNode(ExtensionD.Dictionary, code - 0x2B740, word, pinyin);
 					return true;
 				}
 
@@ -913,7 +913,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2B81F && code < 0x2CEA2)
 				{
-					App.AddLexiconNode(ExtensionE.Dictionary, code - 0x2B820, word, pinyin);
+					Common.AddLexiconNode(ExtensionE.Dictionary, code - 0x2B820, word, pinyin);
 					return true;
 				}
 
@@ -922,7 +922,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2CEAF && code < 0x2EBE1)
 				{
-					App.AddLexiconNode(ExtensionF.Dictionary, code - 0x2CEB0, word, pinyin);
+					Common.AddLexiconNode(ExtensionF.Dictionary, code - 0x2CEB0, word, pinyin);
 					return true;
 				}
 
@@ -931,7 +931,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2FFFF && code < 0x3134B)
 				{
-					App.AddLexiconNode(ExtensionG.Dictionary, code - 0x30000, word, pinyin);
+					Common.AddLexiconNode(ExtensionG.Dictionary, code - 0x30000, word, pinyin);
 					return true;
 				}
 
@@ -963,12 +963,12 @@ namespace EzPinyin
 			/**
 			 * 加载所有的简体字、繁体字。
 			 */
-			byte[] buffer = (byte[])App.ResourceManager.GetObject("simplified");
+			byte[] buffer = (byte[])Common.ResourceManager.GetObject("simplified");
 			for (int i = 0; i < buffer.Length; i += 4)
 			{
 				char cht = (char)((buffer[i] << 8) | buffer[i + 1]);
 				char chs = (char)((buffer[i + 2] << 8) | buffer[i + 3]);
-				App.traditional[chs] = cht;
+				Common.traditional[chs] = cht;
 			}
 		}
 
@@ -977,7 +977,7 @@ namespace EzPinyin
 			/**
 			 * 为指定集合中的拼音节点加载固定长度的词典内容。
 			 */
-			using (MemoryStream stream = new MemoryStream((byte[])App.ResourceManager.GetObject(name)))
+			using (MemoryStream stream = new MemoryStream((byte[])Common.ResourceManager.GetObject(name)))
 			{
 				while (stream.Position < stream.Length)
 				{
@@ -988,23 +988,23 @@ namespace EzPinyin
 					/**
 					 * 读取词汇信息。
 					 */
-					string word = App.ReadWord(stream, length);
-					string[] pinyin = App.ReadPinyinArray(stream, length);
+					string word = Common.ReadWord(stream, length);
+					string[] pinyin = Common.ReadPinyinArray(stream, length);
 
 					/**
 					 * 首先尝试查找简体词汇在给定字典中的索引。
 					 */
-					if (App.TryMapIndex(dictionary, min, word, out int index))
+					if (Common.TryMapIndex(dictionary, min, word, out int index))
 					{
-						App.AddLexiconNode(dictionary, index, word, pinyin);
+						Common.AddLexiconNode(dictionary, index, word, pinyin);
 					}
 
 					/**
 					 * 接着尝试查找繁体词汇在给点字典中的索引。
 					 */
-					if (App.TryParseTradional(word, out string traditional) && traditional != word && App.TryMapIndex(dictionary, min, traditional, out index))
+					if (Common.TryParseTradional(word, out string traditional) && traditional != word && Common.TryMapIndex(dictionary, min, traditional, out index))
 					{
-						App.AddLexiconNode(dictionary, index, traditional, pinyin);
+						Common.AddLexiconNode(dictionary, index, traditional, pinyin);
 					}
 				}
 			}
@@ -1015,7 +1015,7 @@ namespace EzPinyin
 			/**
 			 * 为指定集合中的拼音节点加载无固定长度的词典的内容。
 			 */
-			using (MemoryStream stream = new MemoryStream((byte[])App.ResourceManager.GetObject(name)))
+			using (MemoryStream stream = new MemoryStream((byte[])Common.ResourceManager.GetObject(name)))
 			{
 				while (stream.Position < stream.Length)
 				{
@@ -1027,23 +1027,23 @@ namespace EzPinyin
 					/**
 					 * 读取词汇信息。
 					 */
-					string word = App.ReadWord(stream, length);
-					string[] pinyin = App.ReadPinyinArray(stream, length);
+					string word = Common.ReadWord(stream, length);
+					string[] pinyin = Common.ReadPinyinArray(stream, length);
 
 					/**
 					 * 首先尝试查找简体词汇在给定字典中的索引。
 					 */
-					if (App.TryMapIndex(dictionary, min, word, out int index))
+					if (Common.TryMapIndex(dictionary, min, word, out int index))
 					{
-						App.AddLexiconNode(dictionary, index, word, pinyin);
+						Common.AddLexiconNode(dictionary, index, word, pinyin);
 					}
 
 					/**
 					 * 接着尝试查找繁体词汇在给点字典中的索引。
 					 */
-					if (App.TryParseTradional(word, out string traditional) && traditional != word && App.TryMapIndex(dictionary, min, traditional, out index))
+					if (Common.TryParseTradional(word, out string traditional) && traditional != word && Common.TryMapIndex(dictionary, min, traditional, out index))
 					{
-						App.AddLexiconNode(dictionary, index, traditional, pinyin);
+						Common.AddLexiconNode(dictionary, index, traditional, pinyin);
 					}
 				}
 			}
@@ -1054,7 +1054,7 @@ namespace EzPinyin
 			/**
 			 * 为指定集合中的拼音节点加载固定长度的交叉词典内容。
 			 */
-			using (MemoryStream stream = new MemoryStream((byte[])App.ResourceManager.GetObject(name)))
+			using (MemoryStream stream = new MemoryStream((byte[])Common.ResourceManager.GetObject(name)))
 			{
 				while (stream.Position < stream.Length)
 				{
@@ -1065,24 +1065,24 @@ namespace EzPinyin
 					/**
 					 * 读取词汇信息。
 					 */
-					string word = App.ReadWord(stream, length);
+					string word = Common.ReadWord(stream, length);
 					string[] pinyin = null;
 
 					/**
 					 * 首先尝试查找简体词汇在给定字典中的索引。
 					 */
-					if (App.TryMapIndex(dictionary, min, word, out int index))
+					if (Common.TryMapIndex(dictionary, min, word, out int index))
 					{
-						pinyin = App.LoadPinyinArray(word, length);
-						App.AddLexiconNode(dictionary, index, word, pinyin);
+						pinyin = Common.LoadPinyinArray(word, length);
+						Common.AddLexiconNode(dictionary, index, word, pinyin);
 					}
 
 					/**
 					 * 接着尝试查找繁体词汇在给点字典中的索引。
 					 */
-					if (App.TryParseTradional(word, out string traditional) && traditional != word && App.TryMapIndex(dictionary, min, traditional, out index))
+					if (Common.TryParseTradional(word, out string traditional) && traditional != word && Common.TryMapIndex(dictionary, min, traditional, out index))
 					{
-						App.AddLexiconNode(dictionary, index, traditional, pinyin ?? App.LoadPinyinArray(traditional, length));
+						Common.AddLexiconNode(dictionary, index, traditional, pinyin ?? Common.LoadPinyinArray(traditional, length));
 					}
 				}
 			}
@@ -1094,7 +1094,7 @@ namespace EzPinyin
 			 * 为指定集合中的拼音节点加载固定长度的交叉词典内容。
 			 */
 
-			using (MemoryStream stream = new MemoryStream((byte[])App.ResourceManager.GetObject(name)))
+			using (MemoryStream stream = new MemoryStream((byte[])Common.ResourceManager.GetObject(name)))
 			{
 				while (stream.Position < stream.Length)
 				{
@@ -1106,24 +1106,24 @@ namespace EzPinyin
 					/**
 					 * 读取词汇信息。
 					 */
-					string word = App.ReadWord(stream, length);
+					string word = Common.ReadWord(stream, length);
 					string[] pinyin = null;
 
 					/**
 					 * 首先尝试查找简体词汇在给定字典中的索引。
 					 */
-					if (App.TryMapIndex(dictionary, min, word, out int index))
+					if (Common.TryMapIndex(dictionary, min, word, out int index))
 					{
-						pinyin = App.LoadPinyinArray(word, length);
-						App.AddLexiconNode(dictionary, index, word, pinyin);
+						pinyin = Common.LoadPinyinArray(word, length);
+						Common.AddLexiconNode(dictionary, index, word, pinyin);
 					}
 
 					/**
 					 * 接着尝试查找繁体词汇在给点字典中的索引。
 					 */
-					if (App.TryParseTradional(word, out string traditional) && traditional != word && App.TryMapIndex(dictionary, min, traditional, out index))
+					if (Common.TryParseTradional(word, out string traditional) && traditional != word && Common.TryMapIndex(dictionary, min, traditional, out index))
 					{
-						App.AddLexiconNode(dictionary, index, traditional, pinyin ?? App.LoadPinyinArray(traditional, length));
+						Common.AddLexiconNode(dictionary, index, traditional, pinyin ?? Common.LoadPinyinArray(traditional, length));
 					}
 
 
@@ -1153,7 +1153,7 @@ namespace EzPinyin
 				int index = 0;
 				do
 				{
-					pinyin[index++] = App.LoadPinyinTemparory(ref cursor, last);
+					pinyin[index++] = Common.LoadPinyinTemparory(ref cursor, last);
 				} while (index < length);
 			}
 
@@ -1166,7 +1166,7 @@ namespace EzPinyin
 
 			for (int i = 0; i < length; i++)
 			{
-				pinyin[i] = App.Utf16NodeTemplates[(stream.ReadByte() << 8) | stream.ReadByte()].Pinyin;
+				pinyin[i] = Common.Utf16NodeTemplates[(stream.ReadByte() << 8) | stream.ReadByte()].Pinyin;
 			}
 
 			return pinyin;

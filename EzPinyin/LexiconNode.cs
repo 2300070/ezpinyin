@@ -56,7 +56,7 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="word">需要注册的词汇。</param>
 		/// <param name="pinyin">该词汇对应的拼音。</param>
-		public void Add(string word, string pinyin) => this.Add(word, pinyin.Split(App.SeparatorCharacters, StringSplitOptions.RemoveEmptyEntries));
+		public void Add(string word, string pinyin) => this.Add(word, pinyin.Split(Common.SeparatorCharacters, StringSplitOptions.RemoveEmptyEntries));
 
 		/// <summary>
 		/// 获得拼音字符串。
@@ -104,7 +104,7 @@ namespace EzPinyin
 			/**
 			 * 重新调整当前节点的容积。
 			 */
-			if (index < 0 || index >= App.PrimeTable.Length)
+			if (index < 0 || index >= Common.PrimeTable.Length)
 			{
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
@@ -113,7 +113,7 @@ namespace EzPinyin
 			/**
 			 * 使用新的容积大小对节点数组进行初始化
 			 */
-			int size = App.PrimeTable[index];
+			int size = Common.PrimeTable[index];
 			PinyinNode origin = this.firstNode;
 			PinyinNode[] nodes = new PinyinNode[size];
 			for (int i = 0; i < size; i++)

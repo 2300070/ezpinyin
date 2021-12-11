@@ -13,11 +13,11 @@ namespace EzPinyin
 		{
 			try
 			{
-				Dictionary = App.LoadDictionary("dict_ext_d", App.Utf32NodeTemplates);
+				Dictionary = Common.LoadDictionary("dict_ext_d", Common.Utf32NodeTemplates);
 			}
 			finally
 			{
-				App.ResourceManager.ReleaseAllResources();
+				Common.ResourceManager.ReleaseAllResources();
 			}
 #if DEBUG
 			Console.WriteLine("ExtensionD dictionary is loaded.");

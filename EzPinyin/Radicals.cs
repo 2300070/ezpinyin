@@ -13,11 +13,11 @@ namespace EzPinyin
 		{
 			try
 			{
-				Dictionary = App.LoadDictionary("dict_rad", App.Utf16NodeTemplates);
+				Dictionary = Common.LoadDictionary("dict_rad", Common.Utf16NodeTemplates);
 			}
 			finally
 			{
-				App.ResourceManager.ReleaseAllResources();
+				Common.ResourceManager.ReleaseAllResources();
 			}
 #if DEBUG
 			Console.WriteLine("Radicals dictionary is loaded.");

@@ -12,9 +12,9 @@ namespace EzPinyin
 		{
 			try
 			{
-				Dictionary = App.LoadDictionary("dict_basic", App.Utf16NodeTemplates);
+				Dictionary = Common.LoadDictionary("dict_basic", Common.Utf16NodeTemplates);
 
-				App.LoadLexicon(Dictionary, 0x4E00);
+				Common.LoadLexicon(Dictionary, 0x4E00);
 				
 
 				/**
@@ -24,12 +24,12 @@ namespace EzPinyin
 
 				foreach (string file in files)
 				{
-					App.LoadCustomFile(file);
+					Common.LoadCustomFile(file);
 				}
 			}
 			finally
 			{
-				App.ResourceManager.ReleaseAllResources();
+				Common.ResourceManager.ReleaseAllResources();
 			}
 #if DEBUG
 			Console.WriteLine("Basic dictionary is loaded.");
