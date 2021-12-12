@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;net20</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>wudexiang</Authors>
-    <Description>拼音组件，提供汉字到拼音、拼音首字母、拼音数组的快速转换，特色是极快的速度、较小的体积、自带经过优化的字典与词典、支持繁简、支持自定义。</Description>
+    <Description>拼音组件，提供汉字到拼音、拼音首字母、拼音数组的快速转换，特色是极快的速度、较小的体积、自带经过优化的字典与词典、支持繁简、支持自定义字典及词典。</Description>
     <Copyright>Copyright 2021 wudexiang, all rights reserved.</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -16,6 +16,9 @@
     <FileVersion>1.0.0.1</FileVersion>
     <PackageIconUrl>https://gitee.com/s230/ezpinyin/raw/master/icon.png</PackageIconUrl>
     <Version>1.0.1</Version>
+    <PackageLicenseFile>C:\Users\sean\Documents\works\EzPinyin\LICENSE</PackageLicenseFile>
+    <PackageTags>pinyin;拼音;ezpinyin</PackageTags>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>

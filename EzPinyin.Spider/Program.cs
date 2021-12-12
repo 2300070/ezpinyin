@@ -63,7 +63,7 @@ namespace EzPinyin.Spider
 				Console.WriteLine("EzPinyin数据生成程序。");
 				if (!Directory.Exists("../cache"))
 				{
-					Console.Write("这是一个用来更新字典与词典的程序，整个过程需要从不同网站下载大量的数据，需要耗费大量的时间与带宽，如果你仍然决定继续，请按下'y'键");
+					Console.Write("这是一个用来更新字典与词典的程序，第一次启动时需要从不同网站下载10-100G的数据，由此会耗费大量的时间与带宽，如果你仍然决定继续，请按下'y'键");
 					
 					ConsoleKeyInfo key = await App.ReadKeyAsync();
 					Console.WriteLine();
