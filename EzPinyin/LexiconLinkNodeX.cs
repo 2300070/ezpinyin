@@ -75,7 +75,7 @@ namespace EzPinyin
 		/// <param name="final">字符串中最后一个字符的位置</param>
 		/// <param name="buffer">目标缓存区。</param>
 		/// <param name="separator">分隔符。</param>
-		public override unsafe void WriteFirstLetter(ref char* cursor, char* final, StringBuilder buffer, string separator)
+		public override unsafe void WriteInitial(ref char* cursor, char* final, StringBuilder buffer, string separator)
 		{
 			/**
 			 * 先比较前两个字符能否匹配，如果能够匹配，再比较其余的。
@@ -88,7 +88,7 @@ namespace EzPinyin
 				{
 					if (*(cursor + i) != word[i])
 					{
-						this.Next.WriteFirstLetter(ref cursor, final, buffer, separator);
+						this.Next.WriteInitial(ref cursor, final, buffer, separator);
 						return;
 					}
 				}
@@ -113,7 +113,7 @@ namespace EzPinyin
 				}
 				return;
 			}
-			this.Next.WriteFirstLetter(ref cursor, final, buffer, separator);
+			this.Next.WriteInitial(ref cursor, final, buffer, separator);
 		}
 
 		/// <summary>

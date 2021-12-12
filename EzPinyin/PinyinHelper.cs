@@ -76,7 +76,7 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="text">需要处理的字符串</param>
 		/// <returns>包含输入字符串的拼音信息的结果数组，若<paramref name="text"/>为null，则返回null。</returns>
-		public static string[] GetPinyinArray(string text)
+		public static string[] GetArray(string text)
 		{
 			if (text == null)
 			{
@@ -148,7 +148,7 @@ namespace EzPinyin
 		/// <remarks>
 		/// 这个方法的处理结果不完全等同于对应拼音的声母，虽然很多时候都是一样的。
 		/// </remarks>
-		public static string GetFirstLetters(string text, string separator = null)
+		public static string GetInitial(string text, string separator = null)
 		{
 			if (text == null)
 			{
@@ -172,7 +172,7 @@ namespace EzPinyin
 					 */
 					do
 					{
-						Common.MapAnyNode(cursor).WriteFirstLetter(ref cursor, final, buffer, separator);
+						Common.MapAnyNode(cursor).WriteInitial(ref cursor, final, buffer, separator);
 
 					} while (cursor < final);
 
@@ -184,7 +184,7 @@ namespace EzPinyin
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="Common.MapUtf16Node(char*)"/>方法即可。
 						 */
-						buffer.Append(Common.MapUtf16Node(cursor).GetFirstLetter(cursor));
+						buffer.Append(Common.MapUtf16Node(cursor).GetInitial(cursor));
 					}
 
 					return Common.ReturnBuffer(buffer);
@@ -193,7 +193,7 @@ namespace EzPinyin
 
 				if (length == 1)
 				{
-					return Common.MapUtf16Node(p).GetFirstLetter(p);
+					return Common.MapUtf16Node(p).GetInitial(p);
 				}
 
 				return string.Empty;

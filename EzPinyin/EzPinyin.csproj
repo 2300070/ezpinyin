@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;net20</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>wudexiang</Authors>
-    <Description>提供汉字到拼音的快速转换，特色是极快的速度、较小的体积、自带经过优化的字典与词典、支持繁简、支持自定义。</Description>
+    <Description>拼音组件，提供汉字到拼音、拼音首字母、拼音数组的快速转换，特色是极快的速度、较小的体积、自带经过优化的字典与词典、支持繁简、支持自定义。</Description>
     <Copyright>Copyright 2021 wudexiang, all rights reserved.</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -22,7 +22,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="../license"/>
+    <None Include="../license" />
     <None Include="../readme.md" Pack="true" PackagePath="\" />
     <None Include="../icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>

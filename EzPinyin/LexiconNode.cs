@@ -70,7 +70,7 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="cursor">游标信息。</param>
 		/// <returns>所获得的首字母。</returns>
-		public override unsafe string GetFirstLetter(char* cursor) => this.firstNode.GetFirstLetter(cursor);
+		public override unsafe string GetInitial(char* cursor) => this.firstNode.GetInitial(cursor);
 
 		/// <summary>
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
@@ -88,7 +88,7 @@ namespace EzPinyin
 		/// <param name="final">字符串中最后一个字符的位置</param>
 		/// <param name="buffer">目标缓存区。</param>
 		/// <param name="separator">分隔符。</param>
-		public override unsafe void WriteFirstLetter(ref char* cursor, char* final, StringBuilder buffer, string separator) => this.nodes[*(cursor + 1) % this.size].WriteFirstLetter(ref cursor, final, buffer, separator);
+		public override unsafe void WriteInitial(ref char* cursor, char* final, StringBuilder buffer, string separator) => this.nodes[*(cursor + 1) % this.size].WriteInitial(ref cursor, final, buffer, separator);
 
 		/// <summary>
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。

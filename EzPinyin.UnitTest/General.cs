@@ -28,40 +28,40 @@ namespace EzPinyin.UnitTest
 		[TestMethod]
 		public void GetFirstLetter()
 		{
-			Console.WriteLine(PinyinHelper.GetFirstLetters("一"));
-			Console.WriteLine(PinyinHelper.GetFirstLetters("1234567"));
-			Console.WriteLine(PinyinHelper.GetFirstLetters("一鿕"));
-			Console.WriteLine(PinyinHelper.GetFirstLetters("成都"));
-			Console.WriteLine(PinyinHelper.GetFirstLetters("长城"));
-			Console.WriteLine(PinyinHelper.GetFirstLetters("〇"));
+			Console.WriteLine(PinyinHelper.GetInitial("一"));
+			Console.WriteLine(PinyinHelper.GetInitial("1234567"));
+			Console.WriteLine(PinyinHelper.GetInitial("一鿕"));
+			Console.WriteLine(PinyinHelper.GetInitial("成都"));
+			Console.WriteLine(PinyinHelper.GetInitial("长城"));
+			Console.WriteLine(PinyinHelper.GetInitial("〇"));
 		}
 
 		[TestMethod]
 		public void Test3CharacterWord()
 		{
 			Console.WriteLine(PinyinHelper.GetPinyin("朝阳市"));
-			Console.WriteLine(PinyinHelper.GetFirstLetters("朝阳市"));
+			Console.WriteLine(PinyinHelper.GetInitial("朝阳市"));
 		}
 
 		[TestMethod]
 		public void Test4CharacterWord()
 		{
 			Console.WriteLine(PinyinHelper.GetPinyin("潮来潮往"));
-			Console.WriteLine(PinyinHelper.GetFirstLetters("潮来潮往"));
+			Console.WriteLine(PinyinHelper.GetInitial("潮来潮往"));
 		}
 
 		[TestMethod]
 		public void Test5CharacterWord()
 		{
 			Console.WriteLine(PinyinHelper.GetPinyin("吃了砒霜药"));
-			Console.WriteLine(PinyinHelper.GetFirstLetters("吃了砒霜药"));
+			Console.WriteLine(PinyinHelper.GetInitial("吃了砒霜药"));
 		}
 
 		[TestMethod]
 		public void TestXCharacterWord()
 		{
 			Console.WriteLine(PinyinHelper.GetPinyin("吃了老娘洗脚水"));
-			Console.WriteLine(PinyinHelper.GetFirstLetters("吃了老娘洗脚水"));
+			Console.WriteLine(PinyinHelper.GetInitial("吃了老娘洗脚水"));
 		}
 
 		[TestMethod]
@@ -79,7 +79,7 @@ namespace EzPinyin.UnitTest
 		[TestMethod]
 		public void TestExtensionEFG()
 		{
-			Console.WriteLine(PinyinHelper.GetFirstLetters("𫠠𫿰𬟀𬺰𭡫𮈦𰀀𱍊"));
+			Console.WriteLine(PinyinHelper.GetInitial("𫠠𫿰𬟀𬺰𭡫𮈦𰀀𱍊"));
 		}
 
 		[TestMethod]

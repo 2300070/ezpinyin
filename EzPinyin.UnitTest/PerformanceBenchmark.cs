@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TinyP = TinyPinyin.PinyinHelper;
+using TinyPinyinHelper = TinyPinyin.PinyinHelper;
 
 namespace EzPinyin.UnitTest
 {
@@ -96,12 +96,12 @@ namespace EzPinyin.UnitTest
 		{
 			Console.WriteLine($"测试样本：{text}");
 			Console.WriteLine($"GetPinyin {PinyinHelper.GetPinyin(text)}");
-			Console.WriteLine($"GetFirstLetters {PinyinHelper.GetFirstLetters(text)}");
+			Console.WriteLine($"GetInitial {PinyinHelper.GetInitial(text)}");
 			if (compare)
 			{
-				Console.WriteLine($"TinyPinyin {TinyP.GetPinyin(text)}");//##当文字包含UTF32汉字时，如果执行这一个方法，通过Reshaprer调用的测试会导致测试终止的异常，然而通过VS自带的测试管理器就不会。
+				Console.WriteLine($"TinyPinyin {TinyPinyinHelper.GetPinyin(text)}");//##当文字包含UTF32汉字时，如果执行这一个方法，通过Reshaprer调用的测试会导致测试终止的异常，然而通过VS自带的测试管理器就不会。
 			}
-			const int TIMES = 0x7FFFFF;
+			const int TIMES = 0xFFFFF;
 
 			long max = 0;
 
@@ -123,7 +123,7 @@ namespace EzPinyin.UnitTest
 				sw = Stopwatch.StartNew();
 				for (int i = 0; i < TIMES; i++)
 				{
-					TinyP.GetPinyin(text);
+					TinyPinyinHelper.GetPinyin(text);
 				}
 
 				sw.Stop();
@@ -134,7 +134,7 @@ namespace EzPinyin.UnitTest
 			sw = Stopwatch.StartNew();
 			for (int i = 0; i < TIMES; i++)
 			{
-				PinyinHelper.GetPinyinArray(text);
+				PinyinHelper.GetArray(text);
 			}
 
 			sw.Stop();
@@ -144,7 +144,7 @@ namespace EzPinyin.UnitTest
 			sw = Stopwatch.StartNew();
 			for (int i = 0; i < TIMES; i++)
 			{
-				PinyinHelper.GetFirstLetters(text);
+				PinyinHelper.GetInitial(text);
 			}
 
 			sw.Stop();
@@ -156,8 +156,8 @@ namespace EzPinyin.UnitTest
 			int total = TIMES * text.Length;
 
 			Console.WriteLine($"EzPinyin GetPinyin {(0.0001D * total / TimeSpan.FromTicks(t1).TotalSeconds):0.0}万/秒 {TimeSpan.FromTicks(t1)} {(max * 100D / t1):00.00}%");
-			Console.WriteLine($"EzPinyin GetPinyinArray {(0.0001D * total / TimeSpan.FromTicks(t3).TotalSeconds):0.0}万/秒 {TimeSpan.FromTicks(t3)} {(max * 100D / t3):00.00}%");
-			Console.WriteLine($"EzPinyin GetFirstLetters {(0.0001D * total / TimeSpan.FromTicks(t4).TotalSeconds):0.0}万/秒 {TimeSpan.FromTicks(t4)} {(max * 100D / t4):00.00}%");
+			Console.WriteLine($"EzPinyin GetArray {(0.0001D * total / TimeSpan.FromTicks(t3).TotalSeconds):0.0}万/秒 {TimeSpan.FromTicks(t3)} {(max * 100D / t3):00.00}%");
+			Console.WriteLine($"EzPinyin GetInitial {(0.0001D * total / TimeSpan.FromTicks(t4).TotalSeconds):0.0}万/秒 {TimeSpan.FromTicks(t4)} {(max * 100D / t4):00.00}%");
 			if (compare)
 			{
 				Console.WriteLine($"TinyPinyin {(0.0001D * total / TimeSpan.FromTicks(t2).TotalSeconds):0.0}万/秒 {TimeSpan.FromTicks(t2)} {(max * 100D / t2):00.00}%");

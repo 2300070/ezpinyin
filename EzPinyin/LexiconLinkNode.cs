@@ -48,6 +48,6 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="cursor">游标信息。</param>
 		/// <returns>所获得的首字母。</returns>
-		public override unsafe string GetFirstLetter(char* cursor) => throw new NotSupportedException();
+		public override unsafe string GetInitial(char* cursor) => throw new NotSupportedException();
 	}
 }
