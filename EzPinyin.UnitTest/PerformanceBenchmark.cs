@@ -15,7 +15,7 @@ namespace EzPinyin.UnitTest
 		{
 			/**
 			 * 通过模拟对词汇"abc"的检索，
-			 * 验证验证使用字典表与哈希链表之间的性能差异。
+			 * 验证使用字典表与哈希链表之间的性能差异。
 			 */
 			const int TIMES = 0x7FFFFFF;
 			long max = 0;

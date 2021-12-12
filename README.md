@@ -72,7 +72,10 @@ PinyinHelper.GetPinyinArray(text);//string[]
 - 汉典 http://zdic.net
 - 叶典 http://yedict.com
 
-此外，此项目也吸收了百度百科(http://baike.baidu.com)、词典网(http://cd.cidianwang.com)、汉文学网(http://cd.hwxnet.com/) 的部分内容作为参考，一并致谢。
+此外，此项目也吸收了下列站点的部分内容作为参考，一并致谢。
+- 百度百科 http://baike.baidu.com
+- 词典网 http://cd.cidianwang.com
+- 汉文学网 http://cd.hwxnet.com
 
 #### 支持
 
