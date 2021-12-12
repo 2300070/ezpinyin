@@ -61,6 +61,17 @@ namespace EzPinyin.Spider
 			Task.Run(async delegate
 			{
 				Console.WriteLine("EzPinyin数据生成程序。");
+				if (!Directory.Exists("../cache"))
+				{
+					Console.Write("这是一个用来更新字典与词典的程序，整个过程需要从不同网站下载大量的数据，需要耗费大量的时间与带宽，如果你仍然决定继续，请按下'y'键");
+					
+					ConsoleKeyInfo key = await App.ReadKeyAsync();
+					Console.WriteLine();
+					if (key.Key != ConsoleKey.Y)
+					{
+						return;
+					}
+				}
 				try
 				{
 					Console.WriteLine("开始生成字典。");
@@ -72,7 +83,7 @@ namespace EzPinyin.Spider
 					Console.WriteLine();
 					Console.WriteLine("开始生成词典。");
 
-					await BaiduSpider.LoadSamplesAsync("行");
+					//await BaiduSpider.LoadSamplesAsync("行");
 
 					/**
 					 * 接着收集词汇样本。
@@ -86,7 +97,7 @@ namespace EzPinyin.Spider
 					await Program.CorrectDictionaryAsync();
 
 					/**
-					 * 加载自定义的词典。
+					 * 加载自定义的字典。
 					 */
 					await Program.LoadDictionaryFromTemplateAsync();
 
@@ -160,16 +171,13 @@ namespace EzPinyin.Spider
 
 			Console.WriteLine();
 			Console.Write("生成词典...");
-
 			await Program.WriteLexiconAsync("basic", true);
 
 			Console.WriteLine("完成。");
 
 			Console.WriteLine();
 			Console.Write("生成交叉词典...");
-
-
-			await Program.WriteLexiconAsync("it", false);
+			await Program.WriteLexiconAsync("it", false);//it=intersection
 
 			Console.WriteLine("完成。");
 
@@ -181,7 +189,7 @@ namespace EzPinyin.Spider
 			Console.WriteLine("完成。");
 
 			Console.WriteLine();
-			Console.WriteLine("简繁字典。");
+			Console.WriteLine("生成简繁字典。");
 
 			using (FileStream fs = new FileStream("simplified", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
 			{
@@ -210,7 +218,7 @@ namespace EzPinyin.Spider
 				/**
 				 * 定义4个数据流分别存储长度为2,3,4的词汇，定义一个额外的数据流存储长度超过4的词汇。
 				 */
-				MemoryStream[] streams = new[] { new MemoryStream(), new MemoryStream(), new MemoryStream() };
+				MemoryStream[] streams = { new MemoryStream(), new MemoryStream(), new MemoryStream() };
 				MemoryStream x = new MemoryStream();
 				byte[] buffer = new byte[2];
 				foreach (KeyValuePair<string, WordInfo> item in App.Lexicon)
@@ -307,8 +315,7 @@ namespace EzPinyin.Spider
 					word.Explain?.CopyTo(explain, 0);
 					for (int i = 0; i < explain.Length; i++)
 					{
-						string item = explain[i];
-						if (item == null)
+						if (explain[i] == null)
 						{
 							if (!App.Dictionary.TryGetValue(new string(name[i], 1), out CharacterInfo info))
 							{
