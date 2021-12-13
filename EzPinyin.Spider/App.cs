@@ -469,35 +469,52 @@ namespace EzPinyin.Spider
 
 				switch (ch)
 				{
+					case 'a':
 					case 'ā':
 					case 'á':
 					case 'ă':
+					case 'ǎ':
 					case 'à':
 						chars[i] = 'a';
 						break;
+					case 'o':
+					case 'ō':
+					case 'ó':
+					case 'ŏ':
+					case 'ǒ':
+					case 'ò':
+						chars[i] = 'o';
+						break;
+					case 'e':
 					case 'ē':
-					case 'é':
+					case 'ĕ':
 					case 'ě':
 					case 'è':
 						chars[i] = 'e';
 						break;
+					case 'i':
 					case 'ī':
 					case 'í':
 					case 'ĭ':
+					case 'ǐ':
 					case 'ì':
 						chars[i] = 'i';
 						break;
-					case 'ō':
-					case 'ó':
-					case 'ŏ':
-					case 'ò':
-						chars[i] = 'o';
-						break;
+					case 'u':
 					case 'ū':
 					case 'ú':
 					case 'ŭ':
+					case 'ǔ':
 					case 'ù':
 						chars[i] = 'u';
+						break;
+					case 'v':
+					case 'ü':
+					case 'ǖ':
+					case 'ǘ':
+					case 'ǚ':
+					case 'ǜ':
+						chars[i] = 'v';
 						break;
 					case 'ń':
 					case 'ň':
@@ -507,24 +524,6 @@ namespace EzPinyin.Spider
 					case 'ḿ':
 					case '':
 						chars[i] = 'm';
-						break;
-					case 'ü':
-					case 'ǘ':
-					case 'ǚ':
-					case 'ǜ':
-						chars[i] = 'v';
-						break;
-					case 'ǎ':
-						chars[i] = 'a';
-						break;
-					case 'ǐ':
-						chars[i] = 'i';
-						break;
-					case 'ǒ':
-						chars[i] = 'o';
-						break;
-					case 'ǔ':
-						chars[i] = 'u';
 						break;
 
 				}

@@ -120,18 +120,14 @@ namespace EzPinyin
 			pinyin = pinyin.Trim();
 			char[] chars = pinyin.ToCharArray();
 			int length = chars.Length;
+
+			/**
+			 * 可能存在拼音+数字音调的情况，如yi1；这种情况下需要将长度减一以去除声调。
+			 */
 			int tone = chars[length - 1] - '1';
 			if (tone > -1 && tone < 5)
 			{
 				length--;
-
-				/**
-				 * 第五声是轻声，直接忽略吧。
-				 */
-				if (tone == 4)
-				{
-					tone = -1;
-				}
 			}
 
 			for (int i = 0; i < chars.Length; i++)
@@ -157,115 +153,56 @@ namespace EzPinyin
 				switch (ch)
 				{
 					case 'a':
-						if (tone > -1 && tone < 4)
-						{
-							chars[i] = "āáăà"[tone];
-							tone = -1;
-						}
+					case 'ā':
+					case 'á':
+					case 'ă':
+					case 'ǎ':
+					case 'à':
+						chars[i] = 'a';
 						break;
 					case 'o':
-						if (tone > -1 && tone < 4)
-						{
-							chars[i] = "ōóŏò"[tone];
-							tone = -1;
-						}
+					case 'ō':
+					case 'ó':
+					case 'ŏ':
+					case 'ǒ':
+					case 'ò':
+						chars[i] = 'o';
 						break;
 					case 'e':
-						if (tone > -1 && tone < 4)
-						{
-							chars[i] = "ēéěè"[tone];
-							tone = -1;
-						}
+					case 'ē':
+					case 'ĕ':
+					case 'ě':
+					case 'è':
+						chars[i] = 'e';
 						break;
 					case 'i':
-						if (i + 1 < length)
-						{
-							switch (chars[i + 1])
-							{
-								case 'a':
-								case 'o':
-								case 'e':
-								case 'u':
-									continue;
-							}
-						}
-						if (tone > -1 && tone < 4)
-						{
-							chars[i] = "īíĭì"[tone];
-							tone = -1;
-						}
+					case 'ī':
+					case 'í':
+					case 'ĭ':
+					case 'ǐ':
+					case 'ì':
+						chars[i] = 'i';
 						break;
 					case 'u':
-						if (i + 1 < length)
-						{
-							switch (chars[i + 1])
-							{
-								case 'a':
-								case 'o':
-								case 'e':
-								case 'i':
-									continue;
-							}
-						}
-						if (tone > -1 && tone < 4)
-						{
-							chars[i] = "ūúŭù"[tone];
-							tone = -1;
-						}
+					case 'ū':
+					case 'ú':
+					case 'ŭ':
+					case 'ǔ':
+					case 'ù':
+						chars[i] = 'u';
 						break;
 					case 'v':
-						chars[i] = 'ü';
-						goto case 'ü';
 					case 'ü':
-						if (i + 1 < length)
-						{
-							switch (chars[i + 1])
-							{
-								case 'a':
-								case 'e':
-									continue;
-							}
-						}
-						if (tone > -1 && tone < 4)
-						{
-							chars[i] = "ǖǘǚǜ"[tone];
-							tone = -1;
-						}
-						break;
-					case 'ǎ':
-						chars[i] = 'ă';
-						break;
-					case 'ǐ':
-						chars[i] = 'ĭ';
-						break;
-					case 'ǒ':
-						chars[i] = 'ŏ';
-						break;
-					case 'ǔ':
-						chars[i] = 'ŭ';
-						break;
-					case 'ɡ':
-						chars[i] = 'g';
-						break;
-					case 'ｑ':
-						chars[i] = 'q';
+					case 'ǖ':
+					case 'ǘ':
+					case 'ǚ':
+					case 'ǜ':
+						chars[i] = 'v';
 						break;
 
 				}
 			}
 
-			if (tone > -1 && tone < 4 && length == 1)
-			{
-				switch (chars[0])
-				{
-					case 'n':
-						chars[0] = "nńňǹ"[tone];
-						break;
-					case 'm':
-						chars[0] = "mḿmm"[tone];
-						break;
-				}
-			}
 			return new string(chars, 0, length);
 		}
 
