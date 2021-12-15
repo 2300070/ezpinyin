@@ -46,9 +46,25 @@ namespace EzPinyin.Spider
 			await App.ForEachAsync(this.characters, async ch =>
 			{
 				CharacterInfo info = await ZDictSpider.LoadCharacterAsync(ch);
-				if (info == null || info.Count == 0)
+				if (info == null || info.Count == 0 || !info.Verified)
 				{
-					await YDictSpider.LoadCharacterAsync(ch);
+					info?.Clear();
+					info = await YDictSpider.LoadCharacterAsync(ch);
+					if (info != null && info.Verified)
+					{
+						string pinyin = info.PreferedPinyin;
+						if (pinyin != null)
+						{
+							List<string> list = App.PinyinList;
+							lock (list)
+							{
+								if (!list.Contains(pinyin))
+								{
+									list.Add(pinyin);
+								}
+							}
+						}
+					}
 				}
 			});
 
@@ -69,13 +85,13 @@ namespace EzPinyin.Spider
 				{
 					string pinyin;
 					string ch = this.characters[i];
-					if (!App.Dictionary.TryGetValue(ch, out CharacterInfo collection) || collection.Count == 0)
+					if (!App.Dictionary.TryGetValue(ch, out CharacterInfo info) || info.Count == 0)
 					{
 						pinyin = null;
 					}
 					else
 					{
-						pinyin = collection.PreferedPinyin;
+						pinyin = info.PreferedPinyin;
 					}
 					int value = App.PinyinList.IndexOf(pinyin) + 1;
 					fs.WriteByte((byte)((value & 0xFF00) >> 8));

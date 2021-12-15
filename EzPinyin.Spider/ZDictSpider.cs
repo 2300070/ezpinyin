@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace EzPinyin.Spider
 {
@@ -12,8 +14,18 @@ namespace EzPinyin.Spider
 	/// </summary>
 	internal static class ZDictSpider
 	{
+		private const string CACHE_FILE = "../cache/zdict.json";
 		private static readonly char[] trimCharacters = new[] { ' ', '	', '\r', '\n', ' ', '̀' };
 		private static readonly ConcurrentDictionary<string, CharacterInfo> dictionary = new ConcurrentDictionary<string, CharacterInfo>();
+		private static readonly ConcurrentDictionary<string, string> cache = new ConcurrentDictionary<string, string>();
+
+		static ZDictSpider()
+		{
+			if (File.Exists(CACHE_FILE))
+			{
+				cache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(CACHE_FILE));
+			}
+		}
 
 		/// <summary>
 		/// 抓取指定字符的拼音信息。
@@ -22,26 +34,26 @@ namespace EzPinyin.Spider
 		/// <returns>该字符的拼音信息，如果没有抓取到拼音，则返回null。</returns>
 		public static async Task<CharacterInfo> LoadCharacterAsync(string character)
 		{
-			if (dictionary.TryGetValue(character, out CharacterInfo info))
+			if (dictionary.TryGetValue(character, out CharacterInfo result))
 			{
-				if (info.Count == 0)
+				if (result.Count == 0)
 				{
 					return null;
 				}
 
-				return info;
+				return result;
 			}
 
-			if (!App.Dictionary.TryGetValue(character, out info))
+			if (!App.Dictionary.TryGetValue(character, out result))
 			{
-				info = new CharacterInfo(character);
+				result = new CharacterInfo(character);
 			}
-			else if (info.Count > 0)
+			else if (result.Count > 0)
 			{
-				return info;
+				return result;
 			}
 
-			dictionary[character] = info;
+			dictionary[character] = result;
 
 			string html = await App.DownloadAsync($"https://www.zdic.net/hans/{Uri.EscapeUriString(character)}");
 
@@ -55,7 +67,7 @@ namespace EzPinyin.Spider
 				match = Regex.Match(html, @"<div[^>]+nr-box-shiyi jbjs[^>]+>([\W\w]+?)div copyright.>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					ZDictSpider.LoadFromXinhuaExplain(character, match.Groups[1].Value, info);
+					ZDictSpider.LoadFromXinhuaExplain(character, match.Groups[1].Value, result);
 				}
 
 				/**
@@ -64,7 +76,7 @@ namespace EzPinyin.Spider
 				match = Regex.Match(html, @"<div[^>]+nr-box-shiyi xxjs[^>]+>([\W\w]+?)div copyright.>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					ZDictSpider.LoadFromXianhanExplain(character, match.Groups[1].Value, info);
+					ZDictSpider.LoadFromXianhanExplain(character, match.Groups[1].Value, result);
 				}
 
 				/**
@@ -84,10 +96,10 @@ namespace EzPinyin.Spider
 						{
 							case "简":
 							case "簡":
-								info.Simplified = ch;
+								result.Simplified = ch;
 								break;
 							default:
-								info.Traditional = ch;
+								result.Traditional = ch;
 								break;
 						}
 					}
@@ -99,7 +111,7 @@ namespace EzPinyin.Spider
 					match = Regex.Match(header, @"<td[^>]+z_ytz\d.>((<a href=./han./([^']+)'[^>]+>((?!</a>).)+</a>\s*)+)</td>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 					if (match.Success)
 					{
-						List<char> variants = info.Variants ?? (info.Variants = new List<char>());
+						List<char> variants = result.Variants ?? (result.Variants = new List<char>());
 						MatchCollection matches = Regex.Matches(match.Groups[1].Value, @"<a href=./han./([^']+)' target=_blank>((?!</a>).)+</a>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 						for (int i = 0; i < matches.Count; i++)
 						{
@@ -115,21 +127,22 @@ namespace EzPinyin.Spider
 			}
 
 
-			if (info.Count == 0)
+			if (result.Count == 0)
 			{
 				/**
 				 * 如果没找到基本解释，尝试从顶部的概览信息栏获取。
 				 */
-				ZDictSpider.LoadFromHeaderLine(header ?? ZDictSpider.ExtractHeader(html), info);
+				ZDictSpider.LoadFromHeaderLine(header ?? ZDictSpider.ExtractHeader(html), result);
 			}
 
-			if (info.Count == 0)
+			if (result.Count == 0)
 			{
 				return null;
 			}
-			App.Dictionary[character] = info;
+			App.Dictionary[character] = result;
+			result.ZPinyin = result.ComputePrefered()?.Text;
 
-			return info;
+			return result;
 		}
 
 		/// <summary>
@@ -159,30 +172,39 @@ namespace EzPinyin.Spider
 			{
 				return;
 			}
-			string html = await App.DownloadAsync(url);
-			if (html == null)
+			string word = sample.Word;
+			if (cache.TryGetValue(word, out string pinyin))
 			{
+				sample.ZPinyin = pinyin;
 				return;
 			}
 
-			/**
-			 * 加载拼音。
-			 */
-			ZDictSpider.AnalysePinyin(html, sample);
-
-			/**
-			 * 加载义项。
-			 */
-			Match match = Regex.Match(html, @"<div[^>]+content definitions[^>]+>([\W\w]+?)<div[^>]+.div copyright.>");
-			if (match.Success)
+			try
 			{
-				string content = Regex.Replace(match.Value, "[\r\n]+", string.Empty, RegexOptions.Compiled);
-				match = Regex.Match(content, @"<div[^>]+jnr.>(((?!</div>).)+)</div>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-				if (match.Success)
+				string html = await App.DownloadAsync(url);
+				if (html == null)
 				{
-					sample.ProcessMeaning(Regex.Replace(match.Groups[1].Value.Trim(), @"<[^>]+>|\s+", string.Empty, RegexOptions.Compiled));
+					return;
 				}
+
+				/**
+				 * 加载拼音。
+				 */
+				ZDictSpider.AnalysePinyin(html, sample);
 			}
+			finally
+			{
+				cache[word] = sample.ZPinyin;
+			}
+			
+		}
+		
+		/// <summary>
+		/// 保存缓存文件。
+		/// </summary>
+		public static void SaveCache()
+		{
+			File.WriteAllText(CACHE_FILE, JsonConvert.SerializeObject(cache));
 		}
 
 		private static async Task LoadSamplesAsync(string character)
@@ -378,10 +400,7 @@ namespace EzPinyin.Spider
 						 */
 						WordInfo word = LexiconSpider.FindOrRegister(text);
 						word.ExplainPinyin(character, pinyin.Text);
-						if (Regex.IsMatch(description, "地名|[省|城|市|区](的?[简别]称)") || Regex.IsMatch(text, @"[省市城区县乡州]$", RegexOptions.Compiled))
-						{
-							word.IsSpecialTreatment = true;
-						}
+						
 					}
 				}
 
@@ -591,7 +610,6 @@ namespace EzPinyin.Spider
 				string item = App.FixPinyin(items[i]);
 				if (!string.IsNullOrEmpty(item))
 				{
-					ch.FindOrRegister(item);
 					if (result == null)
 					{
 						result = ch.FindOrRegister(item);

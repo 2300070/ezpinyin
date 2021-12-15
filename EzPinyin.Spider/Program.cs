@@ -61,6 +61,7 @@ namespace EzPinyin.Spider
 			Task.Run(async delegate
 			{
 				Console.WriteLine("EzPinyin数据生成程序。");
+
 				if (!Directory.Exists("../cache"))
 				{
 					Console.Write("这是一个用来更新字典与词典的程序，第一次启动时需要从不同网站下载10-100G的数据，由此会耗费大量的时间与带宽，如果你仍然决定继续，请按下'y'键");
@@ -82,8 +83,6 @@ namespace EzPinyin.Spider
 
 					Console.WriteLine();
 					Console.WriteLine("开始生成词典。");
-
-					//await BaiduSpider.LoadSamplesAsync("行");
 
 					/**
 					 * 接着收集词汇样本。
@@ -332,7 +331,7 @@ namespace EzPinyin.Spider
 				{
 					if (!App.Samples.TryGetValue(name, out WordInfo word))
 					{
-						word = new WordInfo(name) { IsSpecialTreatment = true };
+						word = new WordInfo(name);
 						word = App.Samples.GetOrAdd(name, word);
 					}
 
@@ -349,13 +348,13 @@ namespace EzPinyin.Spider
 			Console.WriteLine();
 			Console.Write("校正字典...");
 
-			await App.WaitAsync(Task.Run(async delegate
+			await App.WaitAsync(Task.Run((Func<Task>)async delegate
 			{
 
-				await App.ForEachAsync(App.Dictionary.Values, ch =>
+				await App.ForEachAsync(App.Dictionary.Values, (Action<CharacterInfo>)(ch =>
 				{
-					ch.Reset();
-				});
+					ch.Correct();
+				}));
 
 				await App.ForEachAsync(App.Samples.Values, word =>
 				{
@@ -737,9 +736,10 @@ namespace EzPinyin.Spider
 			}
 
 			App.IsDataReloaded = true;
+			App.PinyinList.Clear();
+			App.PinyinList.AddRange(App.StandardPinyinList);
 
 			Console.WriteLine("抓取字符信息。");
-
 
 			await basic.DownloadAsync();
 
@@ -792,6 +792,10 @@ namespace EzPinyin.Spider
 
 				foreach (CharacterInfo ch in list)
 				{
+					if (!ch.IsValid)
+					{
+						continue;
+					}
 					buffer.AppendLine($"{ch.Character} {ch.PreferedPinyin}");
 				}
 			}));
@@ -895,7 +899,6 @@ namespace EzPinyin.Spider
 				if (!App.Lexicon.TryGetValue(word, out WordInfo info))
 				{
 					info = LexiconSpider.FindOrRegister(word);
-					info.IsSpecialTreatment = true;
 					info.IsSelected = true;
 					App.Lexicon.TryAdd(word, info);
 					info.CustomPinyin = App.ParseWordPinyin(word, pinyin);

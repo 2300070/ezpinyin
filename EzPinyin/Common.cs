@@ -41,19 +41,19 @@ namespace EzPinyin
 
 
 			/**
-			 * 建立拼音索引，索引集合的第一个值为null。
+			 * 建立拼音索引，索引节点集合的第一个值为空白节点，以便适配那些没有拼音记录的字符。
 			 */
-			List<PinyinNode> list16 = new List<PinyinNode> { Utf16EmptyNode.Instance };
-			List<PinyinNode> list32 = new List<PinyinNode> { Utf32EmptyNode.Instance };
+			List<PinyinNode> utf16Nodes = new List<PinyinNode> { Utf16EmptyNode.Instance };
+			List<PinyinNode> utf32Nodes = new List<PinyinNode> { Utf32EmptyNode.Instance };
 			using (StringReader sr = new StringReader(Common.ResourceManager.GetString("pinyin")))
 			{
 				while (true)
 				{
 					string pinyin = sr.ReadLine();
-					if (!String.IsNullOrEmpty(pinyin))
+					if (!string.IsNullOrEmpty(pinyin))
 					{
-						list16.Add(new Utf16Node(pinyin));
-						list32.Add(new Utf32Node(pinyin));
+						utf16Nodes.Add(new Utf16Node(pinyin));
+						utf32Nodes.Add(new Utf32Node(pinyin));
 					}
 					else
 					{
@@ -62,8 +62,8 @@ namespace EzPinyin
 				}
 			}
 
-			Common.Utf16NodeTemplates = list16.ToArray();
-			Common.Utf32NodeTemplates = list32.ToArray();
+			Common.Utf16NodeTemplates = utf16Nodes.ToArray();
+			Common.Utf32NodeTemplates = utf32Nodes.ToArray();
 
 			/**
 			 * 加载繁体字字典
@@ -158,6 +158,7 @@ namespace EzPinyin
 					case 'ă':
 					case 'ǎ':
 					case 'à':
+					case 'ɑ':
 						chars[i] = 'a';
 						break;
 					case 'o':
@@ -197,7 +198,31 @@ namespace EzPinyin
 					case 'ǘ':
 					case 'ǚ':
 					case 'ǜ':
-						chars[i] = 'v';
+						if (i + 1 < length)
+						{
+							switch (chars[i + 1])
+							{
+								case 'n':
+								case 'e':
+								case 'ē':
+								case 'é':
+								case 'ĕ':
+								case 'ě':
+								case 'è':
+									chars[i] = 'u';
+									break;
+								default:
+									chars[i] = 'v';
+									break;
+							}
+						}
+						else
+						{
+							chars[i] = 'v';
+						}
+						break;
+					case 'ɡ':
+						chars[i] = 'g';
 						break;
 
 				}
@@ -579,7 +604,7 @@ namespace EzPinyin
 					 * 检查该行是否是空白
 					 */
 					string line = sr.ReadLine();
-					if (String.IsNullOrEmpty(line))
+					if (string.IsNullOrEmpty(line))
 					{
 						continue;
 					}

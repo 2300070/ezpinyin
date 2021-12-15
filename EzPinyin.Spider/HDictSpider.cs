@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace EzPinyin.Spider
 {
@@ -9,6 +12,17 @@ namespace EzPinyin.Spider
 	/// </summary>
 	internal static class HDictSpider
 	{
+		private const string CACHE_FILE = "../cache/hdict.json";
+		private static readonly ConcurrentDictionary<string, string> cache = new ConcurrentDictionary<string, string>();
+		
+		static HDictSpider()
+		{
+			if (File.Exists(CACHE_FILE))
+			{
+				cache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(CACHE_FILE));
+			}
+		}
+
 		/// <summary>
 		/// 以异步方式抓取常用的含多音字的词语列表。
 		/// </summary>
@@ -36,21 +50,38 @@ namespace EzPinyin.Spider
 			{
 				return;
 			}
-			string html = await App.DownloadAsync(url);
-			if (html == null)
+			string word = sample.Word;
+			if (cache.TryGetValue(word, out string pinyin))
 			{
+				sample.HPinyin = pinyin;
 				return;
 			}
-			Match match = Regex.Match(html, @"<span[^>]+.pinyin f20.>([^<]+)</span>");
-			if (match.Success)
+
+			try
 			{
-				sample.HPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value);
+				string html = await App.DownloadAsync(url);
+				if (html == null)
+				{
+					return;
+				}
+				Match match = Regex.Match(html, @"<span[^>]+.pinyin f20.>([^<]+)</span>");
+				if (match.Success)
+				{
+					sample.HPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value);
+				}
 			}
-			match = Regex.Match(html, @"<p>([^\n]+)</p><hr\s*/>");
-			if (match.Success)
+			finally
 			{
-				sample.ProcessMeaning(Regex.Replace(match.Groups[1].Value.Trim(), "<[^>]+>|\\s+", string.Empty, RegexOptions.Compiled));
+				cache[word] = sample.HPinyin;
 			}
+		}
+		
+		/// <summary>
+		/// 保存缓存文件。
+		/// </summary>
+		public static void SaveCache()
+		{
+			File.WriteAllText(CACHE_FILE, JsonConvert.SerializeObject(cache));
 		}
 
 		private static async Task LoadSamplesAsync(string character)

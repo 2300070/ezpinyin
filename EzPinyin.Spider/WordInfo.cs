@@ -67,12 +67,6 @@ namespace EzPinyin.Spider
 		public string[] Explain { get; set; }
 
 		/// <summary>
-		/// 用于标识此词汇是否需要特殊处理。
-		/// </summary>
-		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public bool IsSpecialTreatment { get; set; }
-
-		/// <summary>
 		/// 自定的拼音。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
@@ -181,8 +175,7 @@ namespace EzPinyin.Spider
 					return;
 				}
 				this.bPinyin = value;
-
-				this.InBaiduHanyu = true;
+				
 				this.preferedPinyin = this.EvaluatePreferedPinyin() ?? this.preferedPinyin;
 				this.preferedPinyinArray = null;
 			}
@@ -270,7 +263,7 @@ namespace EzPinyin.Spider
 		}
 
 		/// <summary>
-		/// 此词汇是否来自于工具书。
+		/// 此词汇是否有专业可信来源。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
 		public bool Verified { get; set; }
@@ -327,18 +320,6 @@ namespace EzPinyin.Spider
 		public bool IsDisabled { get; set; }
 
 		/// <summary>
-		/// 指示这个词汇是否被百度百科收录。
-		/// </summary>
-		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public bool? InBaiduBaike { get; set; }
-
-		/// <summary>
-		/// 指示这个词汇是否被百度汉语收录。
-		/// </summary>
-		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public bool InBaiduHanyu { get; internal set; }
-
-		/// <summary>
 		/// 创建新的词汇信息的实例。
 		/// </summary>
 		/// <param name="word">相关词汇。</param>
@@ -374,25 +355,6 @@ namespace EzPinyin.Spider
 		}
 
 		/// <summary>
-		/// 处理一个义项。
-		/// </summary>
-		/// <param name="meaning">需要注册的义项。</param>
-		public void ProcessMeaning(string meaning)
-		{
-			if (String.IsNullOrEmpty(meaning))
-			{
-				return;
-			}
-			if (!this.IsSpecialTreatment)
-			{
-				if (Regex.IsMatch(meaning, @"(\w\w省|自治区|直辖市|城市|港口).+((面积\d+|人口.+?|[东西南北].+|[简別又]称为?\w|(春秋|战国|秦|汉|三国|[东西]晋|南北|隋|唐|五代|宋|元|明|清|民国)朝?|\w大(城市|港口)(之一)?).+){2,}", RegexOptions.Compiled))
-				{
-					this.IsSpecialTreatment = true;
-				}
-			}
-		}
-
-		/// <summary>
 		/// 以异步方式检查此词汇是否来自可信来源。
 		/// </summary>
 		/// <returns>如果来源可信，则返回true。</returns>
@@ -411,7 +373,7 @@ namespace EzPinyin.Spider
 			{
 				score++;
 			}
-			if (this.InBaiduBaike == true)
+			if (this.BKPinyin != null)
 			{
 				score++;
 			}

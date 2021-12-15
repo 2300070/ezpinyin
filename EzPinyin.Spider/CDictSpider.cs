@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace EzPinyin.Spider
 {
@@ -11,6 +14,16 @@ namespace EzPinyin.Spider
 	/// </summary>
 	internal static class CDictSpider
 	{
+		private const string CACHE_FILE = "../cache/cdict.json";
+		private static readonly ConcurrentDictionary<string, string> cache = new ConcurrentDictionary<string, string>();
+		
+		static CDictSpider()
+		{
+			if (File.Exists(CACHE_FILE))
+			{
+				cache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(CACHE_FILE));
+			}
+		}
 
 		/// <summary>
 		/// 以异步方式抓取常用的含多音字的词语列表。
@@ -52,28 +65,44 @@ namespace EzPinyin.Spider
 			{
 				return;
 			}
-
-			string html = await App.DownloadAsync(url);
-
-			if (string.IsNullOrEmpty(html))
+			string word = sample.Word;
+			if (cache.TryGetValue(word, out string pinyin))
 			{
+				sample.CPinyin = pinyin;
 				return;
 			}
-			Match match = Regex.Match(html, @"<h1>([^<]+)</h1>拼音：<b>([^>]+)</b>");
-			if (match.Success)
+
+			try
 			{
-				string text = WebUtility.HtmlDecode(match.Groups[1].Value);
-				if (text == sample.Word)
+
+				string html = await App.DownloadAsync(url);
+
+				if (string.IsNullOrEmpty(html))
 				{
-					sample.CPinyin = App.ParseWordPinyin(text, match.Groups[2].Value);
-					match = Regex.Match(html, "<meta[^>]+description[^>]+?content=\"([^\"]+)\"\\s*/>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-					if (match.Success)
+					return;
+				}
+				Match match = Regex.Match(html, @"<h1>([^<]+)</h1>拼音：<b>([^>]+)</b>");
+				if (match.Success)
+				{
+					string text = WebUtility.HtmlDecode(match.Groups[1].Value);
+					if (text == sample.Word)
 					{
-						sample.ProcessMeaning(match.Groups[1].Value);
+						sample.CPinyin = App.ParseWordPinyin(text, match.Groups[2].Value);
 					}
 				}
-
 			}
+			finally
+			{
+				cache[word] = sample.CPinyin;
+			}
+		}
+		
+		/// <summary>
+		/// 保存缓存文件。
+		/// </summary>
+		public static void SaveCache()
+		{
+			File.WriteAllText(CACHE_FILE, JsonConvert.SerializeObject(cache));
 		}
 
 		private static async Task LoadSamplesByKeyAsync(string key)
@@ -116,11 +145,6 @@ namespace EzPinyin.Spider
 
 						WordInfo word = LexiconSpider.FindOrRegister(text);
 						word.CPinyin = App.ParseWordPinyin(text, match.Groups[3].Value);
-						string meaning = match.Groups[5].Value.Trim();
-						if (meaning.Length > 0)
-						{
-							word.ProcessMeaning(meaning);
-						}
 					}
 				}
 				page++;

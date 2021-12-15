@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace EzPinyin.Spider
@@ -8,9 +9,10 @@ namespace EzPinyin.Spider
 	/// </summary>
 	internal sealed class CharacterInfo
 	{
-		private readonly List<PinyinInfo> pinyinList = new List<PinyinInfo>(2);
+		private List<PinyinInfo> pinyinList = new List<PinyinInfo>(2);
 
 		private PinyinInfo prefered;
+		private bool isValid = true;
 
 		/// <summary>
 		/// 获得最常用的拼音字符串。
@@ -24,21 +26,7 @@ namespace EzPinyin.Spider
 		[JsonIgnore]
 		public PinyinInfo Prefered
 		{
-			get
-			{
-				PinyinInfo prefered = this.prefered;
-				if (prefered == null)
-				{
-					foreach (PinyinInfo pinyin in this.pinyinList)
-					{
-						if (prefered == null || prefered.Evaluation < pinyin.Evaluation)
-						{
-							prefered = pinyin;
-						}
-					}
-				}
-				return prefered;
-			}
+			get => this.prefered ?? (this.prefered = this.ComputePrefered());
 			internal set => this.prefered = value;
 		}
 
@@ -88,10 +76,43 @@ namespace EzPinyin.Spider
 		public string Character { get; set; }
 
 		/// <summary>
+		/// 此字符是否有专业可信来源。
+		/// </summary>
+		[JsonIgnore]
+		public bool Verified { get; set; }
+
+		/// <summary>
 		/// 自定的拼音
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
 		public string CustomPinyin { get; set; }
+
+		/// <summary>
+		/// 汉典最佳拼音。
+		/// </summary>
+		public string ZPinyin { get; set; }
+
+		/// <summary>
+		/// 叶典最佳拼音。
+		/// </summary>
+		public string YPinyin { get; set; }
+
+		/// <summary>
+		/// 指示该字符信息是否合规。
+		/// </summary>
+		[JsonIgnore]
+		public bool IsValid
+		{
+			get
+			{
+				if (this.Character.Length == 0 || this.Character[0] < 0xFF || this.Character.Length > 2)
+				{
+					return false;
+				}
+				return this.isValid;
+			}
+			set => this.isValid = value;
+		}
 
 		/// <summary>
 		/// 根据索引Id获得读音信息。
@@ -106,7 +127,7 @@ namespace EzPinyin.Spider
 		/// <param name="index">索引值。</param>
 		/// <returns>对应的读音信息。</returns>
 		public PinyinInfo this[string pinyin] => this.pinyinList.Find(x => x.Text == pinyin);
-		
+
 		public CharacterInfo()
 		{
 		}
@@ -122,25 +143,25 @@ namespace EzPinyin.Spider
 		/// <returns>所注册的拼音信息。</returns>
 		public PinyinInfo FindOrRegister(string pinyin)
 		{
-			if (!App.PinyinList.Contains(pinyin))
+			List<PinyinInfo> list = this.pinyinList;
+			lock (list)
 			{
-				App.PinyinList.Add(pinyin);
-			}
+				int index = list.FindIndex(x => x.Text == pinyin);
+				PinyinInfo info;
+				if (index == -1)
+				{
+					info = new PinyinInfo(pinyin);
+					if (info.Verified)
+					{
+						this.Verified = true;
+					}
+					list.Add(info);
+					return info;
+				}
 
-			List<PinyinInfo> definitions = this.pinyinList;
-			int index = definitions.FindIndex(x => x.Text == pinyin);
-			PinyinInfo info;
-			if (index == -1)
-			{
-				info = new PinyinInfo(pinyin);
-				definitions.Add(info);
-			}
-			else
-			{
-				info = definitions[index];
-			}
+				return list[index];
 
-			return info;
+			}
 		}
 
 		/// <summary>
@@ -156,15 +177,50 @@ namespace EzPinyin.Spider
 		}
 
 		/// <summary>
-		/// 重设各个拼音的引用状态，以便重新统计。
+		/// 校正并重设拼音信息，以便重新统计。
 		/// </summary>
-		public void Reset()
+		public void Correct()
 		{
-			this.prefered = null;
+			if (this.ZPinyin == this.YPinyin && this.YPinyin != null)
+			{
+				this.Verified = true;
+			}
+			this.prefered = this.ComputePrefered();
 			foreach (PinyinInfo pinyin in this.pinyinList)
 			{
 				pinyin.ReferenceCount = 0;
 			}
+		}
+
+		/// <summary>
+		/// 计算最佳拼音信息
+		/// </summary>
+		/// <returns>最佳拼音信息。</returns>
+		public PinyinInfo ComputePrefered()
+		{
+			PinyinInfo result = null;
+			foreach (PinyinInfo pinyin in this.pinyinList)
+			{
+				if (result == null || result.Evaluate(this) < pinyin.Evaluate(this))
+				{
+					result = pinyin;
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// 从其它字符复制拼音信息。
+		/// </summary>
+		/// <param name="other">需要复制的字符。</param>
+		public void CopyFrom(CharacterInfo other)
+		{
+			if (other.Verified)
+			{
+				this.Verified = true;
+			}
+			this.pinyinList = new List<PinyinInfo>(other.pinyinList);
 		}
 	}
 }

@@ -53,9 +53,14 @@ namespace EzPinyin.Spider
 		public static readonly char[] Dots = { '。', '？', '！', '，', '、', '；', '：' };
 
 		/// <summary>
+		/// 标准拼音列表。
+		/// </summary>
+		public static readonly HashSet<string> StandardPinyinList = new HashSet<string> { "a", "ai", "an", "ang", "ao", "ba", "bai", "ban", "bang", "bao", "bei", "ben", "beng", "bi", "bian", "biao", "bie", "bin", "bing", "bo", "bu", "ca", "cai", "can", "cang", "cao", "ce", "cen", "ceng", "cha", "chai", "chan", "chang", "chao", "che", "chen", "cheng", "chi", "chong", "chou", "chu", "chuai", "chuan", "chuang", "chui", "chun", "chuo", "ci", "cong", "cou", "cu", "cuan", "cui", "cun", "cuo", "da", "dai", "dan", "dang", "dao", "de", "dei", "den", "deng", "di", "dia", "dian", "diao", "die", "ding", "diu", "dong", "dou", "du", "duan", "dui", "dun", "duo", "e", "en", "er", "fa", "fan", "fang", "fei", "fen", "feng", "fo", "fou", "fu", "ga", "gai", "gan", "gang", "gao", "ge", "gei", "gen", "geng", "gong", "gou", "gu", "gua", "guai", "guan", "guang", "gui", "gun", "guo", "ha", "hai", "han", "hang", "hao", "he", "hei", "hen", "heng", "hong", "hou", "hu", "hua", "huai", "huan", "huang", "hui", "hun", "huo", "ji", "jia", "jian", "jiang", "jiao", "jie", "jin", "jing", "jiong", "jiu", "ju", "juan", "jue", "jun", "ka", "kai", "kan", "kang", "kao", "ke", "ken", "keng", "kong", "kou", "ku", "kua", "kuai", "kuan", "kuang", "kui", "kun", "kuo", "la", "lai", "lan", "lang", "lao", "le", "lei", "leng", "li", "lia", "lian", "liang", "liao", "lie", "lin", "ling", "liu", "long", "lou", "lu", "luan", "lue", "lun", "luo", "lv", "ma", "mai", "man", "mang", "mao", "me", "mei", "men", "meng", "mi", "mian", "miao", "mie", "min", "ming", "miu", "mo", "mou", "mu", "na", "nai", "nan", "nang", "nao", "ne", "nei", "nen", "neng", "ng", "ni", "nian", "niang", "niao", "nie", "nin", "ning", "niu", "no", "nong", "nu", "nuan", "nue", "nuo", "nv", "o", "ou", "pa", "pai", "pan", "pang", "pao", "pei", "pen", "peng", "pi", "pian", "piao", "pie", "pin", "ping", "po", "pou", "pu", "qi", "qia", "qian", "qiang", "qiao", "qie", "qin", "qing", "qiong", "qiu", "qu", "quan", "que", "qun", "ran", "rang", "rao", "re", "ren", "reng", "ri", "rong", "rou", "ru", "ruan", "rui", "run", "ruo", "sa", "sai", "san", "sang", "sao", "se", "sen", "seng", "sha", "shai", "shan", "shang", "shao", "she", "shen", "sheng", "shi", "shou", "shu", "shua", "shuai", "shuan", "shuang", "shui", "shun", "shuo", "si", "song", "sou", "su", "suan", "sui", "sun", "suo", "ta", "tai", "tan", "tang", "tao", "te", "ten", "teng", "ti", "tian", "tiao", "tie", "ting", "tong", "tou", "tu", "tuan", "tui", "tun", "tuo", "wa", "wai", "wan", "wang", "wei", "wen", "weng", "wo", "wu", "xi", "xia", "xian", "xiang", "xiao", "xie", "xin", "xing", "xiong", "xiu", "xu", "xuan", "xue", "xun", "ya", "yan", "yang", "yao", "ye", "yi", "yin", "ying", "yo", "yong", "you", "yu", "yuan", "yue", "yun", "za", "zai", "zan", "zang", "zao", "ze", "zei", "zen", "zeng", "zha", "zhai", "zhan", "zhang", "zhao", "zhe", "zhen", "zheng", "zhi", "zhong", "zhou", "zhu", "zhua", "zhuai", "zhuan", "zhuang", "zhui", "zhun", "zhuo", "zi", "zong", "zou", "zu", "zuan", "zui", "zun", "zuo" };
+
+		/// <summary>
 		/// 拼音列表。
 		/// </summary>
-		public static List<string> PinyinList { get; } = new List<string>(0x400);
+		public static List<string> PinyinList { get; } = new List<string>();
 
 		/// <summary>
 		/// 记录了所有字及其拼音的集合。
@@ -92,6 +97,10 @@ namespace EzPinyin.Spider
 			if (File.Exists("pinyin.txt"))
 			{
 				App.PinyinList.AddRange(File.ReadAllLines("pinyin.txt"));
+			}
+			else
+			{
+				App.PinyinList.AddRange(App.StandardPinyinList);
 			}
 		}
 
@@ -165,7 +174,7 @@ namespace EzPinyin.Spider
 			Console.WriteLine("完成。");
 			Console.WriteLine($"共加载{ App.Samples.Count}个词汇样本。");
 		}
-		
+
 		/// <summary>
 		/// 保存字典相关的文件。
 		/// </summary>
@@ -262,7 +271,7 @@ namespace EzPinyin.Spider
 			}
 			return null;
 		}
-		
+
 		/// <summary>
 		/// 对指定的词汇进行处理，去除繁体字，异体字，使之标准化。
 		/// </summary>
@@ -454,17 +463,17 @@ namespace EzPinyin.Spider
 				//大写转小写
 				if (ch >= 'A' && ch <= 'Z')
 				{
-					ch = (char)('a' + ch - 'A');
+					chars[i] = ch = (char)('a' + ch - 'A');
 				}
 
 				//全角转半角
 				if (ch >= 'ａ' && ch <= 'ｚ')
 				{
-					ch = (char)('a' + ch - 'ａ');
+					chars[i] = ch = (char)('a' + ch - 'ａ');
 				}
 				if (ch >= 'Ａ' && ch <= 'Ｚ')
 				{
-					ch = (char)('a' + ch - 'Ａ');
+					chars[i] = ch = (char)('a' + ch - 'Ａ');
 				}
 
 				switch (ch)
@@ -475,6 +484,7 @@ namespace EzPinyin.Spider
 					case 'ă':
 					case 'ǎ':
 					case 'à':
+					case 'ɑ':
 						chars[i] = 'a';
 						break;
 					case 'o':
@@ -487,6 +497,7 @@ namespace EzPinyin.Spider
 						break;
 					case 'e':
 					case 'ē':
+					case 'é':
 					case 'ĕ':
 					case 'ě':
 					case 'è':
@@ -514,7 +525,25 @@ namespace EzPinyin.Spider
 					case 'ǘ':
 					case 'ǚ':
 					case 'ǜ':
-						chars[i] = 'v';
+						if (i + 1 < length)
+						{
+							switch (chars[i + 1])
+							{
+								case 'n':
+								case 'e':
+								case 'ē':
+								case 'é':
+								case 'ĕ':
+								case 'ě':
+								case 'è':
+									chars[i] = 'u';
+									break;
+							}
+						}
+						else
+						{
+							chars[i] = 'v';
+						}
 						break;
 					case 'ń':
 					case 'ň':
@@ -524,6 +553,9 @@ namespace EzPinyin.Spider
 					case 'ḿ':
 					case '':
 						chars[i] = 'm';
+						break;
+					case 'ɡ':
+						chars[i] = 'g';
 						break;
 
 				}
@@ -653,9 +685,9 @@ namespace EzPinyin.Spider
 		/// 从指定的url下载文档。
 		/// </summary>
 		/// <param name="url">文档地址。</param>
-		/// <param name="data">需要发送的数据。</param>
+		/// <param name="validate">是否要验证缓存。</param>
 		/// <returns>若缓存文件存在，返回缓存文件，否则从指定地址下载最新的内容并缓存。</returns>
-		public static async Task<string> DownloadAsync(string url, string data = null)
+		public static async Task<string> DownloadAsync(string url, bool validate = false)
 		{
 			Match match = Regex.Match(url, @"\w+://([^\/?]+)");
 			string path;
@@ -689,62 +721,41 @@ namespace EzPinyin.Spider
 			int times = 0;
 			if (File.Exists(path))
 			{
-				while (times < 10)
+				if (validate)
 				{
-					try
+					if (File.GetLastWriteTime(path).Date >= DateTime.Today.AddDays(-1))
 					{
-						return File.ReadAllText(path);
+						return null;
 					}
-					catch
+				}
+				else
+				{
+					while (times < 10)
 					{
-						await Task.Delay(100);
-						times++;
+						try
+						{
+							return File.ReadAllText(path);
+						}
+						catch
+						{
+							await Task.Delay(100);
+							times++;
+						}
 					}
 				}
 			}
 
 			times = 0;
 
-		RESTART:
+			RESTART:
 			HttpWebResponse response;
 			try
 			{
 				HttpWebRequest request = WebRequest.CreateHttp(url);
 				request.Referer = url;
 				request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36";
-
-				if (data != null)
-				{
-					request.Method = "POST";
-					if (data.Length > 0)
-					{
-						if (data[0] == '[' && data[data.Length - 1] == ']' || data[0] == '{' && data[data.Length - 1] == '}')
-						{
-							request.ContentType = "application/json;charset=UTF-8";
-						}
-						else
-						{
-							request.ContentType = "application/x-www-form-urlencoded";
-						}
-
-						byte[] buffer = Encoding.UTF8.GetBytes(data);
-						request.ContentLength = buffer.Length;
-						using (Stream stream = await request.GetRequestStreamAsync())
-						{
-							await stream.WriteAsync(buffer, 0, buffer.Length);
-						}
-
-					}
-					else
-					{
-						request.ContentLength = 0;
-					}
-				}
-				else
-				{
-					request.Method = "GET";
-					request.ContentType = "text/html; charset=utf-8";
-				}
+				request.Method = "GET";
+				request.ContentType = "text/html; charset=utf-8";
 
 				response = await request.GetResponseAsync() as HttpWebResponse;
 

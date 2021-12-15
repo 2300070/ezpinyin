@@ -52,8 +52,14 @@ namespace EzPinyin.Spider
 			await BaiduSpider.LoadSamplesAsync();
 
 			Console.WriteLine();
-			Console.WriteLine("下载样本数据。");
+			Console.WriteLine("下载并生成样本数据。");
 			await App.ForEachAsync(App.Samples.Values, LexiconSpider.DownloadSampleAsync);
+
+			BaiduSpider.SaveCache();
+			ZDictSpider.SaveCache();
+			CDictSpider.SaveCache();
+			HDictSpider.SaveCache();
+
 			Console.WriteLine("完成。");
 		}
 

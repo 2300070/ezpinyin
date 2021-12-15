@@ -1,5 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace EzPinyin.Spider
 {
@@ -12,17 +11,13 @@ namespace EzPinyin.Spider
 		/// 读音的拼音
 		/// </summary>
 		public string Text { get; set; }
+		public bool Verified { get; set; }
 
 		/// <summary>
 		/// 该读音的常见用法数量。
 		/// </summary>
 		[JsonIgnore]
 		public int ReferenceCount { get; set; }
-
-		/// <summary>
-		/// 经过评估后所得到的此拼音的有效分数。
-		/// </summary>
-		public double Evaluation => this.ReferenceCount * 0.5D + this.WeightedType + this.ExtraEvaluation;
 
 		/// <summary>
 		/// 经过评估后得出的该读音的最大词性加权。
@@ -34,9 +29,15 @@ namespace EzPinyin.Spider
 		/// </summary>
 		public double ExtraEvaluation { get; set; }
 
+		public PinyinInfo()
+		{
+
+		}
+
 		public PinyinInfo(string text)
 		{
 			this.Text = text;
+			this.Verified = App.StandardPinyinList.Contains(text);
 		}
 
 		/// <summary>
@@ -56,13 +57,14 @@ namespace EzPinyin.Spider
 		public void AddType(CharacterType type, int meaningCount)
 		{
 			this.ExtraEvaluation += meaningCount;
-			double value = (int) type * 0.01D;
+			double value = (int)type * 0.01D;
 			if (value > this.WeightedType)
 			{
 				this.WeightedType = value;
 			}
 
 		}
+		
 		/// <summary>
 		/// 添加此此读音的引用计数。
 		/// </summary>
@@ -70,6 +72,26 @@ namespace EzPinyin.Spider
 		public void AddReferenceCount(int count)
 		{
 			this.ReferenceCount += count;
+		}
+
+		/// <summary>
+		/// 评估当前拼音的分数。
+		/// </summary>
+		/// <param name="info">字符信息。</param>
+		public double Evaluate(CharacterInfo info)
+		{
+			double result = this.ReferenceCount * 0.5D + this.WeightedType + this.ExtraEvaluation;
+			double extra = 0D;
+			if (this.Text == info.ZPinyin)
+			{
+				extra += 0.5D;
+			}
+			if (this.Text == info.YPinyin)
+			{
+				extra += 0.5D;
+			}
+
+			return result + extra;
 		}
 	}
 }

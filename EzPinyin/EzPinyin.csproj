@@ -9,7 +9,6 @@
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SignAssembly>false</SignAssembly>
-    <PackageLicenseUrl>https://gitee.com/s230/ezpinyin/raw/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://gitee.com/s230/ezpinyin/</PackageProjectUrl>
     <RepositoryUrl>https://gitee.com/s230/ezpinyin/</RepositoryUrl>
     <AssemblyVersion>1.0.0.1</AssemblyVersion>
@@ -20,6 +19,10 @@
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageLicenseExpression> BSD-3-Clause</PackageLicenseExpression>
     <UserSecretsId>18b9bc79-5bc3-48c8-9367-de42dedcb0c0</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

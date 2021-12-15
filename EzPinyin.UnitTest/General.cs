@@ -11,6 +11,7 @@ namespace EzPinyin.UnitTest
 		public void GetPinyin()
 		{
 			Console.WriteLine(PinyinHelper.GetPinyin("一"));
+			Console.WriteLine(PinyinHelper.GetPinyin("兙"));
 			Console.WriteLine(PinyinHelper.GetPinyin("1234567"));
 			Console.WriteLine(PinyinHelper.GetPinyin("一鿕"));
 			Console.WriteLine(PinyinHelper.GetPinyin("成都"));
