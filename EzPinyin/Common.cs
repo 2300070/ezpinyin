@@ -1087,8 +1087,6 @@ namespace EzPinyin
 					{
 						Common.AddLexiconNode(dictionary, index, traditional, pinyin ?? Common.LoadPinyinArray(traditional, length));
 					}
-
-
 				}
 			}
 		}
@@ -1128,7 +1126,9 @@ namespace EzPinyin
 
 			for (int i = 0; i < length; i++)
 			{
-				pinyin[i] = Common.Utf16NodeTemplates[(stream.ReadByte() << 8) | stream.ReadByte()].Pinyin;
+				int byte1 = stream.ReadByte();
+				int byte2 = stream.ReadByte();
+				pinyin[i] = Common.Utf16NodeTemplates[(byte1 << 8) | byte2].Pinyin;
 			}
 
 			return pinyin;

@@ -10,7 +10,7 @@ namespace EzPinyin.UnitTest
 		[TestMethod]
 		public void GetPinyin()
 		{
-			Console.WriteLine(PinyinHelper.GetPinyin("一"));
+			Console.WriteLine(PinyinHelper.GetInitial("国家安防"));
 			Console.WriteLine(PinyinHelper.GetPinyin("兙"));
 			Console.WriteLine(PinyinHelper.GetPinyin("1234567"));
 			Console.WriteLine(PinyinHelper.GetPinyin("一鿕"));

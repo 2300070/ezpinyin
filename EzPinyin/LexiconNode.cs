@@ -25,7 +25,7 @@ namespace EzPinyin
 			this.firstNode = firstNode;
 			this.Resize(0);
 		}
-		
+
 		/// <summary>
 		/// 为当前节点注册一个词汇与拼音。
 		/// </summary>
@@ -98,7 +98,7 @@ namespace EzPinyin
 		/// <param name="buffer">目标缓存区。</param>
 		/// <param name="index">分隔符。</param>
 		public override unsafe void WritePinyin(ref char* cursor, char* final, string[] buffer, ref int index) => this.nodes[*(cursor + 1) % this.size].WritePinyin(ref cursor, final, buffer, ref index);
-		
+
 		private void Resize(int index)
 		{
 			/**
@@ -109,7 +109,7 @@ namespace EzPinyin
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
 			PinyinNode[] old = this.nodes;
-			
+
 			/**
 			 * 使用新的容积大小对节点数组进行初始化
 			 */
@@ -202,7 +202,7 @@ namespace EzPinyin
 				prev = compare;
 				compare = compare.Next as LexiconLinkNode;
 			}
-			
+
 			prev.Next = node;
 			node.Next = this.firstNode;
 			this.count++;

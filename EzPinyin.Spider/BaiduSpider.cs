@@ -28,7 +28,7 @@ namespace EzPinyin.Spider
 			}
 			if (File.Exists(HANYU_CACHE))
 			{
-				hanyuCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(BAIKE_CACHE));
+				hanyuCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(HANYU_CACHE));
 			}
 		}
 
@@ -107,7 +107,7 @@ namespace EzPinyin.Spider
 			try
 			{
 				string html = await App.DownloadAsync($"https://baike.baidu.com/item/{Uri.EscapeDataString(word)}");
-				if (html == null)
+				if (html == null || !html.Contains($"<h1>{word}</h1>"))
 				{
 					return;
 				}

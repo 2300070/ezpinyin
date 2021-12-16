@@ -175,7 +175,7 @@ namespace EzPinyin.Spider
 					return;
 				}
 				this.bPinyin = value;
-				
+
 				this.preferedPinyin = this.EvaluatePreferedPinyin() ?? this.preferedPinyin;
 				this.preferedPinyinArray = null;
 			}
@@ -294,7 +294,7 @@ namespace EzPinyin.Spider
 		/// </remarks>
 		[JsonIgnore]
 		public bool? CanRemoveByHead { get; set; }
-		
+
 		/// <summary>
 		/// 指示这个词汇是否因为尾部部分可以组成词汇而被移除。
 		/// </summary>
@@ -517,7 +517,15 @@ namespace EzPinyin.Spider
 			{
 				if (string.CompareOrdinal(otherName, index, name, 0, otherName.Length - index) == 0)
 				{
-					return true;
+					for (int i = 0, max = otherName.Length - index; i < max; i++, index++)
+					{
+						if (otherPinyin[index] != pinyin[i])
+						{
+							return true;
+						}
+
+					}
+					return false;
 				}
 				index = otherName.IndexOf(name[0], index + 1);
 			}
