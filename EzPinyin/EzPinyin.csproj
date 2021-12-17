@@ -14,7 +14,7 @@
     <AssemblyVersion>1.0.0.1</AssemblyVersion>
     <FileVersion>1.0.0.1</FileVersion>
     <PackageIconUrl>https://gitee.com/s230/ezpinyin/raw/master/icon.png</PackageIconUrl>
-    <Version>1.0.4</Version>
+    <Version>1.0.0004</Version>
     <PackageTags>pinyin;拼音;ezpinyin</PackageTags>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageLicenseExpression> BSD-3-Clause</PackageLicenseExpression>
