@@ -862,7 +862,7 @@ namespace EzPinyin.Spider
 		private static async Task LoadLexiconFromTemplateAsync()
 		{
 			Console.WriteLine();
-			Console.Write("从template.txt加载自定义字典...");
+			Console.Write("从template.txt加载自定义词典...");
 
 			string file = "template.txt";
 			if (!File.Exists(file))
