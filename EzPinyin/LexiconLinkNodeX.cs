@@ -55,7 +55,7 @@ namespace EzPinyin
 				{
 					buffer.Append(separator).Append(pinyin[length]).Append(separator);
 				}
-				else if (length > 2)
+				else if (length > 1)
 				{
 					buffer.Append(separator).Append(pinyin[length]);
 				}
