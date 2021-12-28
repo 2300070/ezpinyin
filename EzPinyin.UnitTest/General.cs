@@ -27,6 +27,15 @@ namespace EzPinyin.UnitTest
 		}
 
 		[TestMethod]
+		public void Override()
+		{
+			PinyinHelper.Override("𫜴", "lun");
+			PinyinHelper.Override("𫜴吧", new[]{"lun", "biu"});
+			Console.WriteLine(PinyinHelper.GetPinyin("𫜴"));
+			Console.WriteLine(PinyinHelper.GetPinyin("𫜴吧"));
+		}
+
+		[TestMethod]
 		public void GetFirstLetter()
 		{
 			Console.WriteLine(PinyinHelper.GetInitial("一"));

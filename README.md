@@ -51,6 +51,10 @@ PinyinHelper.GetInitial("㐀㲒䔤䶵𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤�
 
 //检索拼音信息的数组
 PinyinHelper.GetArray(text);//string[]
+
+//重写拼音
+PinyinHelper.Override("𫜴", "lun");//拼音是我胡诌的
+PinyinHelper.Override("𫜴吧", new[]{"lun", "biu"});//拼音是我胡诌的
 ```
 
 

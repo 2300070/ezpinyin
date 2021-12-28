@@ -201,5 +201,57 @@ namespace EzPinyin
 
 		}
 
+		/// <summary>
+		/// 重写指定字符的拼音。
+		/// </summary>
+		/// <param name="character">字符信息。</param>
+		/// <param name="pinyin">拼音信息。</param>
+		public static void Override(string character, string pinyin)
+		{
+			if (string.IsNullOrEmpty(character))
+			{
+				throw new ArgumentNullException(nameof(character));
+			}
+			if (string.IsNullOrEmpty(pinyin))
+			{
+				throw new ArgumentNullException(nameof(pinyin));
+			}
+
+			if (character.Length > 1)
+			{
+				if (character.Length > 2 || !char.IsHighSurrogate(character[0]) || !char.IsLowSurrogate(character[1]))
+				{
+					throw new ArgumentException(nameof(character));
+				}
+			}
+
+			if (!Common.OverrideDictionary(character, pinyin))
+			{
+				throw new Exception($"重写‘{character}’的拼音失败，未知的原因。");
+			}
+		}
+		
+
+		/// <summary>
+		/// 重写指定词汇的拼音。
+		/// </summary>
+		/// <param name="character">词汇信息。</param>
+		/// <param name="pinyin">拼音信息。</param>
+		public static void Override(string word, string[] pinyin)
+		{
+			if (string.IsNullOrEmpty(word))
+			{
+				throw new ArgumentNullException(nameof(word));
+			}
+			if (pinyin == null || pinyin.Length < 2)
+			{
+				throw new ArgumentNullException(nameof(pinyin));
+			}
+
+			if (!Common.OverrideLexicon(word, pinyin))
+			{
+				throw new Exception($"重写‘{word}’的拼音失败，未知的原因。");
+			}
+		}
 	}
 }

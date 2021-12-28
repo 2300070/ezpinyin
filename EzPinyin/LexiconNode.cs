@@ -56,7 +56,7 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="word">需要注册的词汇。</param>
 		/// <param name="pinyin">该词汇对应的拼音。</param>
-		public void Add(string word, string pinyin) => this.Add(word, pinyin.Split(Common.SeparatorCharacters, StringSplitOptions.RemoveEmptyEntries));
+		public void Add(string word, string pinyin) => this.Add(word, pinyin.Split(Common.CharacterSeparator, StringSplitOptions.RemoveEmptyEntries));
 
 		/// <summary>
 		/// 获得拼音字符串。
@@ -170,6 +170,9 @@ namespace EzPinyin
 			{
 				if (compare.Word == node.Word)
 				{
+					/**
+					 * 替换现有的节点。
+					 */
 					if (prev == null)
 					{
 						node.Next = compare.Next;
@@ -185,6 +188,9 @@ namespace EzPinyin
 
 				if (node.Length > compare.Length)
 				{
+					/**
+					 * 插入新的节点。
+					 */
 					if (prev == null)
 					{
 						node.Next = target;

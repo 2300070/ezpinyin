@@ -13,10 +13,6 @@ namespace EzPinyin
 		internal LexiconLinkNodeX(string word, string[] pinyin)
 			: base(word)
 		{
-			/**
-			 * 能够运行到此处，说明word要么长度超过4，要么至少含有一个UTF-32字符，无论何种情况，说明word至少有3个字符，提取后两个字符，验证时先进行一次比较，可以减少循环的次数。
-			 */
-
 			this.pinyin = pinyin;
 		}
 
@@ -59,7 +55,7 @@ namespace EzPinyin
 				{
 					buffer.Append(separator).Append(pinyin[length]).Append(separator);
 				}
-				else
+				else if (length > 2)
 				{
 					buffer.Append(separator).Append(pinyin[length]);
 				}
