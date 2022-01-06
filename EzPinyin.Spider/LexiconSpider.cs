@@ -32,7 +32,7 @@ namespace EzPinyin.Spider
 			}
 
 			result = new WordInfo(word);
-			return App.Samples.GetOrAdd(word, result);
+			return result.IsValid ? App.Samples.GetOrAdd(result.ActualWord, result) : result;
 		}
 
 		/// <summary>
@@ -51,6 +51,14 @@ namespace EzPinyin.Spider
 
 			await BaiduSpider.LoadSamplesAsync();
 
+			foreach (string name in App.GeographicalNames)
+			{
+				if (!App.Samples.ContainsKey(name))
+				{
+					App.Samples.TryAdd(name, new WordInfo(name));
+				}
+			}
+
 			Console.WriteLine();
 			Console.WriteLine("下载并生成样本数据。");
 			await App.ForEachAsync(App.Samples.Values, LexiconSpider.DownloadSampleAsync);
@@ -59,6 +67,7 @@ namespace EzPinyin.Spider
 			ZDictSpider.SaveCache();
 			CDictSpider.SaveCache();
 			HDictSpider.SaveCache();
+			BingSpider.SaveCache();
 
 			Console.WriteLine("完成。");
 		}
@@ -109,6 +118,20 @@ namespace EzPinyin.Spider
 			if (sample.PreferedPinyin == null && sample.HPinyin == null)
 			{
 				await HDictSpider.LoadSampleAsync(sample);
+			}
+
+			/**
+			 * 从必应词典下载样本信息
+			 */
+			if (sample.PreferedPinyin == null && sample.BingPinyin == null)
+			{
+				await BingSpider.LoadSampleAsync(sample);
+			}
+
+			if (sample.PreferedPinyin == null && sample.ZPinyin == null)
+			{
+				sample.EnableZSource(sample.ActualWord);
+				await ZDictSpider.LoadSampleAsync(sample);
 			}
 
 			/**

@@ -14,12 +14,15 @@ namespace EzPinyin.Spider
 	{
 		private const string CACHE_FILE = "../cache/hdict.json";
 		private static readonly ConcurrentDictionary<string, string> cache = new ConcurrentDictionary<string, string>();
-		
+		private static readonly bool latestCache;
+		private static bool saveCache;
+
 		static HDictSpider()
 		{
 			if (File.Exists(CACHE_FILE))
 			{
 				cache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(CACHE_FILE));
+				latestCache = File.GetLastWriteTime(CACHE_FILE).Date == DateTime.Today;
 			}
 		}
 
@@ -50,11 +53,16 @@ namespace EzPinyin.Spider
 			{
 				return;
 			}
-			string word = sample.Word;
+			string word = sample.ActualWord;
 			if (cache.TryGetValue(word, out string pinyin))
 			{
-				sample.HPinyin = pinyin;
-				return;
+				if (pinyin != null || latestCache)
+				{
+					sample.HPinyin = pinyin;
+					return;
+				}
+
+				cache.TryRemove(word, out pinyin);
 			}
 
 			try
@@ -72,7 +80,11 @@ namespace EzPinyin.Spider
 			}
 			finally
 			{
-				cache[word] = sample.HPinyin;
+				if (sample.HPinyin != null)
+				{
+					cache[word] = sample.HPinyin;
+					saveCache = true;
+				}
 			}
 		}
 		
@@ -81,7 +93,10 @@ namespace EzPinyin.Spider
 		/// </summary>
 		public static void SaveCache()
 		{
-			File.WriteAllText(CACHE_FILE, JsonConvert.SerializeObject(cache));
+			if (saveCache)
+			{
+				File.WriteAllText(CACHE_FILE, JsonConvert.SerializeObject(cache));
+			}
 		}
 
 		private static async Task LoadSamplesAsync(string character)
@@ -110,6 +125,10 @@ namespace EzPinyin.Spider
 					}
 
 					WordInfo info = LexiconSpider.FindOrRegister(word);
+					if (!info.IsValid)
+					{
+						continue;
+					}
 					string text = match.Groups[4].Value;
 					if (text.Length > 0)
 					{

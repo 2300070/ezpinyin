@@ -53,6 +53,7 @@ namespace EzPinyin.Spider
 
 			string html, pinyin;
 			bool validate = false;
+			bool verified = false;
 			Match match;
 
 			/**
@@ -62,7 +63,7 @@ namespace EzPinyin.Spider
 			html = await App.DownloadAsync($"http://yedict.com/zscontent.asp?uni={key}", validate);
 			if (html != null)
 			{
-				bool verified = Regex.IsMatch(html, @"参考资料：《([^《》]|《[^《》]+》)+》|中华字海：第\d+页第\d+字", RegexOptions.Compiled);
+				verified = Regex.IsMatch(html, @"参考资料：《([^《》]|《[^《》]+》)+》|中华字海：第\d+页第\d+字", RegexOptions.Compiled);
 				result.Verified = verified;
 
 				if (html.Contains("非unicode临时码"))
@@ -197,7 +198,7 @@ namespace EzPinyin.Spider
 				}
 			}
 
-			if (!validate)
+			if (!validate && verified)
 			{
 				validate = true;
 				goto TRY_AGAIN;

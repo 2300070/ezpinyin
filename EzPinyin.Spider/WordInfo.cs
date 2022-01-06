@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -24,6 +25,7 @@ namespace EzPinyin.Spider
 		private bool? hasRarePinyin;
 		private string actualWord;
 		private string bkPinyin;
+		private string bingPinyin;
 
 		/// <summary>
 		/// 词汇的文本信息。
@@ -263,6 +265,26 @@ namespace EzPinyin.Spider
 		}
 
 		/// <summary>
+		/// 必应词典提供的拼音。
+		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+		public string BingPinyin
+		{
+			get => this.bingPinyin;
+			set
+			{
+				if (String.IsNullOrEmpty(value))
+				{
+					return;
+				}
+				this.bingPinyin = value;
+
+				this.preferedPinyin = this.EvaluatePreferedPinyin() ?? this.preferedPinyin;
+				this.preferedPinyinArray = null;
+			}
+		}
+
+		/// <summary>
 		/// 此词汇是否有专业可信来源。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
@@ -325,7 +347,7 @@ namespace EzPinyin.Spider
 		/// <param name="word">相关词汇。</param>
 		public WordInfo(string word)
 		{
-			if (Regex.IsMatch(word, @"[^\u4E00-\u9FFF\W]") || word.Length < 2)
+			if (Regex.IsMatch(word, @"[^\u3400-\u4DBF\u4E00-\u9FFF]") || word.Length < 2)
 			{
 				this.IsValid = false;
 			}
@@ -349,9 +371,9 @@ namespace EzPinyin.Spider
 		/// <summary>
 		/// 指示相关的词汇在汉典有详细资料。
 		/// </summary>
-		public void EnableZSource()
+		public void EnableZSource(string word = null)
 		{
-			this.ZSource = $"https://www.zdic.net/hans/{Uri.EscapeDataString(this.Word)}";
+			this.ZSource = $"https://www.zdic.net/hans/{Uri.EscapeDataString(word ?? this.Word)}";
 		}
 
 		/// <summary>
@@ -418,14 +440,14 @@ namespace EzPinyin.Spider
 
 			for (int i = 0; i < index; i++)
 			{
-				if (App.Dictionary[new string(otherName[i], 1)].PreferedPinyin != array[i])
+				if (App.Dictionary.TryGetValue(new string(otherName[i], 1), out CharacterInfo info) && info.PreferedPinyin != array[i])
 				{
 					return false;
 				}
 			}
 			for (int i = index + name.Length; i < otherName.Length; i++)
 			{
-				if (App.Dictionary[new string(otherName[i], 1)].PreferedPinyin != array[i])
+				if (App.Dictionary.TryGetValue(new string(otherName[i], 1), out CharacterInfo info) && info.PreferedPinyin != array[i])
 				{
 					return false;
 				}
@@ -513,11 +535,12 @@ namespace EzPinyin.Spider
 				return false;
 			}
 			int index = otherName.IndexOf(name[0]);
-			while (index > 0)
+			while (index > -1)
 			{
-				if (string.CompareOrdinal(otherName, index, name, 0, otherName.Length - index) == 0)
+				int length = Math.Min(otherName.Length - index, name.Length);
+				if (string.CompareOrdinal(otherName, index, name, 0, length) == 0)
 				{
-					for (int i = 0, max = otherName.Length - index; i < max; i++, index++)
+					for (int i = 0; i < length; i++, index++)
 					{
 						if (otherPinyin[index] != pinyin[i])
 						{
@@ -738,6 +761,11 @@ namespace EzPinyin.Spider
 			}
 
 			if (p == this.BPinyin)
+			{
+				score += 6D;
+			}
+
+			if (p == this.BingPinyin)
 			{
 				score += 6D;
 			}

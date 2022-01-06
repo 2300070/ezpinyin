@@ -77,9 +77,10 @@ PinyinHelper.Override("𫜴吧", new[]{"lun", "biu"});//拼音是我胡诌的
 - 叶典 http://yedict.com
 
 此外，此项目也吸收了下列站点的部分内容作为参考，一并致谢。
-- 百度百科 http://baike.baidu.com
 - 词典网 http://cd.cidianwang.com
 - 汉文学网 http://cd.hwxnet.com
+- 必应词典 https://cn.bing.com/dict/
+- 百度百科 http://baike.baidu.com
 
 #### 支持
 

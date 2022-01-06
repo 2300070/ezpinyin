@@ -38,11 +38,21 @@ namespace EzPinyin.Spider
 			this.characters.Add(ch);
 		}
 
+		public async Task LoadSimplifiedAsync()
+		{
+			Console.WriteLine();
+			Console.WriteLine($"开始加载{this.name}的繁简数据。");
+
+			await App.ForEachAsync(this.characters, async ch =>
+			{
+				await ZDictSpider.LoadSimplifiedAsync(ch);
+			});
+		}
+
 		public async Task DownloadAsync()
 		{
 			Console.WriteLine();
 			Console.WriteLine($"开始抓取{this.name}数据。");
-
 			await App.ForEachAsync(this.characters, async ch =>
 			{
 				CharacterInfo info = await ZDictSpider.LoadCharacterAsync(ch);
@@ -55,14 +65,7 @@ namespace EzPinyin.Spider
 						string pinyin = info.PreferedPinyin;
 						if (pinyin != null)
 						{
-							List<string> list = App.PinyinList;
-							lock (list)
-							{
-								if (!list.Contains(pinyin))
-								{
-									list.Add(pinyin);
-								}
-							}
+							App.EnsurePinyin(pinyin);
 						}
 					}
 				}
@@ -93,9 +96,9 @@ namespace EzPinyin.Spider
 					{
 						pinyin = info.PreferedPinyin;
 					}
-					int value = App.PinyinList.IndexOf(pinyin) + 1;
-					fs.WriteByte((byte)((value & 0xFF00) >> 8));
-					fs.WriteByte((byte)(value & 0xFF));
+					int index = App.PinyinList.IndexOf(pinyin) + 1;
+					fs.WriteByte((byte)((index & 0xFF00) >> 8));
+					fs.WriteByte((byte)(index & 0xFF));
 				}
 				fs.SetLength(fs.Position);
 				await fs.FlushAsync();

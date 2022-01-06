@@ -16,12 +16,15 @@ namespace EzPinyin.Spider
 	{
 		private const string CACHE_FILE = "../cache/cdict.json";
 		private static readonly ConcurrentDictionary<string, string> cache = new ConcurrentDictionary<string, string>();
+		private static readonly bool latestCache;
+		private static bool saveCache;
 		
 		static CDictSpider()
 		{
 			if (File.Exists(CACHE_FILE))
 			{
 				cache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(CACHE_FILE));
+				latestCache = File.GetLastWriteTime(CACHE_FILE).Date == DateTime.Today;
 			}
 		}
 
@@ -65,11 +68,16 @@ namespace EzPinyin.Spider
 			{
 				return;
 			}
-			string word = sample.Word;
+			string word = sample.ActualWord;
 			if (cache.TryGetValue(word, out string pinyin))
 			{
-				sample.CPinyin = pinyin;
-				return;
+				if (pinyin != null || latestCache)
+				{
+					sample.CPinyin = pinyin;
+					return;
+				}
+
+				cache.TryRemove(word, out pinyin);
 			}
 
 			try
@@ -93,7 +101,11 @@ namespace EzPinyin.Spider
 			}
 			finally
 			{
-				cache[word] = sample.CPinyin;
+				if (sample.CPinyin != null)
+				{
+					cache[word] = sample.CPinyin;
+					saveCache = true;
+				}
 			}
 		}
 		
@@ -102,7 +114,10 @@ namespace EzPinyin.Spider
 		/// </summary>
 		public static void SaveCache()
 		{
-			File.WriteAllText(CACHE_FILE, JsonConvert.SerializeObject(cache));
+			if (saveCache)
+			{
+				File.WriteAllText(CACHE_FILE, JsonConvert.SerializeObject(cache));
+			}
 		}
 
 		private static async Task LoadSamplesByKeyAsync(string key)
@@ -126,7 +141,11 @@ namespace EzPinyin.Spider
 					string text = WebUtility.HtmlDecode(match.Groups[1].Value);
 					if (text == key)
 					{
-						LexiconSpider.FindOrRegister(text).CPinyin = App.ParseWordPinyin(text, match.Groups[2].Value);
+						WordInfo word = LexiconSpider.FindOrRegister(text);
+						if (word.IsValid)
+						{
+							word.CPinyin = App.ParseWordPinyin(text, match.Groups[2].Value);
+						}
 					}
 
 					return;
@@ -144,7 +163,10 @@ namespace EzPinyin.Spider
 						}
 
 						WordInfo word = LexiconSpider.FindOrRegister(text);
-						word.CPinyin = App.ParseWordPinyin(text, match.Groups[3].Value);
+						if (word.IsValid)
+						{
+							word.CPinyin = App.ParseWordPinyin(text, match.Groups[3].Value);
+						}
 					}
 				}
 				page++;
@@ -170,7 +192,11 @@ namespace EzPinyin.Spider
 					{
 						string url = match.Groups[1].Value.Trim();
 						string text = match.Groups[2].Value.Trim();
-						LexiconSpider.FindOrRegister(text).EnableCSource($"https://www.cidianwang.com/{url}");
+						WordInfo word = LexiconSpider.FindOrRegister(text);
+						if (word.IsValid)
+						{
+							word.EnableCSource($"https://www.cidianwang.com/{url}");
+						}
 					}
 				}
 				page++;

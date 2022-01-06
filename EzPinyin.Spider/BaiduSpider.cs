@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -19,16 +18,22 @@ namespace EzPinyin.Spider
 		private const string HANYU_CACHE = "../cache/baidu_hanyu.json";
 		private static readonly ConcurrentDictionary<string, string> baikeCache = new ConcurrentDictionary<string, string>();
 		private static readonly ConcurrentDictionary<string, string> hanyuCache = new ConcurrentDictionary<string, string>();
+		private static readonly bool latestBaikeCache;
+		private static readonly bool latestHanyuCache;
+		private static bool saveBaikeCache;
+		private static bool saveHanyuCache;
 
 		static BaiduSpider()
 		{
 			if (File.Exists(BAIKE_CACHE))
 			{
 				baikeCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(BAIKE_CACHE));
+				latestBaikeCache = File.GetLastWriteTime(BAIKE_CACHE).Date == DateTime.Today;
 			}
 			if (File.Exists(HANYU_CACHE))
 			{
 				hanyuCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(HANYU_CACHE));
+				latestHanyuCache = File.GetLastWriteTime(HANYU_CACHE).Date == DateTime.Today;
 			}
 		}
 
@@ -50,16 +55,25 @@ namespace EzPinyin.Spider
 		/// <param name="sample">样本信息</param>
 		public static async Task LoadSampleAsync(WordInfo sample)
 		{
+			if (!sample.IsValid)
+			{
+				return;
+			}
 			if (sample.BPinyin != null)
 			{
 				return;
 			}
 
-			string word = sample.Word;
+			string word = sample.ActualWord;
 			if (hanyuCache.TryGetValue(word, out string pinyin))
 			{
-				sample.BPinyin = pinyin;
-				return;
+				if (pinyin != null || latestHanyuCache)
+				{
+					sample.BPinyin = pinyin;
+					return;
+				}
+
+				hanyuCache.TryRemove(word, out pinyin);
 			}
 
 			try
@@ -86,28 +100,46 @@ namespace EzPinyin.Spider
 			}
 			finally
 			{
-				hanyuCache[word] = sample.BPinyin;
+				if (sample.BPinyin != null)
+				{
+					hanyuCache[word] = sample.BPinyin;
+					saveHanyuCache = true;
+				}
 			}
 		}
 
-		
+
 		/// <summary>
 		/// 以异步方式从百度百科加载指定样本的信息。
 		/// </summary>
 		/// <param name="sample">样本信息</param>
 		public static async Task LoadSampleFromBaikeAsync(WordInfo sample)
 		{
-			string word = sample.Word;
+			if (!sample.IsValid)
+			{
+				return;
+			}
+
+			if (sample.BKPinyin != null)
+			{
+				return;
+			}
+			string word = sample.ActualWord;
 			if (baikeCache.TryGetValue(word, out string pinyin))
 			{
-				sample.BKPinyin = pinyin;
-				return;
+				if (pinyin != null || latestBaikeCache)
+				{
+					sample.BKPinyin = pinyin;
+					return;
+				}
+
+				baikeCache.TryRemove(word, out pinyin);
 			}
 
 			try
 			{
 				string html = await App.DownloadAsync($"https://baike.baidu.com/item/{Uri.EscapeDataString(word)}");
-				if (html == null || !html.Contains($"<h1>{word}</h1>"))
+				if (html == null || !html.Contains($">{word}</h"))
 				{
 					return;
 				}
@@ -115,33 +147,65 @@ namespace EzPinyin.Spider
 				Match match = Regex.Match(html, @"[拼发][^<]*音</dt>\s*<dd[^>]+>\s*([^<]+?)\s*</dd>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					sample.BKPinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
-					return;
+					pinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
+					if (pinyin != null)
+					{
+						sample.BKPinyin = pinyin;
+						return;
+					}
 				}
 				match = Regex.Match(html, @"content=.[^\n]*[拼发读]音[是为]?([^,，。、\n<>]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					sample.BKPinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
-					return;
+					pinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
+					if (pinyin != null)
+					{
+						sample.BKPinyin = pinyin;
+						return;
+					}
 				}
 				match = Regex.Match(html, @"<span[^>]+pinyin[^>]+>\s*<span[^>]+>\[([^\]]+)\]</span>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					sample.BKPinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
-					return;
+					pinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
+					if (pinyin != null)
+					{
+						sample.BKPinyin = pinyin;
+						return;
+					}
 				}
-				match = Regex.Match(html, @"<div[^>]+para[^>]+>[^\n]*[拼发读]音[是为]?([^,，。、\n<>]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+				match = Regex.Match(html, $@"<div[^>]+para[^>]+>[^\n<>]*<b>{word}</b>([^\n<]*[拼发读]音[是为]?)?([^,，。、\n<>\u3400-\uffff]+)", RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					sample.BKPinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
-					return;
+					pinyin = App.ParseWordPinyin(word, match.Groups[2].Value);
+					if (pinyin != null)
+					{
+						sample.BKPinyin = pinyin;
+						return;
+					}
+				}
+				match = Regex.Match(html, $@"<div[^>]+para[^>]+>[^\n<>]*{word}[：\:]([^\n<]*[拼发读]音[是为]?)?([^,，。、\n<>\u3400-\uffff]+)", RegexOptions.IgnoreCase);
+				if (match.Success)
+				{
+					pinyin = App.ParseWordPinyin(word, match.Groups[2].Value);
+					if (pinyin != null)
+					{
+						sample.BKPinyin = pinyin;
+						return;
+					}
+				}
+				MatchCollection matches = Regex.Matches(html, @"<div[^>]+para[^>]+>[^\n<>]*[拼发读]音[是为]?([^,，。、\n<>\u3400-\uffff]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+				if (matches.Count == 1)
+				{
+					sample.BKPinyin = App.ParseWordPinyin(word, matches[0].Groups[1].Value);
 				}
 			}
 			finally
 			{
-				lock (baikeCache)
+				if (sample.BKPinyin != null)
 				{
 					baikeCache[word] = sample.BKPinyin;
+					saveBaikeCache = true;
 				}
 			}
 		}
@@ -151,8 +215,14 @@ namespace EzPinyin.Spider
 		/// </summary>
 		public static void SaveCache()
 		{
-			File.WriteAllText(BAIKE_CACHE, JsonConvert.SerializeObject(baikeCache));
-			File.WriteAllText(HANYU_CACHE, JsonConvert.SerializeObject(hanyuCache));
+			if (saveBaikeCache)
+			{
+				File.WriteAllText(BAIKE_CACHE, JsonConvert.SerializeObject(baikeCache));
+			}
+			if (saveHanyuCache)
+			{
+				File.WriteAllText(HANYU_CACHE, JsonConvert.SerializeObject(hanyuCache));
+			}
 		}
 
 		internal static async Task LoadSamplesAsync(string character)
@@ -222,27 +292,27 @@ namespace EzPinyin.Spider
 											string type = match.Groups[1].Value;
 											if (type.Contains("名"))
 											{
-												score += (int) CharacterType.Noun;
+												score += (int)CharacterType.Noun;
 											}
 											if (type.Contains("形"))
 											{
-												score += (int) CharacterType.Adjective;
+												score += (int)CharacterType.Adjective;
 											}
 											if (type.Contains("副"))
 											{
-												score += (int) CharacterType.Adverb;
+												score += (int)CharacterType.Adverb;
 											}
 											if (type.Contains("助"))
 											{
-												score += (int) CharacterType.Auxiliary;
+												score += (int)CharacterType.Auxiliary;
 											}
 											if (type.Contains("叹"))
 											{
-												score += (int) CharacterType.Interjections;
+												score += (int)CharacterType.Interjections;
 											}
 											if (type.Contains("动"))
 											{
-												score += (int) CharacterType.Verb;
+												score += (int)CharacterType.Verb;
 											}
 										}
 									}
@@ -286,7 +356,7 @@ namespace EzPinyin.Spider
 								word.Verified = true;
 							}
 						}
-						
+
 						word.BPinyin = App.ParseWordPinyin(name, pinyin);
 
 					}

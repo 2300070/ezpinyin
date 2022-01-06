@@ -26,7 +26,7 @@ namespace EzPinyin.Spider
 		/// 下载数据时的并发数量
 		/// </summary>
 #if DEBUG
-		public const int CONCURRENCY_LEVEL = 0x08;
+		public const int CONCURRENCY_LEVEL = 0x010;
 #else
 		public const int CONCURRENCY_LEVEL = 0x10;
 #endif
@@ -65,7 +65,7 @@ namespace EzPinyin.Spider
 				if (!Directory.Exists("../cache"))
 				{
 					Console.Write("这是一个用来更新字典与词典的程序，第一次启动时需要从不同网站下载10-100G的数据，由此会耗费大量的时间与带宽，如果你仍然决定继续，请按下'y'键");
-					
+
 					ConsoleKeyInfo key = await App.ReadKeyAsync();
 					Console.WriteLine();
 					if (key.Key != ConsoleKey.Y)
@@ -212,89 +212,100 @@ namespace EzPinyin.Spider
 
 		private static async Task WriteLexiconAsync(string group, bool flag)
 		{
-			await App.WaitAsync(Task.Run(delegate
+			try
 			{
-				/**
-				 * 定义4个数据流分别存储长度为2,3,4的词汇，定义一个额外的数据流存储长度超过4的词汇。
-				 */
-				MemoryStream[] streams = { new MemoryStream(), new MemoryStream(), new MemoryStream() };
-				MemoryStream x = new MemoryStream();
-				byte[] buffer = new byte[2];
-				foreach (KeyValuePair<string, WordInfo> item in App.Lexicon)
+				await App.WaitAsync(Task.Run(delegate
 				{
-					WordInfo info = item.Value;
-
-					if (info.HasRarePinyin != flag)
-					{
-						continue;
-					}
-
 					/**
-					 * 写入词汇
+					 * 定义4个数据流分别存储长度为2,3,4的词汇，定义一个额外的数据流存储长度超过4的词汇。
 					 */
-					string word = info.ActualWord;
-					MemoryStream ms;
+					MemoryStream[] streams = { new MemoryStream(), new MemoryStream(), new MemoryStream() };
+					MemoryStream x = new MemoryStream();
+					byte[] buffer = new byte[2];
+					foreach (KeyValuePair<string, WordInfo> item in App.Lexicon)
+					{
+						WordInfo info = item.Value;
 
-					if (word.Length < 5)
-					{
-						ms = streams[word.Length - 2];
-					}
-					else
-					{
-						ms = x;
-						ms.WriteByte((byte)word.Length);
-					}
-
-					foreach (char ch in word)
-					{
-						buffer[0] = (byte)((ch >> 8) & 0xFF);
-						buffer[1] = (byte)(ch & 0xFF);
-						ms.Write(buffer, 0, 2);
-					}
-
-					if (flag)
-					{
-						/**
-						 * 写入拼音
-						 */
-						string[] array = info.PreferedPinyinArray;
-						foreach (string pinyin in array)
+						if (info.HasRarePinyin != flag)
 						{
-							int index = App.PinyinList.IndexOf(pinyin) + 1;
-							if (index == -1)
+							continue;
+						}
+
+						/**
+						 * 写入词汇
+						 */
+						string word = info.ActualWord;
+						MemoryStream ms;
+
+						if (word.Length < 5)
+						{
+							try
 							{
-								App.PinyinList.Add(pinyin);
-								index = App.PinyinList.Count;
+								ms = streams[word.Length - 2];
 							}
-							buffer[0] = (byte)((index >> 8) & 0xFF);
-							buffer[1] = (byte)(index & 0xFF);
+							catch (Exception e)
+							{
+								Console.WriteLine(e);
+								throw;
+							}
+						}
+						else
+						{
+							ms = x;
+							ms.WriteByte((byte)word.Length);
+						}
+
+						foreach (char ch in word)
+						{
+							buffer[0] = (byte)((ch >> 8) & 0xFF);
+							buffer[1] = (byte)(ch & 0xFF);
 							ms.Write(buffer, 0, 2);
 						}
-					}
-				}
 
-				Console.WriteLine("保存词典。");
-				for (int i = 0; i < streams.Length; i++)
-				{
-					MemoryStream stream = streams[i];
-					using (FileStream fs = new FileStream($"lex_{group}_{i + 2}", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+						if (flag)
+						{
+							/**
+							 * 写入拼音
+							 */
+							string[] array = info.PreferedPinyinArray;
+							foreach (string pinyin in array)
+							{
+								int index = App.PinyinList.IndexOf(pinyin) + 1;
+								buffer[0] = (byte)((index >> 8) & 0xFF);
+								buffer[1] = (byte)(index & 0xFF);
+								ms.Write(buffer, 0, 2);
+							}
+						}
+					}
+
+					Console.WriteLine("保存词典。");
+					for (int i = 0; i < streams.Length; i++)
 					{
-						stream.Seek(0, SeekOrigin.Begin);
-						stream.CopyTo(fs);
+						MemoryStream stream = streams[i];
+						using (FileStream fs = new FileStream($"lex_{group}_{i + 2}", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+						{
+							stream.Seek(0, SeekOrigin.Begin);
+							stream.CopyTo(fs);
+							fs.SetLength(fs.Position);
+							stream.Dispose();
+							fs.Flush();
+						}
+					}
+					using (FileStream fs = new FileStream($"lex_{group}_x", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+					{
+						x.Seek(0, SeekOrigin.Begin);
+						x.CopyTo(fs);
 						fs.SetLength(fs.Position);
-						stream.Dispose();
+						x.Dispose();
 						fs.Flush();
 					}
-				}
-				using (FileStream fs = new FileStream($"lex_{group}_x", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
-				{
-					x.Seek(0, SeekOrigin.Begin);
-					x.CopyTo(fs);
-					fs.SetLength(fs.Position);
-					x.Dispose();
-					fs.Flush();
-				}
-			}));
+				}));
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				throw;
+			}
 		}
 
 		private static async Task CorrectLexiconAsync()
@@ -326,17 +337,6 @@ namespace EzPinyin.Spider
 
 					word.GPinyin = string.Join(" ", explain);
 				});
-
-				foreach (string name in App.GeographicalNames)
-				{
-					if (!App.Samples.TryGetValue(name, out WordInfo word))
-					{
-						word = new WordInfo(name);
-						word = App.Samples.GetOrAdd(name, word);
-					}
-
-					word.ComputePreferedPinyin();
-				}
 			}));
 
 
@@ -348,23 +348,23 @@ namespace EzPinyin.Spider
 			Console.WriteLine();
 			Console.Write("校正字典...");
 
-			await App.WaitAsync(Task.Run((Func<Task>)async delegate
+			await App.WaitAsync(Task.Run(async delegate
 			{
 
-				await App.ForEachAsync(App.Dictionary.Values, (Action<CharacterInfo>)(ch =>
+				await App.ForEachAsync(App.Dictionary.Values, ch =>
 				{
-					ch.Correct();
-				}));
+					ch.Reset();
+				});
 
-				await App.ForEachAsync(App.Samples.Values, word =>
+				await App.ForEachAsync(App.Samples.Values, sample =>
 				{
-					string[] array = word.PreferedPinyinArray;
+					string[] array = sample.PreferedPinyinArray;
 					if (array == null)
 					{
 						return;
 					}
 
-					string name = word.Word;
+					string name = sample.Word;
 					for (int i = 0; i < name.Length; i++)
 					{
 						if (App.Dictionary.TryGetValue(new string(name[i], 1), out CharacterInfo info))
@@ -372,6 +372,11 @@ namespace EzPinyin.Spider
 							info.FindOrRegister(array[i]).AddReferenceCount(1);
 						}
 					}
+				});
+
+				await App.ForEachAsync(App.Samples.Values, sample =>
+				{
+					sample.ComputePreferedPinyin();
 				});
 			}));
 
@@ -389,14 +394,14 @@ namespace EzPinyin.Spider
 
 			Console.WriteLine();
 			Console.Write("筛选样本...");
-			List<WordInfo> samples = new List<WordInfo>();
+			List<WordInfo> items = new List<WordInfo>();
 			await App.WaitAsync(Task.Run(async delegate
 			{
 				foreach (KeyValuePair<string, WordInfo> item in App.Samples)
 				{
 					string key = item.Key;
 					WordInfo sample = item.Value;
-					if (sample.PreferedPinyin == null || sample.IsDisabled)
+					if (sample.PreferedPinyin == null || sample.IsDisabled || !sample.IsValid)
 					{
 						continue;
 					}
@@ -425,11 +430,11 @@ namespace EzPinyin.Spider
 								continue;
 							}
 						}
-						samples.Add(sample);
+						items.Add(sample);
 					}
 				}
 			}));
-			Console.WriteLine($"剩余{samples.Count}样本。");
+			Console.WriteLine($"剩余{items.Count}样本。");
 			Console.WriteLine();
 
 			/**
@@ -440,7 +445,7 @@ namespace EzPinyin.Spider
 
 			await App.WaitAsync(Task.Run(delegate
 			{
-				foreach (WordInfo sample in samples)
+				foreach (WordInfo sample in items)
 				{
 					if (sample.HasRarePinyin)
 					{
@@ -453,7 +458,7 @@ namespace EzPinyin.Spider
 			Console.WriteLine($"剩余{list.Count}样本。");
 
 			Console.WriteLine();
-			samples.Clear();
+			items.Clear();
 			Console.Write("收缩样本...");
 
 			await App.WaitAsync(Task.Run(delegate
@@ -527,12 +532,12 @@ namespace EzPinyin.Spider
 						}
 					} while (index2 > -1);
 
-					samples.Add(sample);
+					items.Add(sample);
 					index++;
 				}
 			}));
 
-			Console.WriteLine($"剩余{samples.Count}样本。");
+			Console.WriteLine($"剩余{items.Count}样本。");
 
 			Console.WriteLine();
 			Console.Write("收集交叉样本...");
@@ -540,35 +545,43 @@ namespace EzPinyin.Spider
 			 * 收集重叠词汇样本。
 			 */
 			HashSet<WordInfo> intersections = new HashSet<WordInfo>();
-			
+
 			await App.WaitAsync(Task.Run(delegate
 			{
-				foreach (WordInfo item in App.Samples.Values)
+				foreach (WordInfo sample in App.Samples.Values)
 				{
-					if (item.IsSelected || item.IsDisabled || item.PreferedPinyin == null || item.ActualWord.Length > 4)
+					if (sample.ActualWord == "支行")
+					{
+
+					}
+					if (sample.IsSelected || sample.IsDisabled || sample.PreferedPinyin == null || !sample.IsValid)
 					{
 						continue;
 					}
 
-					if (item.PreferedPinyin == null)
+					if (sample.PreferedPinyin == null)
 					{
 						continue;
 					}
 
-					if (item.CheckCanRemoveByTail())
+					if (sample.CheckCanRemoveByTail())
 					{
 						continue;
 					}
 
-					foreach (WordInfo sample in samples)
+					foreach (WordInfo item in items)
 					{
-						if (sample.CheckIntersect(item))
+						//if (item.ActualWord == "朝阳" && sample.ActualWord == "朝阳区")
+						//{
+
+						//}
+						if (item.CheckIntersect(sample))
 						{
-							item.IsIntersection = true;
-							item.IsSelected = true;
+							sample.IsIntersection = true;
+							sample.IsSelected = true;
 							lock (intersections)
 							{
-								intersections.Add(item);
+								intersections.Add(sample);
 							}
 
 							break;
@@ -581,7 +594,7 @@ namespace EzPinyin.Spider
 
 			Console.WriteLine($"共收集{intersections.Count}交叉样本。");
 
-			foreach (WordInfo word in samples)
+			foreach (WordInfo word in items)
 			{
 				App.Lexicon.TryAdd(word.ActualWord, word);
 			}
@@ -686,6 +699,7 @@ namespace EzPinyin.Spider
 				{
 					if (word.PPinyin != null)
 					{
+						//在分析义项时可能已经根据工具书对某些字进行了解释，此处不能覆写已有的专业解释。
 						return;
 					}
 					string[] explain = word.Explain;
@@ -697,7 +711,7 @@ namespace EzPinyin.Spider
 					for (int i = 0; i < explain.Length; i++)
 					{
 						string item = explain[i];
-						if (item == null)//在分析义项时可能已经根据工具书对某些字进行了解释，此处不能覆写已有的专业解释。
+						if (item == null)
 						{
 							if (!App.Dictionary.TryGetValue(new string(name[i], 1), out CharacterInfo info) || info.Count > 1)
 							{
@@ -740,6 +754,10 @@ namespace EzPinyin.Spider
 			App.PinyinList.AddRange(App.StandardPinyinList);
 
 			Console.WriteLine("抓取字符信息。");
+
+			await basic.LoadSimplifiedAsync();
+
+			await extA.LoadSimplifiedAsync();
 
 			await basic.DownloadAsync();
 
@@ -950,10 +968,8 @@ namespace EzPinyin.Spider
 					info.CustomPinyin = pinyin;
 
 				}
-				if (!App.PinyinList.Contains(pinyin))
-				{
-					App.PinyinList.Add(pinyin);
-				}
+
+				App.EnsurePinyin(pinyin);
 			});
 		}
 

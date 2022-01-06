@@ -177,19 +177,15 @@ namespace EzPinyin.Spider
 		}
 
 		/// <summary>
-		/// 校正并重设拼音信息，以便重新统计。
+		/// 充值拼音信息，以便重新统计。
 		/// </summary>
-		public void Correct()
+		public void Reset()
 		{
 			if (this.ZPinyin == this.YPinyin && this.YPinyin != null)
 			{
 				this.Verified = true;
 			}
-			this.prefered = this.ComputePrefered();
-			foreach (PinyinInfo pinyin in this.pinyinList)
-			{
-				pinyin.ReferenceCount = 0;
-			}
+			this.prefered = null;
 		}
 
 		/// <summary>

@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="BaiduSpider.cs" />
+    <Compile Include="BingSpider.cs" />
     <Compile Include="CDictSpider.cs" />
     <Compile Include="DictionarySpider.cs" />
     <Compile Include="HDictSpider.cs" />

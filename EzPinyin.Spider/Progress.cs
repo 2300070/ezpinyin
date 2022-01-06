@@ -72,9 +72,10 @@ namespace EzPinyin.Spider
 				Console.Write(new string('▆', num / 2));
 			}
 			Console.Write(label);
-			if (prevLeft > Console.CursorLeft)
+			num = prevLeft - Console.CursorLeft;
+			if (num > 0)
 			{
-				Console.Write(new string(' ', prevLeft - Console.CursorLeft));
+				Console.Write(new string(' ', num));
 			}
 			Console.CursorVisible = false;
 		}

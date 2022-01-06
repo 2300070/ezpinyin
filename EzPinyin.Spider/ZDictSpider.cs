@@ -18,12 +18,56 @@ namespace EzPinyin.Spider
 		private static readonly char[] trimCharacters = new[] { ' ', '	', '\r', '\n', ' ', '̀' };
 		private static readonly ConcurrentDictionary<string, CharacterInfo> dictionary = new ConcurrentDictionary<string, CharacterInfo>();
 		private static readonly ConcurrentDictionary<string, string> cache = new ConcurrentDictionary<string, string>();
+		private static readonly bool latestCache;
+		private static bool saveCache;
 
 		static ZDictSpider()
 		{
 			if (File.Exists(CACHE_FILE))
 			{
 				cache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(CACHE_FILE));
+				latestCache = File.GetLastWriteTime(CACHE_FILE).Date == DateTime.Today;
+			}
+		}
+
+		/// <summary>
+		/// 抓取指定字符的拼音信息。
+		/// </summary>
+		/// <param name="character">需要抓取的字符。</param>
+		/// <returns>该字符的拼音信息，如果没有抓取到拼音，则返回null。</returns>
+		public static async Task LoadSimplifiedAsync(string character)
+		{
+			string html = await App.DownloadAsync($"https://www.zdic.net/hans/{Uri.EscapeUriString(character)}");
+
+			Match match;
+			string header = null;
+			if (character.Length == 1)
+			{
+				/**
+				 * 分析繁体字，异体字信息
+				 */
+				header = ZDictSpider.ExtractHeader(html);
+				if (header.Length > 0)
+				{
+					/**
+					 * 分析简体字、繁体字
+					 */
+					match = Regex.Match(header, @"<p><span[^>]+z_ts2.>(\w)体</span>\s*<a[^>]+href=./hans/([^'])'[^>]+>((?!</a>).)+</a>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+					if (match.Success)
+					{
+						char ch = match.Groups[2].Value[0];
+						switch (match.Groups[1].Value)
+						{
+							case "简":
+							case "簡":
+								App.Simplified[character[0]] = ch;
+								break;
+							default:
+								App.Simplified[ch] = character[0];
+								break;
+						}
+					}
+				}
 			}
 		}
 
@@ -172,8 +216,8 @@ namespace EzPinyin.Spider
 			{
 				return;
 			}
-			string word = sample.Word;
-			if (cache.TryGetValue(word, out string pinyin))
+			string word = sample.ActualWord;
+			if (cache.TryGetValue(word, out string pinyin) && (pinyin != null || latestCache))
 			{
 				sample.ZPinyin = pinyin;
 				return;
@@ -194,17 +238,24 @@ namespace EzPinyin.Spider
 			}
 			finally
 			{
-				cache[word] = sample.ZPinyin;
+				if (sample.ZPinyin != null)
+				{
+					cache[word] = sample.ZPinyin;
+					saveCache = true;
+				}
 			}
-			
+
 		}
-		
+
 		/// <summary>
 		/// 保存缓存文件。
 		/// </summary>
 		public static void SaveCache()
 		{
-			File.WriteAllText(CACHE_FILE, JsonConvert.SerializeObject(cache));
+			if (saveCache)
+			{
+				File.WriteAllText(CACHE_FILE, JsonConvert.SerializeObject(cache));
+			}
 		}
 
 		private static async Task LoadSamplesAsync(string character)
@@ -240,8 +291,11 @@ namespace EzPinyin.Spider
 					}
 
 					WordInfo info = LexiconSpider.FindOrRegister(word);
-					info.EnableZSource();
-					info.ZPinyin = App.ParseWordPinyin(word, match.Groups[3].Value);
+					if (info.IsValid)
+					{
+						info.EnableZSource();
+						info.ZPinyin = App.ParseWordPinyin(word, match.Groups[3].Value);
+					}
 
 				}
 
@@ -354,34 +408,64 @@ namespace EzPinyin.Spider
 				if (collection.Count > 0)
 				{
 					type = CharacterType.Noun;
-					pinyin.AddEvaluation(App.EXTRA_EVALUATION*collection.Count);
+					pinyin.AddEvaluation(App.EXTRA_EVALUATION * collection.Count);
 				}
 
 				/**
 				 * 尝试分析义项数量。
 				 */
-				MatchCollection meanings = Regex.Matches(explain, @"<li>");
-				if (matches.Count == 0)
+
+				/**
+				 * 此处本来用正则表达式，但是不清楚用<li>.+?</li>或者<li>(((?!</li>)[^\n])+)</li>在RegexBuddy中都是正常，唯独程序中运行时总是少了最后一项，所以改成硬编码了。
+				 */
+				index = explain.IndexOf("<li>", StringComparison.Ordinal);
+				int index2;
+				if (index == -1)
 				{
-					meanings = Regex.Matches(explain, @"<ol>");
+					index = explain.IndexOf("<ol>", StringComparison.Ordinal);
+					if (index == -1)
+					{
+						continue;
+					}
+					index2 = explain.LastIndexOf("</ol>", StringComparison.Ordinal);
+				}
+				else
+				{
+					index2 = explain.LastIndexOf("</li>", StringComparison.Ordinal);
 				}
 
-				pinyin.AddType(type, meanings.Count);
+				if (index2 == -1)
+				{
+					index2 = explain.LastIndexOf("</ol>", StringComparison.Ordinal);
+				}
+
+				if (index2 == -1)
+				{
+					index2 = explain.Length;
+				}
+
+				string[] meanings = explain.Substring(index, index2 + 5 - index).Split(new[] { "</li>" }, StringSplitOptions.RemoveEmptyEntries);
+
+				pinyin.AddType(type, meanings.Length);
 
 				MatchCollection words;
-				foreach (Match meaning in meanings)
+				foreach (string meaning in meanings)
 				{
 					/**
 					 * 分析常见用法数量。
 					 */
-					words = Regex.Matches(meaning.Value, @"(?<=[：。])\s*(\w*～\w*)\s*(（[^）]{2,}）)?[。，；]", RegexOptions.Compiled);
+					words = Regex.Matches(meaning, @"[：。]([^。\s]*～[^。\s]*)", RegexOptions.Compiled);
 					foreach (Match item in words)
 					{
-						LexiconSpider.FindOrRegister(item.Groups[1].Value.Replace("～", character)).ExplainPinyin(character, pinyin.Text);
+						string text = item.Groups[1].Value.Replace("～", character);
+						if (text.Length < 6)
+						{
+							LexiconSpider.FindOrRegister(text).ExplainPinyin(character, pinyin.Text);
+						}
 					}
 
 
-					match = Regex.Match(meaning.Value, @"<li>〔([^〕]+)〕([^<]+)", RegexOptions.Compiled);
+					match = Regex.Match(meaning, @">〔([^〕]+)〕([^<]+)", RegexOptions.Compiled);
 					if (match.Success)
 					{
 						string text = match.Groups[1].Value.Replace("～", character);
@@ -395,12 +479,12 @@ namespace EzPinyin.Spider
 						}
 
 
-						/**
-						 * 如果遇到地理名词，则做特殊处理。
-						 */
 						WordInfo word = LexiconSpider.FindOrRegister(text);
-						word.ExplainPinyin(character, pinyin.Text);
-						
+						if (word.IsValid)
+						{
+							word.ExplainPinyin(character, pinyin.Text);
+						}
+
 					}
 				}
 
@@ -527,7 +611,11 @@ namespace EzPinyin.Spider
 						continue;
 					}
 
-					LexiconSpider.FindOrRegister(text).ExplainPinyin(character, pinyin.Text);
+					WordInfo word = LexiconSpider.FindOrRegister(text);
+					if (word.IsValid)
+					{
+						word.ExplainPinyin(character, pinyin.Text);
+					}
 				}
 			}
 
@@ -537,7 +625,11 @@ namespace EzPinyin.Spider
 			matches = Regex.Matches(explain, @"<span class=.crefe.><a[^>]+/hans/(\w+).>\1</a></span>", RegexOptions.Compiled);
 			foreach (Match match in matches)
 			{
-				LexiconSpider.FindOrRegister(match.Groups[1].Value).ExplainPinyin(character, pinyin.Text);
+				WordInfo word = LexiconSpider.FindOrRegister(match.Groups[1].Value);
+				if (word.IsValid)
+				{
+					word.ExplainPinyin(character, pinyin.Text);
+				}
 			}
 		}
 

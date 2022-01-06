@@ -57,7 +57,7 @@ namespace EzPinyin.Spider
 		public void AddType(CharacterType type, int meaningCount)
 		{
 			this.ExtraEvaluation += meaningCount;
-			double value = (int)type * 0.01D;
+			double value = (int)type * 0.1D;
 			if (value > this.WeightedType)
 			{
 				this.WeightedType = value;
@@ -80,7 +80,7 @@ namespace EzPinyin.Spider
 		/// <param name="info">字符信息。</param>
 		public double Evaluate(CharacterInfo info)
 		{
-			double result = this.ReferenceCount * 0.5D + this.WeightedType + this.ExtraEvaluation;
+			double result = this.ReferenceCount * this.WeightedType + this.WeightedType + this.ExtraEvaluation;
 			double extra = 0D;
 			if (this.Text == info.ZPinyin)
 			{
