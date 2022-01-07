@@ -61,7 +61,7 @@ namespace EzPinyin.Spider
 		/// <summary>
 		/// 拼音列表。
 		/// </summary>
-		public static List<string> PinyinList { get; } = new List<string>();
+		public static List<string> PinyinList { get; } = new List<string>(App.StandardPinyinList);
 
 		/// <summary>
 		/// 记录了所有字及其拼音的集合。
@@ -95,14 +95,6 @@ namespace EzPinyin.Spider
 
 		static App()
 		{
-			if (File.Exists("pinyin.txt"))
-			{
-				App.PinyinList.AddRange(File.ReadAllLines("pinyin.txt"));
-			}
-			else
-			{
-				App.PinyinList.AddRange(App.StandardPinyinList);
-			}
 		}
 
 		/// <summary>
@@ -185,8 +177,7 @@ namespace EzPinyin.Spider
 			await App.WaitAsync(Task.Run(delegate
 			{
 				App.Dictionary = JsonConvert.DeserializeObject<ConcurrentDictionary<string, CharacterInfo>>(File.ReadAllText(App.DICTIONARY_CACHE_FILE));
-
-				List<string> list = App.PinyinList;
+				
 				foreach (KeyValuePair<string, CharacterInfo> item in App.Dictionary)
 				{
 					char ch = item.Key[0];
@@ -201,11 +192,12 @@ namespace EzPinyin.Spider
 					{
 						App.Simplified[info.Traditional] = ch;
 					}
-					for (int i = 0; i < info.Count; i++)
+
+					if (info.Verified)
 					{
-						if (!list.Contains(info[i]))
+						for (int i = 0; i < info.Count; i++)
 						{
-							list.Add(info[i]);
+							App.EnsurePinyin(info[i]);
 						}
 					}
 				}
@@ -703,6 +695,10 @@ namespace EzPinyin.Spider
 		/// <param name="pinyin">拼音字符串。</param>
 		public static void EnsurePinyin(string pinyin)
 		{
+			if (string.IsNullOrEmpty(pinyin))
+			{
+				return;
+			}
 			List<string> list = App.PinyinList;
 			lock (list)
 			{

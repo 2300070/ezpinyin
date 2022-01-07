@@ -374,10 +374,6 @@ namespace EzPinyin.Spider
 					}
 				});
 
-				await App.ForEachAsync(App.Samples.Values, sample =>
-				{
-					sample.ComputePreferedPinyin();
-				});
 			}));
 
 			Console.WriteLine("完成。");
@@ -386,6 +382,14 @@ namespace EzPinyin.Spider
 		private static async Task GenerateLexiconAsync()
 		{
 			App.IsDataReloaded = true;
+
+			/**
+			 * 添加行政区划
+			 */
+			foreach (string name in App.GeographicalNames)
+			{
+				App.Samples.GetOrAdd(name, new WordInfo(name)).EnsurePreferedPinyin();
+			}
 
 			#region 分析并生成词典数据
 			/**
@@ -550,10 +554,10 @@ namespace EzPinyin.Spider
 			{
 				foreach (WordInfo sample in App.Samples.Values)
 				{
-					if (sample.ActualWord == "支行")
-					{
+					//if (sample.ActualWord == "支行")
+					//{
 
-					}
+					//}
 					if (sample.IsSelected || sample.IsDisabled || sample.PreferedPinyin == null || !sample.IsValid)
 					{
 						continue;
@@ -926,7 +930,6 @@ namespace EzPinyin.Spider
 					info.CustomPinyin = pinyin;
 				}
 
-				info.ComputePreferedPinyin();
 				info.IsDisabled = disabled;
 			});
 		}

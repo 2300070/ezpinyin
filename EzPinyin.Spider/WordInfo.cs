@@ -660,9 +660,9 @@ namespace EzPinyin.Spider
 		}
 
 		/// <summary>
-		/// 计算一个最佳拼音
+		/// 确保当前词汇拥有最佳拼音
 		/// </summary>
-		public void ComputePreferedPinyin()
+		public void EnsurePreferedPinyin()
 		{
 			if (this.PreferedPinyin != null)
 			{
@@ -675,6 +675,10 @@ namespace EzPinyin.Spider
 				if (App.Dictionary.TryGetValue(new string(ch, 1), out CharacterInfo character))
 				{
 					blocks.Add(character.PreferedPinyin);
+				}
+				else
+				{
+					return;
 				}
 			}
 			this.SpecifiedPinyin = string.Join(" ", blocks);

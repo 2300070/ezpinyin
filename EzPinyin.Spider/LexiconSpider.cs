@@ -51,14 +51,6 @@ namespace EzPinyin.Spider
 
 			await BaiduSpider.LoadSamplesAsync();
 
-			foreach (string name in App.GeographicalNames)
-			{
-				if (!App.Samples.ContainsKey(name))
-				{
-					App.Samples.TryAdd(name, new WordInfo(name));
-				}
-			}
-
 			Console.WriteLine();
 			Console.WriteLine("下载并生成样本数据。");
 			await App.ForEachAsync(App.Samples.Values, LexiconSpider.DownloadSampleAsync);

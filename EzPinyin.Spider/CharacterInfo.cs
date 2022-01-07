@@ -78,7 +78,7 @@ namespace EzPinyin.Spider
 		/// <summary>
 		/// 此字符是否有专业可信来源。
 		/// </summary>
-		[JsonIgnore]
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
 		public bool Verified { get; set; }
 
 		/// <summary>
