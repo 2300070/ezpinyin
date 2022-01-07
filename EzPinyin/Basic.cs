@@ -24,7 +24,7 @@ namespace EzPinyin
 
 				foreach (string file in files)
 				{
-					Common.LoadCustomFile(file);
+					Common.LoadFrom(file);
 #if DEBUG
 					Console.WriteLine($"Load custom file: {file}.");
 #endif

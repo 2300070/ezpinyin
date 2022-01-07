@@ -29,8 +29,8 @@ namespace EzPinyin.UnitTest
 		[TestMethod]
 		public void TestRuntimeOverride()
 		{
-			PinyinHelper.Override("𫜴", "lun");
-			PinyinHelper.Override("𫜴吧", new[]{"lun", "biu"});
+			PinyinHelper.Define("𫜴", "lun");
+			PinyinHelper.Define("𫜴吧", new[]{"lun", "biu"});
 			Console.WriteLine(PinyinHelper.GetPinyin("𫜴"));
 			Console.WriteLine(PinyinHelper.GetPinyin("𫜴吧"));
 		}

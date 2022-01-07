@@ -10,7 +10,7 @@
 - 小巧简洁，包含字典、词典内容在内，整个文件大小约1M左右，无其他项目依赖，不会造成项目臃肿。
 - 涵盖Unicode平面的基本汉字及补充汉字、汉字扩展区A的全部汉字，涵盖扩展区B、C、D、E、F、G的大部分汉字，总计约覆盖八万汉字、四十万词汇。
 - 更好的字典，通过重新对字典中的多音字进行分析优化，使得此项目对于名称的处理具备更好的效果。
-- 支持自定义设置汉字或者词汇的拼音，从而达到修正或者补充的效果。
+- 支持在运行时重定义拼音之外，还可以用文件的方式自定义汉字或者词汇的拼音，从而达到修正或者补充的效果。
 - 支持简体与繁体。
 
 #### 性能
@@ -26,7 +26,7 @@
 
 #### 兼容性
 
-.Net Framework 2.0及以上 或者.Net Core 2.0及以上。
+.Net Framework 2.0及以上 或者.Net Standard 2.0及以上。
 
 #### 线程安全性
 
@@ -52,9 +52,15 @@ PinyinHelper.GetInitial("㐀㲒䔤䶵𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤�
 //检索拼音信息的数组
 PinyinHelper.GetArray(text);//string[]
 
-//重写拼音
-PinyinHelper.Override("𫜴", "lun");//拼音是我胡诌的
-PinyinHelper.Override("𫜴吧", new[]{"lun", "biu"});//拼音是我胡诌的
+//自定义拼音信息
+PinyinHelper.Define("𫜴", "lun");//拼音是我胡诌的
+PinyinHelper.Define("𫜴吧", new[]{"lun", "biu"});//拼音是我胡诌的
+
+//加载自定义的拼音配置文件
+PinyinHelper.LoadFrom("custom_file.txt");//文件内容格式请参考自定义配置章节。
+
+//跳过文件名称，直接加载自定义配置文件的内容
+PinyinHelper.Load("𫜴 liu\n𫜴吧 lun biu");//文件内容格式请参考自定义配置章节。
 ```
 
 

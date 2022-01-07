@@ -585,7 +585,7 @@ namespace EzPinyin
 			return succ;
 		}
 
-		internal static void LoadCustomFile(string file)
+		internal static void LoadFrom(string file)
 		{
 			/**
 			 * 从指定的文件加载自定义的拼音定义，并且更新到对应的字典中。
@@ -593,72 +593,79 @@ namespace EzPinyin
 
 			using (StreamReader sr = new StreamReader(file, Encoding.UTF8, true))
 			{
-				int row = 0;
+				Common.LoadFrom(sr);
+			}
+		}
+
+		internal static void LoadFrom(TextReader reader)
+		{
+			int row = 0;
+
+			/**
+			 * 循环读取每一行并且进行解析
+			 */
+			while (reader.Peek() > -1)
+			{
+				/**
+				 * 检查该行是否是空白
+				 */
+				string line = reader.ReadLine();
+				if (string.IsNullOrEmpty(line))
+				{
+					continue;
+				}
+
+				row++;
 
 				/**
-				 * 循环读取每一行并且进行解析
+				 * 检查该行是否有注释
 				 */
-				while (!sr.EndOfStream)
+				string content = line.Trim();
+				int index = content.IndexOf('#');
+				if (index == 0)
 				{
-					/**
-					 * 检查该行是否是空白
-					 */
-					string line = sr.ReadLine();
-					if (string.IsNullOrEmpty(line))
+					continue;
+				}
+
+				content = content.Substring(0, index).Trim();
+
+				/**
+				 * 检查该行是否是单字
+				 */
+				index = content.IndexOfAny(CharacterSeparator);
+				if (index < 1)
+				{
+					if (Check.IsIdeEnvironment)
 					{
-						continue;
+						throw new Exception($"检测到第{row}行自定义字典错误：'{line}'的格式不正确。");
 					}
 
-					row++;
+					continue;
+				}
 
-					/**
-					 * 检查该行是否有注释
-					 */
-					string content = line.Trim();
-					int index = content.IndexOf('#');
-					if (index == 0)
-					{
-						continue;
-					}
-					content = content.Substring(0, index).Trim();
+				string caption = content.Substring(0, index);
+				string pinyin = content.Substring(index + 1).Trim(CharacterSeparator);
 
-					/**
-					 * 检查该行是否是单字
-					 */
-					index = content.IndexOfAny(CharacterSeparator);
-					if (index < 1)
+				/**
+				 * 如果区块的长度为2，说明是定义字典。
+				 */
+				if (caption.Length == 1 || caption.Length == 2 && char.IsHighSurrogate(caption[0]) && char.IsLowSurrogate(caption[1]))
+				{
+					if (!Common.OverrideDictionary(caption, Common.FixPinyin(pinyin)))
 					{
 						if (Check.IsIdeEnvironment)
 						{
-							throw new Exception($"检测到第{row}行自定义字典错误：'{line}'的格式不正确。");
-						}
-
-						continue;
-					}
-
-					string caption = content.Substring(0, index);
-					string pinyin = content.Substring(index + 1).Trim(CharacterSeparator);
-					/**
-					 * 如果区块的长度为2，说明是定义字典。
-					 */
-					if (caption.Length == 1 || caption.Length == 2 && char.IsHighSurrogate(caption[0]) && char.IsLowSurrogate(caption[1]))
-					{
-						if (!Common.OverrideDictionary(caption, Common.FixPinyin(pinyin)))
-						{
-							if (Check.IsIdeEnvironment)
-							{
-								throw new FormatException($"无法将第{row}行自定义项添加到字典：'{line}'。");
-							}
+							throw new FormatException($"无法将第{row}行自定义项添加到字典：'{line}'。");
 						}
 					}
-					else
+				}
+				else
+				{
+					if (!Common.OverrideLexicon(caption, Common.FixPinyin(pinyin).Split(CharacterSeparator, StringSplitOptions.RemoveEmptyEntries)))
 					{
-						if (!Common.OverrideLexicon(caption, Common.FixPinyin(pinyin).Split(CharacterSeparator, StringSplitOptions.RemoveEmptyEntries)))
+						if (Check.IsIdeEnvironment)
 						{
-							if (Check.IsIdeEnvironment)
-							{
-								throw new FormatException($"无法将第{row}行自定义项添加到词典：'{line}'。");
-							}
+							throw new FormatException($"无法将第{row}行自定义项添加到词典：'{line}'。");
 						}
 					}
 				}

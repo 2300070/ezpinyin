@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 
 namespace EzPinyin
@@ -202,11 +203,51 @@ namespace EzPinyin
 		}
 
 		/// <summary>
-		/// 重写指定字符的拼音。
+		/// 从指定的文件加载自定义的拼音配置信息。
+		/// </summary>
+		/// <param name="file">配置文件的路径。</param>
+		public static void LoadFrom(string file)
+		{
+			if (string.IsNullOrEmpty(file))
+			{
+				throw new ArgumentNullException(nameof(file));
+			}
+
+			if (!File.Exists(file))
+			{
+				throw new FileNotFoundException(file);
+			}
+
+			using (StreamReader sr = new StreamReader(file, Encoding.UTF8, true))
+			{
+				Common.LoadFrom(sr);
+			}
+		}
+
+		/// <summary>
+		/// 加载指定的拼音配置内容。
+		/// </summary>
+		/// <param name="configuration">配置内容。</param>
+		public static void Load(string configuration)
+		{
+			if (string.IsNullOrEmpty(configuration))
+			{
+				throw new ArgumentNullException(nameof(configuration));
+			}
+			
+
+			using (StringReader sr = new StringReader(configuration))
+			{
+				Common.LoadFrom(sr);
+			}
+		}
+
+		/// <summary>
+		/// 定义指定字符的拼音。
 		/// </summary>
 		/// <param name="character">字符信息。</param>
 		/// <param name="pinyin">拼音信息。</param>
-		public static void Override(string character, string pinyin)
+		public static void Define(string character, string pinyin)
 		{
 			if (string.IsNullOrEmpty(character))
 			{
@@ -237,7 +278,10 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="character">词汇信息。</param>
 		/// <param name="pinyin">拼音信息。</param>
-		public static void Override(string word, string[] pinyin)
+		/// <remarks>
+		/// 此方法不具备线程安全性。
+		/// </remarks>
+		public static void Define(string word, string[] pinyin)
 		{
 			if (string.IsNullOrEmpty(word))
 			{
@@ -252,6 +296,27 @@ namespace EzPinyin
 			{
 				throw new Exception($"重写‘{word}’的拼音失败，未知的原因。");
 			}
+		}/// <summary>
+		/// 重写指定字符的拼音。
+		/// </summary>
+		/// <param name="character">字符信息。</param>
+		/// <param name="pinyin">拼音信息。</param>
+		[Obsolete("此方法已作废，请使用PinyinHelper.Define方法代替。", true)]
+		public static void Override(string character, string pinyin)
+		{
+			throw new NotSupportedException();
+		}
+		
+
+		/// <summary>
+		/// 重写指定词汇的拼音。
+		/// </summary>
+		/// <param name="character">词汇信息。</param>
+		/// <param name="pinyin">拼音信息。</param>
+		[Obsolete("此方法已作废，请使用PinyinHelper.Define方法代替。", true)]
+		public static void Override(string word, string[] pinyin)
+		{
+			throw new NotSupportedException();
 		}
 	}
 }
