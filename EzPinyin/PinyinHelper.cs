@@ -5,11 +5,10 @@ using System.Text;
 namespace EzPinyin
 {
 	/// <summary>
-	/// EzPinyin类库的功能入口，用来快速获得拼音或者启用词典解析拼音。
+	/// EzPinyin类库的功能入口，用来快速解析拼音、首字母及其他功能。
 	/// </summary>
 	public static unsafe class PinyinHelper
 	{
-
 		/// <summary>
 		/// 将指定的字符串转换为对应的拼音字符串。
 		/// </summary>
@@ -247,6 +246,9 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="character">字符信息。</param>
 		/// <param name="pinyin">拼音信息。</param>
+		/// <remarks>
+		/// 如果字典中已经存在输入字符的拼音信息，则该信息将被覆盖；对于重复定义的情形，以最后一次有效操作为准。
+		/// </remarks>
 		public static void Define(string character, string pinyin)
 		{
 			if (string.IsNullOrEmpty(character))
@@ -268,7 +270,7 @@ namespace EzPinyin
 
 			if (!Common.OverrideDictionary(character, pinyin))
 			{
-				throw new Exception($"重写‘{character}’的拼音失败，未知的原因。");
+				throw new Exception($"重写‘{character}’的拼音失败，当前支持的汉字为Unicode基本区及补充区、扩展区A-G，请检查字符是否属于此范围内。");
 			}
 		}
 		
@@ -279,7 +281,7 @@ namespace EzPinyin
 		/// <param name="character">词汇信息。</param>
 		/// <param name="pinyin">拼音信息。</param>
 		/// <remarks>
-		/// 此方法不具备线程安全性。
+		/// 此方法不具备线程安全性。如果词典中已经存在输入词汇的拼音信息，则该信息将被覆盖；对于重复定义的情形，以最后一次有效操作为准。
 		/// </remarks>
 		public static void Define(string word, string[] pinyin)
 		{
@@ -294,30 +296,8 @@ namespace EzPinyin
 
 			if (!Common.OverrideLexicon(word, pinyin))
 			{
-				throw new Exception($"重写‘{word}’的拼音失败，未知的原因。");
+				throw new Exception($"重写‘{word}’的拼音失败，当前支持的汉字为Unicode基本区及补充区、扩展区A-G，请检查首字符是否属于此范围内。");
 			}
-		}
-		
-		/// <summary>
-		/// 重写指定字符的拼音。
-		/// </summary>
-		/// <param name="character">字符信息。</param>
-		/// <param name="pinyin">拼音信息。</param>
-		[Obsolete("此方法已作废，请使用PinyinHelper.Define方法代替。", true)]
-		public static void Override(string character, string pinyin)
-		{
-			throw new NotSupportedException();
-		}
-		
-		/// <summary>
-		/// 重写指定词汇的拼音。
-		/// </summary>
-		/// <param name="character">词汇信息。</param>
-		/// <param name="pinyin">拼音信息。</param>
-		[Obsolete("此方法已作废，请使用PinyinHelper.Define方法代替。", true)]
-		public static void Override(string word, string[] pinyin)
-		{
-			throw new NotSupportedException();
 		}
 	}
 }

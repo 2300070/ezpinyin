@@ -967,14 +967,14 @@ namespace EzPinyin
 					/**
 					 * 首先尝试查找简体词汇在给定字典中的索引。
 					 */
-					Common.LoadLexiconItem(dictionary, head, word, pinyin);
+					Common.DefinePinyin(dictionary, head, word, pinyin);
 
 					/**
 					 * 接着尝试查找繁体词汇在给点字典中的索引。
 					 */
 					if (Common.TryParseTradional(word, out string traditional) && traditional != word)
 					{
-						Common.LoadLexiconItem(dictionary, head, traditional, pinyin);
+						Common.DefinePinyin(dictionary, head, traditional, pinyin);
 					}
 				}
 			}
@@ -1003,14 +1003,14 @@ namespace EzPinyin
 					/**
 					 * 首先尝试查找简体词汇在给定字典中的索引。
 					 */
-					Common.LoadLexiconItem(dictionary, head, word, pinyin);
+					Common.DefinePinyin(dictionary, head, word, pinyin);
 
 					/**
 					 * 接着尝试查找繁体词汇在给点字典中的索引。
 					 */
 					if (Common.TryParseTradional(word, out string traditional) && traditional != word)
 					{
-						Common.LoadLexiconItem(dictionary, head, traditional, pinyin);
+						Common.DefinePinyin(dictionary, head, traditional, pinyin);
 					}
 				}
 			}
@@ -1037,14 +1037,14 @@ namespace EzPinyin
 					/**
 					 * 首先尝试查找简体词汇在给定字典中的索引。
 					 */
-					Common.LoadLexiconItem(dictionary, head, word, null);
+					Common.DefinePinyin(dictionary, head, word, null);
 
 					/**
 					 * 接着尝试查找繁体词汇在给点字典中的索引。
 					 */
 					if (Common.TryParseTradional(word, out string traditional) && traditional != word)
 					{
-						Common.LoadLexiconItem(dictionary, head, traditional, null);
+						Common.DefinePinyin(dictionary, head, traditional, null);
 					}
 				}
 			}
@@ -1073,14 +1073,14 @@ namespace EzPinyin
 					/**
 					 * 首先尝试查找简体词汇在给定字典中的索引。
 					 */
-					Common.LoadLexiconItem(dictionary, head, word, null);
+					Common.DefinePinyin(dictionary, head, word, null);
 
 					/**
 					 * 接着尝试查找繁体词汇在给点字典中的索引。
 					 */
 					if (Common.TryParseTradional(word, out string traditional) && traditional != word)
 					{
-						Common.LoadLexiconItem(dictionary, head, traditional, null);
+						Common.DefinePinyin(dictionary, head, traditional, null);
 					}
 				}
 			}
@@ -1111,7 +1111,7 @@ namespace EzPinyin
 			return pinyin;
 		}
 
-		private static unsafe void LoadLexiconItem(PinyinNode[] dictionary, int head, string word, string[] pinyin)
+		private static unsafe void DefinePinyin(PinyinNode[] dictionary, int head, string word, string[] pinyin)
 		{
 			int index;
 			if (char.IsHighSurrogate(word[0]) && char.IsLowSurrogate(word[1]))
