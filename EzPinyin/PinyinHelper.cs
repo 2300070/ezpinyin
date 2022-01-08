@@ -296,7 +296,9 @@ namespace EzPinyin
 			{
 				throw new Exception($"重写‘{word}’的拼音失败，未知的原因。");
 			}
-		}/// <summary>
+		}
+		
+		/// <summary>
 		/// 重写指定字符的拼音。
 		/// </summary>
 		/// <param name="character">字符信息。</param>
@@ -307,7 +309,6 @@ namespace EzPinyin
 			throw new NotSupportedException();
 		}
 		
-
 		/// <summary>
 		/// 重写指定词汇的拼音。
 		/// </summary>

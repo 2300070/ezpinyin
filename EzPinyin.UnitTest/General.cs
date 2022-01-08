@@ -27,10 +27,18 @@ namespace EzPinyin.UnitTest
 		}
 
 		[TestMethod]
-		public void TestRuntimeOverride()
+		public void TestRuntimeDefine()
 		{
 			PinyinHelper.Define("𫜴", "lun");
 			PinyinHelper.Define("𫜴吧", new[]{"lun", "biu"});
+			Console.WriteLine(PinyinHelper.GetPinyin("𫜴"));
+			Console.WriteLine(PinyinHelper.GetPinyin("𫜴吧"));
+		}
+
+		[TestMethod]
+		public void TestRuntimeLoad()
+		{
+			PinyinHelper.Load("𫜴 lun\n𫜴吧 lun biu");
 			Console.WriteLine(PinyinHelper.GetPinyin("𫜴"));
 			Console.WriteLine(PinyinHelper.GetPinyin("𫜴吧"));
 		}

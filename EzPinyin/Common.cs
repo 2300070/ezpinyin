@@ -627,7 +627,10 @@ namespace EzPinyin
 					continue;
 				}
 
-				content = content.Substring(0, index).Trim();
+				if (index > 0)
+				{
+					content = content.Substring(0, index).Trim();
+				}
 
 				/**
 				 * 检查该行是否是单字
