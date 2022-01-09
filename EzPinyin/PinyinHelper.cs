@@ -204,20 +204,20 @@ namespace EzPinyin
 		/// <summary>
 		/// 从指定的文件加载自定义的拼音配置信息。
 		/// </summary>
-		/// <param name="file">配置文件的路径。</param>
-		public static void LoadFrom(string file)
+		/// <param name="path">配置文件的路径。</param>
+		public static void LoadFrom(string path)
 		{
-			if (string.IsNullOrEmpty(file))
+			if (string.IsNullOrEmpty(path))
 			{
-				throw new ArgumentNullException(nameof(file));
+				throw new ArgumentNullException(nameof(path));
 			}
 
-			if (!File.Exists(file))
+			if (!File.Exists(path))
 			{
-				throw new FileNotFoundException(file);
+				throw new FileNotFoundException(path);
 			}
 
-			using (StreamReader sr = new StreamReader(file, Encoding.UTF8, true))
+			using (StreamReader sr = new StreamReader(path, Encoding.UTF8, true))
 			{
 				Common.LoadFrom(sr);
 			}
@@ -226,23 +226,23 @@ namespace EzPinyin
 		/// <summary>
 		/// 加载指定的拼音配置内容。
 		/// </summary>
-		/// <param name="configuration">配置内容。</param>
-		public static void Load(string configuration)
+		/// <param name="content">配置内容。</param>
+		public static void Load(string content)
 		{
-			if (string.IsNullOrEmpty(configuration))
+			if (string.IsNullOrEmpty(content))
 			{
-				throw new ArgumentNullException(nameof(configuration));
+				throw new ArgumentNullException(nameof(content));
 			}
 			
 
-			using (StringReader sr = new StringReader(configuration))
+			using (StringReader sr = new StringReader(content))
 			{
 				Common.LoadFrom(sr);
 			}
 		}
 
 		/// <summary>
-		/// 定义指定字符的拼音。
+		/// 根据提供的信息添加或者重新定义指定字符的拼音。
 		/// </summary>
 		/// <param name="character">字符信息。</param>
 		/// <param name="pinyin">拼音信息。</param>
@@ -276,12 +276,13 @@ namespace EzPinyin
 		
 
 		/// <summary>
-		/// 重写指定词汇的拼音。
+		/// 根据提供的信息添加或者重新定义指定词汇的拼音。
 		/// </summary>
-		/// <param name="character">词汇信息。</param>
+		/// <param name="word">词汇信息。</param>
 		/// <param name="pinyin">拼音信息。</param>
 		/// <remarks>
-		/// 此方法不具备线程安全性。如果词典中已经存在输入词汇的拼音信息，则该信息将被覆盖；对于重复定义的情形，以最后一次有效操作为准。
+		/// <para>如果词典中已经存在输入词汇的拼音信息，则该信息将被覆盖；对于重复定义的情形，以最后一次有效操作为准。</para>
+		/// <para>此方法不具备线程安全性，多线程环境下调用时可能导致功能异常，因此建议仅在全局启动时调用。</para>
 		/// </remarks>
 		public static void Define(string word, string[] pinyin)
 		{
