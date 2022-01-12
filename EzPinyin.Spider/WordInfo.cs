@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -14,18 +13,19 @@ namespace EzPinyin.Spider
 	{
 		private string preferedPinyin;
 		private string[] preferedPinyinArray;
-		private string zPinyin;
-		private string hPinyin;
-		private string bPinyin;
-		private string cPinyin;
-		private string gPinyin;
-		private string pPinyin;
+		private string zDictPinyin;
+		private string hDictPinyin;
+		private string baiduHanyuPinyin;
+		private string cDictPinyin;
+		private string predicatePinyin;
+		private string professinalPinyin;
 		private string customPinyin;
 		private string specifiedPinyin;
 		private bool? hasRarePinyin;
 		private string actualWord;
-		private string bkPinyin;
+		private string baiduBaikePinyin;
 		private string bingPinyin;
+		private string guoxuePinyin;
 
 		/// <summary>
 		/// 词汇的文本信息。
@@ -48,19 +48,25 @@ namespace EzPinyin.Spider
 		/// 这个词汇在汉典的详细资料地址。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public string ZSource { get; set; }
+		public string ZDictSource { get; set; }
+
+		/// <summary>
+		/// 这个词汇在国学网的详细资料地址。
+		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+		public string GuoxueSource { get; set; }
 
 		/// <summary>
 		/// 这个词汇在词典网的详细资料地址。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public string CSource { get; set; }
+		public string CDictSource { get; set; }
 
 		/// <summary>
 		/// 这个词汇在汉文学网的详细资料地址。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public string HSource { get; set; }
+		public string HDictSource { get; set; }
 
 		/// <summary>
 		/// 经过处理后得到的新华字典或者现代汉语词典对这个词汇的拼音解释。
@@ -127,16 +133,36 @@ namespace EzPinyin.Spider
 		/// 汉典提供的拼音。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public string ZPinyin
+		public string ZDictPinyin
 		{
-			get => this.zPinyin;
+			get => this.zDictPinyin;
 			set
 			{
 				if (String.IsNullOrEmpty(value))
 				{
 					return;
 				}
-				this.zPinyin = value;
+				this.zDictPinyin = value;
+
+				this.preferedPinyin = this.EvaluatePreferedPinyin() ?? this.preferedPinyin;
+				this.preferedPinyinArray = null;
+			}
+		}
+
+		/// <summary>
+		/// 国学网提供的拼音。
+		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+		public string GuoxuePinyin
+		{
+			get => this.guoxuePinyin;
+			set
+			{
+				if (String.IsNullOrEmpty(value))
+				{
+					return;
+				}
+				this.guoxuePinyin = value;
 
 				this.preferedPinyin = this.EvaluatePreferedPinyin() ?? this.preferedPinyin;
 				this.preferedPinyinArray = null;
@@ -147,16 +173,16 @@ namespace EzPinyin.Spider
 		/// 汉文学网提供的拼音。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public string HPinyin
+		public string HDictPinyin
 		{
-			get => this.hPinyin;
+			get => this.hDictPinyin;
 			set
 			{
 				if (String.IsNullOrEmpty(value))
 				{
 					return;
 				}
-				this.hPinyin = value;
+				this.hDictPinyin = value;
 
 				this.preferedPinyin = this.EvaluatePreferedPinyin() ?? this.preferedPinyin;
 				this.preferedPinyinArray = null;
@@ -167,16 +193,16 @@ namespace EzPinyin.Spider
 		/// 百度汉语提供的拼音。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public string BPinyin
+		public string BaiduHanyuPinyin
 		{
-			get => this.bPinyin;
+			get => this.baiduHanyuPinyin;
 			set
 			{
 				if (String.IsNullOrEmpty(value))
 				{
 					return;
 				}
-				this.bPinyin = value;
+				this.baiduHanyuPinyin = value;
 
 				this.preferedPinyin = this.EvaluatePreferedPinyin() ?? this.preferedPinyin;
 				this.preferedPinyinArray = null;
@@ -187,9 +213,9 @@ namespace EzPinyin.Spider
 		/// 百度百科提供的拼音。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public string BKPinyin
+		public string BaiduBaikePinyin
 		{
-			get => this.bkPinyin;
+			get => this.baiduBaikePinyin;
 			set
 			{
 				if (String.IsNullOrEmpty(value))
@@ -197,7 +223,7 @@ namespace EzPinyin.Spider
 					return;
 				}
 
-				this.bkPinyin = value;
+				this.baiduBaikePinyin = value;
 
 				this.preferedPinyin = this.EvaluatePreferedPinyin() ?? this.preferedPinyin;
 				this.preferedPinyinArray = null;
@@ -208,16 +234,16 @@ namespace EzPinyin.Spider
 		/// 词典网提供的拼音。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public string CPinyin
+		public string CDictPinyin
 		{
-			get => this.cPinyin;
+			get => this.cDictPinyin;
 			set
 			{
 				if (String.IsNullOrEmpty(value))
 				{
 					return;
 				}
-				this.cPinyin = value;
+				this.cDictPinyin = value;
 
 				this.preferedPinyin = this.EvaluatePreferedPinyin() ?? this.preferedPinyin;
 				this.preferedPinyinArray = null;
@@ -228,16 +254,16 @@ namespace EzPinyin.Spider
 		/// 根据工具书解释猜测的拼音。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public string GPinyin
+		public string PredicatePinyin
 		{
-			get => this.gPinyin;
+			get => this.predicatePinyin;
 			set
 			{
 				if (String.IsNullOrEmpty(value))
 				{
 					return;
 				}
-				this.gPinyin = value;
+				this.predicatePinyin = value;
 
 				this.preferedPinyin = this.EvaluatePreferedPinyin() ?? this.preferedPinyin;
 				this.preferedPinyinArray = null;
@@ -248,16 +274,16 @@ namespace EzPinyin.Spider
 		/// 根据工具书解释计算出的拼音。
 		/// </summary>
 		[JsonIgnore]
-		public string PPinyin
+		public string ProfessionalPinyin
 		{
-			get => this.pPinyin;
+			get => this.professinalPinyin;
 			set
 			{
 				if (String.IsNullOrEmpty(value))
 				{
 					return;
 				}
-				this.pPinyin = value;
+				this.professinalPinyin = value;
 
 				this.preferedPinyin = this.EvaluatePreferedPinyin() ?? this.preferedPinyin;
 				this.preferedPinyinArray = null;
@@ -371,43 +397,49 @@ namespace EzPinyin.Spider
 		/// <summary>
 		/// 指示相关的词汇在汉典有详细资料。
 		/// </summary>
-		public void EnableZSource(string word = null)
+		public void EnableZDictSource(string word = null)
 		{
-			this.ZSource = $"https://www.zdic.net/hans/{Uri.EscapeDataString(word ?? this.Word)}";
+			this.ZDictSource = $"https://www.zdic.net/hans/{Uri.EscapeDataString(word ?? this.Word)}";
+		}
+		
+		/// <summary>
+		/// 指示相关的词汇在国学网有详细资料。
+		/// </summary>
+		public void EnableGuoxueSource(string key)
+		{
+			this.GuoxueSource = $"http://www.guoxuedashi.net/hydcd/{key}.html";
 		}
 
 		/// <summary>
 		/// 以异步方式检查此词汇是否来自可信来源。
 		/// </summary>
 		/// <returns>如果来源可信，则返回true。</returns>
-		public async Task<bool> CheckVerfiedAsync()
+		public bool CheckVerified()
 		{
 			if (this.Verified)
 			{
 				return true;
 			}
 
-			await BaiduSpider.LoadSampleFromBaikeAsync(this);
-
 
 			int score = 0;
-			if (this.BPinyin != null)
+			if (this.BaiduHanyuPinyin != null)
 			{
 				score++;
 			}
-			if (this.BKPinyin != null)
+			if (this.BaiduBaikePinyin != null)
 			{
 				score++;
 			}
-			if (this.ZSource != null)
+			if (this.ZDictSource != null)
 			{
 				score++;
 			}
-			if (this.HSource != null)
+			if (this.HDictSource != null)
 			{
 				score++;
 			}
-			if (this.CSource != null)
+			if (this.CDictSource != null)
 			{
 				score++;
 			}
@@ -619,26 +651,26 @@ namespace EzPinyin.Spider
 
 
 		/// <summary>
-		/// 启用词典网资源。
+		/// 指示相关的词汇在词典网有详细资料。
 		/// </summary>
 		/// <param name="url">资源的下载地址。</param>
-		public void EnableCSource(string url)
+		public void EnableCDictSource(string url)
 		{
-			if (this.CSource == null)
+			if (this.CDictSource == null)
 			{
-				this.CSource = url;
+				this.CDictSource = url;
 			}
 		}
 
 		/// <summary>
-		/// 启用汉文学网资源。
+		/// 指示相关的词汇在汉文学网有详细资料。
 		/// </summary>
 		/// <param name="url">资源的下载地址。</param>
-		public void EnableHSource(string url)
+		public void EnableHDictSource(string url)
 		{
-			if (this.HSource == null)
+			if (this.HDictSource == null)
 			{
-				this.HSource = url;
+				this.HDictSource = url;
 			}
 		}
 
@@ -706,47 +738,58 @@ namespace EzPinyin.Spider
 			}
 
 			this.Source = null;
-			if (this.Verified)
+			if (this.Verified && this.BaiduHanyuPinyin != null)
 			{
 				this.Source = "百度+";
-				return this.BPinyin;
+				return this.BaiduHanyuPinyin;
+			}
+			if (this.Verified && this.ZDictPinyin != null)
+			{
+				this.Source = "汉典+";
+				return this.ZDictPinyin;
 			}
 
-			if (this.PPinyin != null)
+			if (this.ProfessionalPinyin != null)
 			{
 				this.Source = "字典";
-				return this.PPinyin;
+				return this.ProfessionalPinyin;
 			}
 
 
-			if (this.EvaluatePinyin(this.ZPinyin) >= 7D)
+			if (this.EvaluatePinyin(this.ZDictPinyin) >= 7D)
 			{
 				this.Source = "汉典";
-				return this.ZPinyin;
+				return this.ZDictPinyin;
 			}
 
-			if (this.EvaluatePinyin(this.BPinyin) >= 7D)
+			if (this.EvaluatePinyin(this.BaiduHanyuPinyin) >= 7D)
 			{
 				this.Source = "百度";
-				return this.BPinyin;
+				return this.BaiduHanyuPinyin;
 			}
 
-			if (this.EvaluatePinyin(this.CPinyin) >= 7D)
+			if (this.EvaluatePinyin(this.GuoxuePinyin) >= 7D)
+			{
+				this.Source = "国学";
+				return this.GuoxuePinyin;
+			}
+
+			if (this.EvaluatePinyin(this.CDictPinyin) >= 7D)
 			{
 				this.Source = "词典";
-				return this.CPinyin;
+				return this.CDictPinyin;
 			}
 
-			if (this.EvaluatePinyin(this.HPinyin) >= 7D)
+			if (this.EvaluatePinyin(this.HDictPinyin) >= 7D)
 			{
 				this.Source = "汉学";
-				return this.HPinyin;
+				return this.HDictPinyin;
 			}
 
-			if (this.EvaluatePinyin(this.BKPinyin) >= 7D)
+			if (this.EvaluatePinyin(this.BaiduBaikePinyin) >= 7D)
 			{
 				this.Source = "百科";
-				return this.BKPinyin;
+				return this.BaiduBaikePinyin;
 			}
 
 			return null;
@@ -758,13 +801,14 @@ namespace EzPinyin.Spider
 			{
 				return 0D;
 			}
+			
 			double score = 0D;
-			if (p == this.ZPinyin)
+			if (p == this.ZDictPinyin)
 			{
 				score = 6D;
 			}
 
-			if (p == this.BPinyin)
+			if (p == this.BaiduHanyuPinyin)
 			{
 				score += 6D;
 			}
@@ -774,22 +818,27 @@ namespace EzPinyin.Spider
 				score += 6D;
 			}
 
-			if (p == this.CPinyin)
+			if (p == this.GuoxuePinyin)
+			{
+				score += 5D;
+			}
+
+			if (p == this.CDictPinyin)
 			{
 				score += 4D;
 			}
 
-			if (p == this.HPinyin)
+			if (p == this.HDictPinyin)
 			{
 				score += 3D;
 			}
 
-			if (p == this.BKPinyin)
+			if (p == this.BaiduBaikePinyin)
 			{
 				score += 4D;
 			}
 
-			if (p == this.GPinyin)
+			if (p == this.PredicatePinyin)
 			{
 				score += 2D;
 			}

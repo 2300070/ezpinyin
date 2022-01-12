@@ -51,15 +51,13 @@ namespace EzPinyin.Spider
 
 			await BaiduSpider.LoadSamplesAsync();
 
+			await GuoxueSpider.LoadSamplesAsync();
+
 			Console.WriteLine();
 			Console.WriteLine("下载并生成样本数据。");
 			await App.ForEachAsync(App.Samples.Values, LexiconSpider.DownloadSampleAsync);
 
-			BaiduSpider.SaveCache();
-			ZDictSpider.SaveCache();
-			CDictSpider.SaveCache();
-			HDictSpider.SaveCache();
-			BingSpider.SaveCache();
+			PinyinCache.SaveAll();
 
 			Console.WriteLine("完成。");
 		}
@@ -71,10 +69,14 @@ namespace EzPinyin.Spider
 		/// <returns>任务信息</returns>
 		public static async Task DownloadSampleAsync(WordInfo sample)
 		{
+			if (sample.SpecifiedPinyin != null || sample.CustomPinyin != null || sample.ProfessionalPinyin != null)
+			{
+				return;
+			}
 			/**
 			 * 如果是百度汉语从工具书中引用的，则不再进行剩余处理。
 			 */
-			if (sample.Verified && sample.BPinyin != null)
+			if (sample.Verified && sample.BaiduHanyuPinyin != null)
 			{
 				return;
 			}
@@ -82,7 +84,7 @@ namespace EzPinyin.Spider
 			/**
 			 * 从汉典下载样本信息
 			 */
-			if (sample.ZPinyin == null)
+			if (sample.ZDictPinyin == null)
 			{
 				await ZDictSpider.LoadSampleAsync(sample);
 			}
@@ -90,46 +92,92 @@ namespace EzPinyin.Spider
 			/**
 			 * 从百度下载样本信息
 			 */
-			if (sample.BPinyin == null)
+			if (sample.BaiduHanyuPinyin == null)
 			{
 				await BaiduSpider.LoadSampleAsync(sample);
+			}
+
+			if (sample.PreferedPinyin != null)
+			{
+				return;
+			}
+
+			if (sample.PreferedPinyin != null)
+			{
+				return;
+			}
+
+			/**
+			 * 从国学网下载样本信息
+			 */
+			if (sample.GuoxuePinyin == null)
+			{
+				await GuoxueSpider.LoadSampleAsync(sample);
+			}
+
+			if (sample.PreferedPinyin != null)
+			{
+				return;
 			}
 
 			/**
 			 * 从词典网下载样本信息
 			 */
-			if (sample.PreferedPinyin == null && sample.CPinyin == null)
+			if (sample.CDictPinyin == null)
 			{
 				await CDictSpider.LoadSampleAsync(sample);
+			}
+
+			if (sample.PreferedPinyin != null)
+			{
+				return;
 			}
 
 
 			/**
 			 * 从汉文学网下载样本信息
 			 */
-			if (sample.PreferedPinyin == null && sample.HPinyin == null)
+			if (sample.HDictPinyin == null)
 			{
 				await HDictSpider.LoadSampleAsync(sample);
+			}
+
+			if (sample.PreferedPinyin != null)
+			{
+				return;
 			}
 
 			/**
 			 * 从必应词典下载样本信息
 			 */
-			if (sample.PreferedPinyin == null && sample.BingPinyin == null)
+			if (sample.BingPinyin == null)
 			{
 				await BingSpider.LoadSampleAsync(sample);
 			}
 
-			if (sample.PreferedPinyin == null && sample.ZPinyin == null)
+			if (sample.PreferedPinyin != null)
 			{
-				sample.EnableZSource(sample.ActualWord);
+				return;
+			}
+
+			/**
+			 * 强制启用汉典资源，尝试下载。
+			 */
+			if (sample.ZDictPinyin == null && sample.ZDictSource == null)
+			{
+				sample.EnableZDictSource(sample.ActualWord);
 				await ZDictSpider.LoadSampleAsync(sample);
+			}
+
+			if (sample.PreferedPinyin != null)
+			{
+				return;
 			}
 
 			/**
 			 * 从百度百科下载样本信息
 			 */
-			if (sample.PreferedPinyin == null && sample.BKPinyin == null)
+			if (sample.BaiduBaikePinyin == null)
 			{
 				await BaiduSpider.LoadSampleFromBaikeAsync(sample);
 			}

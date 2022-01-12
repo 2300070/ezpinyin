@@ -10,7 +10,11 @@ namespace EzPinyin.Spider
 	/// </summary>
 	internal static class YDictSpider
 	{
-
+		/// <summary>
+		/// 以异步方式抓取指定字符的拼音信息。
+		/// </summary>
+		/// <param name="character">需要抓取的字符。</param>
+		/// <returns>该字符的拼音信息，如果没有抓取到拼音，则返回null。</returns>
 		public static async Task<CharacterInfo> LoadCharacterAsync(string character)
 		{
 
@@ -18,7 +22,7 @@ namespace EzPinyin.Spider
 
 			if (App.Dictionary.TryGetValue(character, out CharacterInfo result))
 			{
-				if (result.Verified)
+				if (result.IsStandard)
 				{
 					return result;
 				}
@@ -31,7 +35,7 @@ namespace EzPinyin.Spider
 
 			await YDictSpider.LoadByKeyAsync(character, key);
 
-			if (result != null && (result.Count > 0 || result.Verified))
+			if (result != null && (result.Count > 0 || result.IsStandard))
 			{
 				return result;
 			}
@@ -52,19 +56,23 @@ namespace EzPinyin.Spider
 
 
 			string html, pinyin;
-			bool validate = false;
-			bool verified = false;
+			DateTime? ignoreCache = null;
+			bool trusted = false;
 			Match match;
 
 			/**
 			 * 下载叶典的页面
 			 */
 			TRY_AGAIN:
-			html = await App.DownloadAsync($"http://yedict.com/zscontent.asp?uni={key}", validate);
+			html = await App.DownloadAsync(new DownloadSettings($"http://yedict.com/zscontent.asp?uni={key}") { IgnoreCache = ignoreCache });
 			if (html != null)
 			{
-				verified = Regex.IsMatch(html, @"参考资料：《([^《》]|《[^《》]+》)+》|中华字海：第\d+页第\d+字", RegexOptions.Compiled);
-				result.Verified = verified;
+				match = Regex.Match(html, @"参考资料：《([^《》壮]|《[^《》壮]+》)+》|中华字海：第\d+页第\d+字", RegexOptions.Compiled);
+				if (match.Success)
+				{
+					trusted = true;
+				}
+				result.IsTrusted = trusted;
 
 				if (html.Contains("非unicode临时码"))
 				{
@@ -102,17 +110,17 @@ namespace EzPinyin.Spider
 								 * 此处可以得到一个匹配一个或多个拼音的字符串，对于这个情形可能存在两种情况，一是这个字符是个多音字，二是这个字符本身的读音是包含多个音节的，例如兙读作shike，叶典本身没有对这些进行区分，由此需要用汉典的数据来相互印证
 								 */
 								string pinyinText = matches[i].Groups[1].Value;
-								if (result.ZPinyin != null)
+								if (result.ZDictPinyin != null)
 								{
 									pinyin = App.FixPinyin(pinyinText);
-									if (pinyin == result.ZPinyin)
+									if (pinyin == result.ZDictPinyin)
 									{
 										/**
 										 * 如果汉典的拼音与叶典的经过连接拼音是一致的，则认为此拼音是可信的，可以直接退出了。
 										 */
-										result.Verified = true;
-										result.FindOrRegister(pinyin);
-										result.YPinyin = pinyin;
+										result.IsTrusted = true;
+										result.Register(pinyin);
+										result.YDictPinyin = pinyin;
 										return result;
 									}
 								}
@@ -131,7 +139,7 @@ namespace EzPinyin.Spider
 										if (App.PinyinList.Contains(item))
 										{
 											pinyin = item;
-											info = result.FindOrRegister(item);
+											info = result.Register(item);
 										}
 										else if (back == null)
 										{
@@ -143,7 +151,7 @@ namespace EzPinyin.Spider
 								if (info == null && back != null)
 								{
 									pinyin = back;
-									info = result.FindOrRegister(back);
+									info = result.Register(back);
 								}
 							}
 						}
@@ -155,7 +163,7 @@ namespace EzPinyin.Spider
 
 					if (pinyin != null)
 					{
-						result.YPinyin = result.ComputePrefered()?.Text;
+						result.YDictPinyin = result.ComputePrefered()?.Text;
 						return result;
 					}
 
@@ -198,9 +206,9 @@ namespace EzPinyin.Spider
 				}
 			}
 
-			if (!validate && verified)
+			if (!ignoreCache.HasValue && trusted)
 			{
-				validate = true;
+				ignoreCache = DateTime.Today.AddDays(-7);
 				goto TRY_AGAIN;
 			}
 			return null;
@@ -251,7 +259,7 @@ namespace EzPinyin.Spider
 							if (variant.Count > 0)
 							{
 								target.CopyFrom(variant);
-								target.YPinyin = variant.ComputePrefered().Text;
+								target.YDictPinyin = variant.ComputePrefered().Text;
 								return true;
 							}
 						}

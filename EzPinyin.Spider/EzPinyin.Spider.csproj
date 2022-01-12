@@ -49,8 +49,11 @@
     <Compile Include="App.cs" />
     <Compile Include="BaiduSpider.cs" />
     <Compile Include="BingSpider.cs" />
+    <Compile Include="DownloadSettings.cs" />
+    <Compile Include="PinyinCache.cs" />
     <Compile Include="CDictSpider.cs" />
     <Compile Include="DictionarySpider.cs" />
+    <Compile Include="GuoxueSpider.cs" />
     <Compile Include="HDictSpider.cs" />
     <Compile Include="LexiconSpider.cs" />
     <Compile Include="PinyinInfo.cs" />

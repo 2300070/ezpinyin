@@ -14,21 +14,9 @@ namespace EzPinyin.Spider
 	/// </summary>
 	internal static class ZDictSpider
 	{
-		private const string CACHE_FILE = "../cache/zdict.json";
-		private static readonly char[] trimCharacters = new[] { ' ', '	', '\r', '\n', ' ', '̀' };
+		private static readonly PinyinCache cache = new PinyinCache("../cache/zdict.json");
 		private static readonly ConcurrentDictionary<string, CharacterInfo> dictionary = new ConcurrentDictionary<string, CharacterInfo>();
-		private static readonly ConcurrentDictionary<string, string> cache = new ConcurrentDictionary<string, string>();
-		private static readonly bool latestCache;
-		private static bool saveCache;
-
-		static ZDictSpider()
-		{
-			if (File.Exists(CACHE_FILE))
-			{
-				cache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(CACHE_FILE));
-				latestCache = File.GetLastWriteTime(CACHE_FILE).Date == DateTime.Today;
-			}
-		}
+		
 
 		/// <summary>
 		/// 抓取指定字符的拼音信息。
@@ -72,7 +60,7 @@ namespace EzPinyin.Spider
 		}
 
 		/// <summary>
-		/// 抓取指定字符的拼音信息。
+		/// 以异步方式抓取指定字符的拼音信息。
 		/// </summary>
 		/// <param name="character">需要抓取的字符。</param>
 		/// <returns>该字符的拼音信息，如果没有抓取到拼音，则返回null。</returns>
@@ -184,13 +172,13 @@ namespace EzPinyin.Spider
 				return null;
 			}
 			App.Dictionary[character] = result;
-			result.ZPinyin = result.ComputePrefered()?.Text;
-
+			result.ZDictPinyin = result.ComputePrefered()?.Text;
+			result.IsTrusted = true;
 			return result;
 		}
 
 		/// <summary>
-		/// 以异步方式抓取常用的含多音字的词语列表。
+		/// 以异步方式抓取词汇列表。
 		/// </summary>
 		/// <returns>任务信息</returns>
 		public static async Task LoadSamplesAsync()
@@ -206,20 +194,20 @@ namespace EzPinyin.Spider
 		/// <param name="sample">样本信息</param>
 		public static async Task LoadSampleAsync(WordInfo sample)
 		{
-			string url = sample.ZSource;
+			string url = sample.ZDictSource;
 			if (url == null)
 			{
 				return;
 			}
 
-			if (sample.ZPinyin != null)
+			if (sample.ZDictPinyin != null)
 			{
 				return;
 			}
 			string word = sample.ActualWord;
-			if (cache.TryGetValue(word, out string pinyin) && (pinyin != null || latestCache))
+			if (ZDictSpider.cache.TryGetValue(word, out string pinyin))
 			{
-				sample.ZPinyin = pinyin;
+				sample.ZDictPinyin = pinyin;
 				return;
 			}
 
@@ -238,25 +226,11 @@ namespace EzPinyin.Spider
 			}
 			finally
 			{
-				if (sample.ZPinyin != null)
-				{
-					cache[word] = sample.ZPinyin;
-					saveCache = true;
-				}
+				ZDictSpider.cache.Add(word, sample.ZDictPinyin);
 			}
 
 		}
 
-		/// <summary>
-		/// 保存缓存文件。
-		/// </summary>
-		public static void SaveCache()
-		{
-			if (saveCache)
-			{
-				File.WriteAllText(CACHE_FILE, JsonConvert.SerializeObject(cache));
-			}
-		}
 
 		private static async Task LoadSamplesAsync(string character)
 		{
@@ -293,8 +267,8 @@ namespace EzPinyin.Spider
 					WordInfo info = LexiconSpider.FindOrRegister(word);
 					if (info.IsValid)
 					{
-						info.EnableZSource();
-						info.ZPinyin = App.ParseWordPinyin(word, match.Groups[3].Value);
+						info.EnableZDictSource();
+						info.ZDictPinyin = App.ParseWordPinyin(word, match.Groups[3].Value);
 					}
 
 				}
@@ -327,7 +301,7 @@ namespace EzPinyin.Spider
 				MatchCollection matches = Regex.Matches(content, @"<li><a [^>]+/hans/(\w+)[^>]+>\1(<span class=.ef.>(.*)</span>)?</a></li>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				foreach (Match match in matches)
 				{
-					LexiconSpider.FindOrRegister(match.Groups[1].Value.Trim()).EnableZSource();
+					LexiconSpider.FindOrRegister(match.Groups[1].Value.Trim()).EnableZDictSource();
 				}
 
 				if (!html.Contains($">{page}<"))
@@ -349,7 +323,7 @@ namespace EzPinyin.Spider
 			for (int i = 0; i < matches.Count; i++)
 			{
 				Match match = matches[i];
-				PinyinInfo pinyin = ZDictSpider.RegisterPinyin(match.Groups[1].Value, info);
+				PinyinInfo pinyin = info.RegisterAll(match.Groups[1].Value);
 				if (pinyin == null)
 				{
 					continue;
@@ -503,7 +477,7 @@ namespace EzPinyin.Spider
 			{
 				Match match = matches[i];
 
-				PinyinInfo pinyin = ZDictSpider.RegisterPinyin(match.Groups[1].Value, info);
+				PinyinInfo pinyin = info.RegisterAll(match.Groups[1].Value);
 				if (pinyin == null)
 				{
 					continue;
@@ -647,7 +621,7 @@ namespace EzPinyin.Spider
 			match = Regex.Match(html, @"<strong>[^<]+</strong>\s*<span[^>]+dicpy.>\s*([^<]+)\s*<", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 			if (match.Success)
 			{
-				if ((sample.ZPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
+				if ((sample.ZDictPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
 				{
 					sample.Verified = true;
 					return;
@@ -660,7 +634,7 @@ namespace EzPinyin.Spider
 			match = Regex.Match(html, @"<rt>([^<]+)<span[^>]+ptr.><a[^>]+audio_play_button", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 			if (match.Success)
 			{
-				if ((sample.ZPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
+				if ((sample.ZDictPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
 				{
 					return;
 				}
@@ -668,7 +642,7 @@ namespace EzPinyin.Spider
 			match = Regex.Match(html, @"<rt>([^<]+)</rt>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 			if (match.Success)
 			{
-				if ((sample.ZPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
+				if ((sample.ZDictPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
 				{
 					return;
 				}
@@ -680,47 +654,18 @@ namespace EzPinyin.Spider
 			match = Regex.Match(html, @"拼音[^\n]+dicpy[^>]+>([^<]+)</span>[^\n]+z_d song[^\n]+ptr[^\n]+audio_play_button", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 			if (match.Success)
 			{
-				if ((sample.ZPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
+				if ((sample.ZDictPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
 				{
 					return;
 				}
 			}
 		}
-
-		private static PinyinInfo RegisterPinyin(string pinyin, CharacterInfo ch)
-		{
-			if (string.IsNullOrEmpty(pinyin))
-			{
-				return null;
-			}
-
-
-			string[] items = Regex.Split(WebUtility.HtmlDecode(pinyin.ToLower()).Trim(trimCharacters), @"\s*[，,]\s*", RegexOptions.Compiled);
-			PinyinInfo result = null;
-			for (int i = 0; i < items.Length; i++)
-			{
-				string item = App.FixPinyin(items[i]);
-				if (!string.IsNullOrEmpty(item))
-				{
-					if (result == null)
-					{
-						result = ch.FindOrRegister(item);
-					}
-					else
-					{
-						ch.FindOrRegister(item);
-					}
-				}
-			}
-
-			return result;
-		}
-
-		private static void RegisterPinyin(MatchCollection matches, CharacterInfo collection)
+		
+		private static void RegisterPinyin(MatchCollection matches, CharacterInfo info)
 		{
 			foreach (Match match in matches)
 			{
-				ZDictSpider.RegisterPinyin(match.Groups[1].Value, collection);
+				info.RegisterAll(match.Groups[1].Value);
 			}
 		}
 

@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Net;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace EzPinyin.Spider
@@ -9,6 +10,7 @@ namespace EzPinyin.Spider
 	/// </summary>
 	internal sealed class CharacterInfo
 	{
+		private static readonly char[] trimCharacters = new[] { ' ', '	', '\r', '\n', ' ', '̀' };
 		private List<PinyinInfo> pinyinList = new List<PinyinInfo>(2);
 
 		private PinyinInfo prefered;
@@ -76,10 +78,10 @@ namespace EzPinyin.Spider
 		public string Character { get; set; }
 
 		/// <summary>
-		/// 此字符是否有专业可信来源。
+		/// 此字符是否有标准拼音。
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-		public bool Verified { get; set; }
+		public bool IsStandard { get; set; }
 
 		/// <summary>
 		/// 自定的拼音
@@ -90,12 +92,20 @@ namespace EzPinyin.Spider
 		/// <summary>
 		/// 汉典最佳拼音。
 		/// </summary>
-		public string ZPinyin { get; set; }
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+		public string ZDictPinyin { get; set; }
 
 		/// <summary>
 		/// 叶典最佳拼音。
 		/// </summary>
-		public string YPinyin { get; set; }
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+		public string YDictPinyin { get; set; }
+
+		/// <summary>
+		/// 国学网最佳拼音
+		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+		public string GuoxuePinyin { get; set; }
 
 		/// <summary>
 		/// 指示该字符信息是否合规。
@@ -113,6 +123,12 @@ namespace EzPinyin.Spider
 			}
 			set => this.isValid = value;
 		}
+		
+		/// <summary>
+		/// 此字符是否被可信来源收录。
+		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+		public bool IsTrusted { get; set; }
 
 		/// <summary>
 		/// 根据索引Id获得读音信息。
@@ -141,8 +157,12 @@ namespace EzPinyin.Spider
 		/// </summary>
 		/// <param name="pinyin">需要注册的拼音。</param>
 		/// <returns>所注册的拼音信息。</returns>
-		public PinyinInfo FindOrRegister(string pinyin)
+		public PinyinInfo Register(string pinyin)
 		{
+			if (string.IsNullOrEmpty(pinyin))
+			{
+				return null;
+			}
 			List<PinyinInfo> list = this.pinyinList;
 			lock (list)
 			{
@@ -151,9 +171,9 @@ namespace EzPinyin.Spider
 				if (index == -1)
 				{
 					info = new PinyinInfo(pinyin);
-					if (info.Verified)
+					if (info.IsStandard)
 					{
-						this.Verified = true;
+						this.IsStandard = true;
 					}
 					list.Add(info);
 					return info;
@@ -162,6 +182,36 @@ namespace EzPinyin.Spider
 				return list[index];
 
 			}
+		}
+
+		/// <summary>
+		/// 注册所有可能拼音并返回第一个有效的读音信息。
+		/// </summary>
+		/// <param name="pinyin">需要注册的拼音。</param>
+		/// <returns>所注册的拼音信息。</returns>
+		public PinyinInfo RegisterAll(string pinyin)
+		{
+			if (string.IsNullOrEmpty(pinyin))
+			{
+				return null;
+			}
+
+			string[] items = Regex.Split(WebUtility.HtmlDecode(pinyin.ToLower()).Trim(trimCharacters), @"\s*[，,]\s*", RegexOptions.Compiled);
+			PinyinInfo result = null;
+			for (int i = 0; i < items.Length; i++)
+			{
+				string item = App.FixPinyin(items[i]);
+				if (!string.IsNullOrEmpty(item))
+				{
+					PinyinInfo info = this.Register(item);
+					if (result == null || !result.IsStandard && info.IsStandard)
+					{
+						result = info;
+					}
+				}
+			}
+
+			return result;
 		}
 
 		/// <summary>
@@ -181,10 +231,6 @@ namespace EzPinyin.Spider
 		/// </summary>
 		public void Reset()
 		{
-			if (this.ZPinyin == this.YPinyin && this.YPinyin != null)
-			{
-				this.Verified = true;
-			}
 			this.prefered = null;
 		}
 
@@ -194,6 +240,14 @@ namespace EzPinyin.Spider
 		/// <returns>最佳拼音信息。</returns>
 		public PinyinInfo ComputePrefered()
 		{
+			if (this.ZDictPinyin != null && (this.ZDictPinyin == this.YDictPinyin || this.ZDictPinyin == this.GuoxuePinyin))
+			{
+				return this.Register(this.ZDictPinyin);
+			}
+			if (this.YDictPinyin != null && this.YDictPinyin == this.GuoxuePinyin)
+			{
+				return this.Register(this.YDictPinyin);
+			}
 			PinyinInfo result = null;
 			foreach (PinyinInfo pinyin in this.pinyinList)
 			{
@@ -212,9 +266,9 @@ namespace EzPinyin.Spider
 		/// <param name="other">需要复制的字符。</param>
 		public void CopyFrom(CharacterInfo other)
 		{
-			if (other.Verified)
+			if (other.IsStandard)
 			{
-				this.Verified = true;
+				this.IsStandard = true;
 			}
 			this.pinyinList = new List<PinyinInfo>(other.pinyinList);
 		}

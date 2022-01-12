@@ -1,0 +1,660 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EzPinyin</name>
+    </assembly>
+    <members>
+        <member name="T:EzPinyin.Check">
+            <summary>
+            用于检验一些信息。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.Check.IsIdeEnvironment">
+            <summary>
+            检测当前环境是否是开发环境。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.Common">
+            <summary>
+            应用程序所需使用的公共的杂项功能集合。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.Compatibility">
+            <summary>
+            表示Unicode平面兼容汉字区的字典。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.CompatibilitySupplement">
+            <summary>
+            表示Unicode平面兼容汉字扩展区的字典。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.ExtensionA">
+            <summary>
+            表示Unicode平面1汉字A扩展区的字典。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.ExtensionB">
+            <summary>
+            表示Unicode平面2汉字B扩展区的字典。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.ExtensionC">
+            <summary>
+            表示Unicode平面2汉字C扩展区的字典。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.ExtensionD">
+            <summary>
+            表示Unicode平面2汉字D扩展区的字典。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.ExtensionE">
+            <summary>
+            表示Unicode平面2汉字E扩展区的字典。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.ExtensionF">
+            <summary>
+            表示Unicode平面2汉字F扩展区的字典。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.ExtensionG">
+            <summary>
+            表示Unicode平面2汉字G扩展区的字典。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.LexiconLinkNode">
+            <summary>
+            表示一个适用于UTF16字符的链表节点。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.LexiconLinkNode.Word">
+            <summary>
+            当前节点相关联的词汇。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.LexiconLinkNode.Length">
+            <summary>
+            当前节点相关联的词汇的长度。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.LexiconLinkNode.Next">
+            <summary>
+            当前节点的下一个节点。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.LexiconLinkNode.Pinyin">
+            <summary>
+            获得当前节点的拼音字符串。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNode.#ctor(System.String)">
+            <summary>
+            初始化新的实例。
+            </summary>
+            <param name="word">词汇信息。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNode.GetPinyin(System.Char*)">
+            <summary>
+            获得拼音字符串，永远抛出<see cref="T:System.NotSupportedException"/>异常。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的字符串。</returns>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNode.GetInitial(System.Char*)">
+            <summary>
+            获得拼音首字母，永远抛出<see cref="T:System.NotSupportedException"/>异常。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的首字母。</returns>
+        </member>
+        <member name="T:EzPinyin.LexiconLinkNode2">
+            <summary>
+            表示适用于一个包含两个UTF16字符的词汇的节点。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNode2.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            验证词汇是否匹配，将拼音字符串写入到指定的缓存区，并且自动移动游标到词汇末尾下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNode2.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            验证词汇是否匹配，将拼音首字母写入到指定的缓存区，并且自动移动游标到词汇末尾下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNode2.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
+            <summary>
+            验证词汇是否匹配，将拼音字符串写入到指定的缓存区，并且自动移动游标到词汇末尾下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="index">分隔符。</param>
+        </member>
+        <member name="T:EzPinyin.LexiconLinkNode3">
+            <summary>
+            表示适用于一个包含三个UTF16字符的词汇的节点。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNode3.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            验证词汇是否匹配，将拼音字符串写入到指定的缓存区，并且自动移动游标到词汇末尾下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNode3.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            验证词汇是否匹配，将拼音首字母写入到指定的缓存区，并且自动移动游标到词汇末尾下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNode3.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
+            <summary>
+            验证词汇是否匹配，将拼音字符串写入到指定的缓存区，并且自动移动游标到词汇末尾下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="index">分隔符。</param>
+        </member>
+        <member name="T:EzPinyin.LexiconLinkNode4">
+            <summary>
+            表示适用于一个包含四个UTF16字符的词汇的节点。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNode4.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNode4.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNode4.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="index">分隔符。</param>
+        </member>
+        <member name="T:EzPinyin.LexiconLinkNodeX">
+            <summary>
+            表示适用于包含四个以上字符或者包含UTF-32字符的词汇的节点。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNodeX.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNodeX.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconLinkNodeX.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="index">分隔符。</param>
+        </member>
+        <member name="T:EzPinyin.LexiconNode">
+            <summary>
+            表示一个适用于UTF16字符的词典节点。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.LexiconNode.Pinyin">
+            <summary>
+            获得当前节点的拼音字符串，始终抛出<see cref="T:System.NotSupportedException"/>。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.LexiconNode.Add(System.String,System.String[])">
+            <summary>
+            为当前节点注册一个词汇与拼音。
+            </summary>
+            <param name="word">需要注册的词汇。</param>
+            <param name="pinyin">该词汇对应的拼音。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconNode.Add(System.String,System.String)">
+            <summary>
+            为当前节点注册一个词汇与拼音。
+            </summary>
+            <param name="word">需要注册的词汇。</param>
+            <param name="pinyin">该词汇对应的拼音。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconNode.GetPinyin(System.Char*)">
+            <summary>
+            获得拼音字符串。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的字符串。</returns>
+        </member>
+        <member name="M:EzPinyin.LexiconNode.GetInitial(System.Char*)">
+            <summary>
+            获得拼音首字母。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的首字母。</returns>
+        </member>
+        <member name="M:EzPinyin.LexiconNode.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconNode.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.LexiconNode.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="index">分隔符。</param>
+        </member>
+        <member name="T:EzPinyin.PinyinHelper">
+            <summary>
+            EzPinyin类库的功能入口，用来快速解析拼音、首字母及其他功能。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.PinyinHelper.GetPinyin(System.String,System.String)">
+            <summary>
+            将指定的字符串转换为对应的拼音字符串。
+            </summary>
+            <param name="text">需要处理的字符串</param>
+            <param name="separator">额外指定一个用于分隔的字符串。</param>
+            <returns><paramref name="text"/>对应的拼音字符串，如果<paramref name="text"/>为null，则返回null。</returns>
+        </member>
+        <member name="M:EzPinyin.PinyinHelper.GetArray(System.String)">
+            <summary>
+            将指定的字符串转换为对应的拼音数组。
+            </summary>
+            <param name="text">需要处理的字符串</param>
+            <returns>包含输入字符串的拼音信息的结果数组，若<paramref name="text"/>为null，则返回null。</returns>
+        </member>
+        <member name="M:EzPinyin.PinyinHelper.GetInitial(System.String,System.String)">
+            <summary>
+            将指定的字符串转换为对应的拼音首字母字符串。
+            </summary>
+            <param name="text">需要处理的字符串</param>
+            <param name="separator">额外指定一个用于分隔的字符串。</param>
+            <returns><paramref name="text"/>对应的拼音首字母字符串，如果<paramref name="text"/>为null，则返回null。</returns>
+            <remarks>
+            这个方法的处理结果不完全等同于对应拼音的声母，虽然很多时候都是一样的。
+            </remarks>
+        </member>
+        <member name="M:EzPinyin.PinyinHelper.LoadFrom(System.String)">
+            <summary>
+            从指定的文件加载自定义的拼音配置信息。
+            </summary>
+            <param name="path">配置文件的路径。</param>
+        </member>
+        <member name="M:EzPinyin.PinyinHelper.Load(System.String)">
+            <summary>
+            加载指定的拼音配置内容。
+            </summary>
+            <param name="content">配置内容。</param>
+        </member>
+        <member name="M:EzPinyin.PinyinHelper.Define(System.String,System.String)">
+            <summary>
+            根据提供的信息添加或者重新定义指定字符的拼音。
+            </summary>
+            <param name="character">字符信息。</param>
+            <param name="pinyin">拼音信息。</param>
+            <remarks>
+            如果字典中已经存在输入字符的拼音信息，则该信息将被覆盖；对于重复定义的情形，以最后一次有效操作为准。
+            </remarks>
+        </member>
+        <member name="M:EzPinyin.PinyinHelper.Define(System.String,System.String[])">
+            <summary>
+            根据提供的信息添加或者重新定义指定词汇的拼音。
+            </summary>
+            <param name="word">词汇信息。</param>
+            <param name="pinyin">拼音信息。</param>
+            <remarks>
+            <para>如果词典中已经存在输入词汇的拼音信息，则该信息将被覆盖；对于重复定义的情形，以最后一次有效操作为准。</para>
+            <para>此方法不具备线程安全性，多线程环境下调用时可能导致功能异常，因此建议仅在全局启动时调用。</para>
+            </remarks>
+        </member>
+        <member name="T:EzPinyin.PinyinNode">
+            <summary>
+            表示一个拼音节点的基类。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.PinyinNode.Pinyin">
+            <summary>
+            获得当前节点的拼音字符串。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.PinyinNode.GetPinyin(System.Char*)">
+            <summary>
+            获得拼音字符串。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的字符串。</returns>
+        </member>
+        <member name="M:EzPinyin.PinyinNode.GetInitial(System.Char*)">
+            <summary>
+            获得拼音首字母。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的首字母。</returns>
+        </member>
+        <member name="M:EzPinyin.PinyinNode.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.PinyinNode.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.PinyinNode.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="index">分隔符。</param>
+        </member>
+        <member name="T:EzPinyin.Radicals">
+            <summary>
+            表示Unicode平面汉字部首扩展区、康熙字典部首区的字典。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.UnicodePlane">
+            <summary>
+            表示某个汉字相关的Unicode平面。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.Unknown">
+            <summary>
+            表示存储了其它未知字符的字典。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.Unknown.Utf16">
+            <summary>
+            存储了所有未知UTF16字符的字典。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.Unknown.Utf32">
+            <summary>
+            存储了所有未知UTF32字符的字典。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.Utf16EmptyNode">
+            <summary>
+            表示空的UTF16字符节点。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.Utf16EmptyNode.Instance">
+            <summary>
+            获得空白的UTF16字符节点的实例。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.Utf16EmptyNode.Pinyin">
+            <summary>
+            获得当前节点的拼音字符串。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.Utf16EmptyNode.GetPinyin(System.Char*)">
+            <summary>
+            获得拼音字符串。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的字符串。</returns>
+        </member>
+        <member name="M:EzPinyin.Utf16EmptyNode.GetInitial(System.Char*)">
+            <summary>
+            获得拼音首字母。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的首字母。</returns>
+        </member>
+        <member name="M:EzPinyin.Utf16EmptyNode.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将游标处的字符写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.Utf16EmptyNode.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将游标处的字符写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.Utf16EmptyNode.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="index">分隔符。</param>
+        </member>
+        <member name="T:EzPinyin.Utf16Node">
+            <summary>
+            描述了一个UTF16字符的节点。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.Utf16Node.Pinyin">
+            <summary>
+            获得当前节点的拼音字符串。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.Utf16Node.GetPinyin(System.Char*)">
+            <summary>
+            获得拼音字符串。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的字符串。</returns>
+        </member>
+        <member name="M:EzPinyin.Utf16Node.GetInitial(System.Char*)">
+            <summary>
+            获得拼音首字母。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的首字母。</returns>
+        </member>
+        <member name="M:EzPinyin.Utf16Node.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.Utf16Node.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.Utf16Node.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="index">分隔符。</param>
+        </member>
+        <member name="T:EzPinyin.Utf32EmptyNode">
+            <summary>
+            表示空的UTF32字符节点。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.Utf32EmptyNode.Instance">
+            <summary>
+            获得空白的UTF32字符节点的实例。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.Utf32EmptyNode.Pinyin">
+            <summary>
+            获得当前节点的拼音字符串。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.Utf32EmptyNode.GetPinyin(System.Char*)">
+            <summary>
+            获得拼音字符串。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的字符串。</returns>
+        </member>
+        <member name="M:EzPinyin.Utf32EmptyNode.GetInitial(System.Char*)">
+            <summary>
+            获得拼音首字母。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的首字母。</returns>
+        </member>
+        <member name="M:EzPinyin.Utf32EmptyNode.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将游标处的两个字符写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.Utf32EmptyNode.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将游标处的两个字符写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.Utf32EmptyNode.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="index">分隔符。</param>
+        </member>
+        <member name="T:EzPinyin.Utf32Node">
+            <summary>
+            描述了一个UTF16字符的节点。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.Utf32Node.Pinyin">
+            <summary>
+            获得当前节点的拼音字符串。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.Utf32Node.GetPinyin(System.Char*)">
+            <summary>
+            获得拼音字符串。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的字符串。</returns>
+        </member>
+        <member name="M:EzPinyin.Utf32Node.GetInitial(System.Char*)">
+            <summary>
+            获得拼音首字母。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <returns>所获得的首字母。</returns>
+        </member>
+        <member name="M:EzPinyin.Utf32Node.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.Utf32Node.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="separator">分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.Utf32Node.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
+            </summary>
+            <param name="cursor">游标信息。</param>
+            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="buffer">目标缓存区。</param>
+            <param name="index">分隔符。</param>
+        </member>
+    </members>
+</doc>

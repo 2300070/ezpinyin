@@ -11,7 +11,7 @@ namespace EzPinyin.Spider
 		/// 读音的拼音
 		/// </summary>
 		public string Text { get; set; }
-		public bool Verified { get; set; }
+		public bool IsStandard { get; set; }
 
 		/// <summary>
 		/// 该读音的常见用法数量。
@@ -37,7 +37,7 @@ namespace EzPinyin.Spider
 		public PinyinInfo(string text)
 		{
 			this.Text = text;
-			this.Verified = App.StandardPinyinList.Contains(text);
+			this.IsStandard = App.StandardPinyinList.Contains(text);
 		}
 
 		/// <summary>
@@ -82,11 +82,11 @@ namespace EzPinyin.Spider
 		{
 			double result = this.ReferenceCount * this.WeightedType + this.WeightedType + this.ExtraEvaluation;
 			double extra = 0D;
-			if (this.Text == info.ZPinyin)
+			if (this.Text == info.ZDictPinyin)
 			{
 				extra += 0.5D;
 			}
-			if (this.Text == info.YPinyin)
+			if (this.Text == info.YDictPinyin)
 			{
 				extra += 0.5D;
 			}

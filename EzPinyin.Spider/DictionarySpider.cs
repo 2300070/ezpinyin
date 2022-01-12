@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EzPinyin.Spider
@@ -53,27 +54,29 @@ namespace EzPinyin.Spider
 		{
 			Console.WriteLine();
 			Console.WriteLine($"开始抓取{this.name}数据。");
-			await App.ForEachAsync(this.characters, async ch =>
-			{
-				CharacterInfo info = await ZDictSpider.LoadCharacterAsync(ch);
-				if (info == null || info.Count == 0 || !info.Verified)
-				{
-					info?.Clear();
-					info = await YDictSpider.LoadCharacterAsync(ch);
-					if (info != null && info.Verified)
-					{
-						string pinyin = info.PreferedPinyin;
-						if (pinyin != null)
-						{
-							App.EnsurePinyin(pinyin);
-						}
-					}
-				}
-			});
+			await App.ForEachAsync(this.characters, DownloadAsync);
 
 
 			Console.WriteLine($"操作完成，抓取了{this.Count}个字符。");
 			Console.WriteLine();
+		}
+
+		public static async Task DownloadAsync(string character)
+		{
+			CharacterInfo info = await ZDictSpider.LoadCharacterAsync(character);
+			if (info == null || info.Count == 0 || !info.IsStandard)
+			{
+				info?.Clear();
+				info = await YDictSpider.LoadCharacterAsync(character) ?? await GuoxueSpider.LoadCharacterAsync(character);
+				if (info != null && info.IsTrusted)
+				{
+					string pinyin = info.PreferedPinyin;
+					if (pinyin != null)
+					{
+						App.EnsurePinyin(pinyin);
+					}
+				}
+			}
 		}
 
 		public async Task SaveAsync()

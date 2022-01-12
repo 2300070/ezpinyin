@@ -23,6 +23,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
     <DocumentationFile>C:\Users\sean\Documents\works\EZPinYin\EzPinyin\EzPinyin.xml</DocumentationFile>
+    <NoWarn>1701;1702;1587</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">

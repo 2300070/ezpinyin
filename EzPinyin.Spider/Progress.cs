@@ -25,7 +25,18 @@ namespace EzPinyin.Spider
 		{
 			this.maximum = maximum;
 			this.previous = 0;
-			this.step = maximum / 1000;
+			if (maximum > 1000)
+			{
+				this.step = maximum / 1000;
+			}
+			else if (maximum > 100)
+			{
+				this.step = maximum / 100;
+			}
+			else
+			{
+				this.step = 1;
+			}
 			this.top = Console.CursorTop;
 			this.UpdateProgress(0);
 		}

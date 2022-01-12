@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -14,22 +13,10 @@ namespace EzPinyin.Spider
 	/// </summary>
 	internal static class CDictSpider
 	{
-		private const string CACHE_FILE = "../cache/cdict.json";
-		private static readonly ConcurrentDictionary<string, string> cache = new ConcurrentDictionary<string, string>();
-		private static readonly bool latestCache;
-		private static bool saveCache;
-		
-		static CDictSpider()
-		{
-			if (File.Exists(CACHE_FILE))
-			{
-				cache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(CACHE_FILE));
-				latestCache = File.GetLastWriteTime(CACHE_FILE).Date == DateTime.Today;
-			}
-		}
+		private static readonly PinyinCache cache = new PinyinCache("../cache/cdict.json");
 
 		/// <summary>
-		/// 以异步方式抓取常用的含多音字的词语列表。
+		/// 以异步方式抓取词汇列表。
 		/// </summary>
 		/// <returns>任务信息</returns>
 		public static async Task LoadSamplesAsync()
@@ -59,25 +46,20 @@ namespace EzPinyin.Spider
 		/// <param name="sample">样本信息</param>
 		public static async Task LoadSampleAsync(WordInfo sample)
 		{
-			string url = sample.CSource;
+			string url = sample.CDictSource;
 			if (url == null)
 			{
 				return;
 			}
-			if (sample.CPinyin != null)
+			if (sample.CDictPinyin != null)
 			{
 				return;
 			}
 			string word = sample.ActualWord;
-			if (cache.TryGetValue(word, out string pinyin))
+			if (CDictSpider.cache.TryGetValue(word, out string pinyin))
 			{
-				if (pinyin != null || latestCache)
-				{
-					sample.CPinyin = pinyin;
-					return;
-				}
-
-				cache.TryRemove(word, out pinyin);
+				sample.CDictPinyin = pinyin;
+				return;
 			}
 
 			try
@@ -95,28 +77,13 @@ namespace EzPinyin.Spider
 					string text = WebUtility.HtmlDecode(match.Groups[1].Value);
 					if (text == sample.Word)
 					{
-						sample.CPinyin = App.ParseWordPinyin(text, match.Groups[2].Value);
+						sample.CDictPinyin = App.ParseWordPinyin(text, match.Groups[2].Value);
 					}
 				}
 			}
 			finally
 			{
-				if (sample.CPinyin != null)
-				{
-					cache[word] = sample.CPinyin;
-					saveCache = true;
-				}
-			}
-		}
-		
-		/// <summary>
-		/// 保存缓存文件。
-		/// </summary>
-		public static void SaveCache()
-		{
-			if (saveCache)
-			{
-				File.WriteAllText(CACHE_FILE, JsonConvert.SerializeObject(cache));
+				CDictSpider.cache.Add(word, sample.CDictPinyin);
 			}
 		}
 
@@ -144,7 +111,7 @@ namespace EzPinyin.Spider
 						WordInfo word = LexiconSpider.FindOrRegister(text);
 						if (word.IsValid)
 						{
-							word.CPinyin = App.ParseWordPinyin(text, match.Groups[2].Value);
+							word.CDictPinyin = App.ParseWordPinyin(text, match.Groups[2].Value);
 						}
 					}
 
@@ -165,7 +132,7 @@ namespace EzPinyin.Spider
 						WordInfo word = LexiconSpider.FindOrRegister(text);
 						if (word.IsValid)
 						{
-							word.CPinyin = App.ParseWordPinyin(text, match.Groups[3].Value);
+							word.CDictPinyin = App.ParseWordPinyin(text, match.Groups[3].Value);
 						}
 					}
 				}
@@ -195,7 +162,7 @@ namespace EzPinyin.Spider
 						WordInfo word = LexiconSpider.FindOrRegister(text);
 						if (word.IsValid)
 						{
-							word.EnableCSource($"https://www.cidianwang.com/{url}");
+							word.EnableCDictSource($"https://www.cidianwang.com/{url}");
 						}
 					}
 				}

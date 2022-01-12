@@ -61,7 +61,7 @@ namespace EzPinyin.Spider
 		/// <summary>
 		/// 拼音列表。
 		/// </summary>
-		public static List<string> PinyinList { get; } = new List<string>(App.StandardPinyinList);
+		public static List<string> PinyinList { get; } = new List<string>(StandardPinyinList);
 
 		/// <summary>
 		/// 记录了所有字及其拼音的集合。
@@ -144,7 +144,7 @@ namespace EzPinyin.Spider
 		{
 			Console.WriteLine("保存词汇样本。");
 
-			File.WriteAllText(App.SAMPLE_CACHE_FILE, JsonConvert.SerializeObject(App.Samples.Values));
+			File.WriteAllText(SAMPLE_CACHE_FILE, JsonConvert.SerializeObject(App.Samples.Values));
 
 			Console.WriteLine("完成。");
 		}
@@ -157,7 +157,7 @@ namespace EzPinyin.Spider
 			Console.Write("加载词汇样本...");
 			await App.WaitAsync(Task.Run(delegate
 			{
-				WordInfo[] array = JsonConvert.DeserializeObject<WordInfo[]>(File.ReadAllText(App.SAMPLE_CACHE_FILE));
+				WordInfo[] array = JsonConvert.DeserializeObject<WordInfo[]>(File.ReadAllText(SAMPLE_CACHE_FILE));
 				App.Samples.Clear();
 				foreach (WordInfo word in array)
 				{
@@ -176,8 +176,8 @@ namespace EzPinyin.Spider
 			Console.Write("加载字典数据...");
 			await App.WaitAsync(Task.Run(delegate
 			{
-				App.Dictionary = JsonConvert.DeserializeObject<ConcurrentDictionary<string, CharacterInfo>>(File.ReadAllText(App.DICTIONARY_CACHE_FILE));
-				
+				App.Dictionary = JsonConvert.DeserializeObject<ConcurrentDictionary<string, CharacterInfo>>(File.ReadAllText(DICTIONARY_CACHE_FILE));
+
 				foreach (KeyValuePair<string, CharacterInfo> item in App.Dictionary)
 				{
 					char ch = item.Key[0];
@@ -193,7 +193,7 @@ namespace EzPinyin.Spider
 						App.Simplified[info.Traditional] = ch;
 					}
 
-					if (info.Verified)
+					if (info.IsTrusted)
 					{
 						for (int i = 0; i < info.Count; i++)
 						{
@@ -342,10 +342,20 @@ namespace EzPinyin.Spider
 
 				int y2 = y;
 				int x2 = x;
-
+				int delay = 1000;
+				int count = 0;
 				while (true)
 				{
-					await Task.Delay(1000);
+					await Task.Delay(delay);
+					if (count++ > 10)
+					{
+						if (delay < 10000)
+						{
+							delay += 1000;
+						}
+
+						count = 0;
+					}
 					if (cancellation.IsCancellationRequested)
 					{
 						Console.CursorVisible = true;
@@ -704,6 +714,10 @@ namespace EzPinyin.Spider
 			{
 				if (!list.Contains(pinyin))
 				{
+					//if ("kouwang fenglin quanme shime".Contains(pinyin))
+					//{
+					//	pinyin = pinyin;
+					//}
 					list.Add(pinyin);
 				}
 			}
@@ -715,15 +729,22 @@ namespace EzPinyin.Spider
 		/// <param name="url">文档地址。</param>
 		/// <param name="validate">是否要验证缓存。</param>
 		/// <returns>若缓存文件存在，返回缓存文件，否则从指定地址下载最新的内容并缓存。</returns>
-		public static async Task<string> DownloadAsync(string url, bool validate = false)
+		public static async Task<string> DownloadAsync(DownloadSettings settings)
 		{
+			string url = settings.Url;
 			Match match = Regex.Match(url, @"\w+://([^\/?]+)");
 			string path;
+			string data = settings.Data;
 			using (MD5 md5 = MD5.Create())
 			{
 				int index = url.LastIndexOf('/');
 
-				string id = new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(url.Substring(index)))).ToString("N");
+				string key = url.Substring(index);
+				if (data != null)
+				{
+					key = key + "#" + data;
+				}
+				string id = new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(key))).ToString("N");
 				string file = $"{id}.html";
 
 				string host = match.Groups[1].Value.ToLower();
@@ -749,16 +770,17 @@ namespace EzPinyin.Spider
 			int times = 0;
 			if (File.Exists(path))
 			{
-				if (validate)
+				DateTime lastWriteDate = File.GetLastWriteTime(path).Date;
+				if (settings.IgnoreCache.HasValue)
 				{
-					if (File.GetLastWriteTime(path).Date >= DateTime.Today.AddDays(-1))
+					if (lastWriteDate >= settings.IgnoreCache.Value)
 					{
 						return null;
 					}
 				}
 				else
 				{
-					if (File.GetLastWriteTime(path).Date >= DateTime.Today.AddMonths(-6))
+					if (lastWriteDate >= (settings.CacheDate ?? DateTime.Today.AddMonths(-6)))
 					{
 						while (times < 10)
 						{
@@ -786,7 +808,33 @@ namespace EzPinyin.Spider
 				request.Referer = url;
 				request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36";
 				request.Method = "GET";
-				request.ContentType = "text/html; charset=utf-8";
+				request.ContentType = settings.ContentType ?? "text/html; charset=utf-8";
+				if (settings.Authorization != null)
+				{
+					request.Headers.Add("Authorization", settings.Authorization);
+				}
+
+				if (data != null)
+				{
+					if (settings.ContentType == null)
+					{
+						if (data[0] == '[' && data[data.Length - 1] == ']' || data[0] == '{' && data[data.Length - 1] == '}')
+						{
+							request.ContentType = "application/json;charset=UTF-8";
+						}
+						else
+						{
+							request.ContentType = "application/x-www-form-urlencoded";
+						}
+					}
+					request.Method = "POST";
+					byte[] buffer = Encoding.UTF8.GetBytes(data);
+					request.ContentLength = buffer.Length;
+					using (Stream stream = await request.GetRequestStreamAsync())
+					{
+						await stream.WriteAsync(buffer, 0, buffer.Length);
+					}
+				}
 
 				response = await request.GetResponseAsync() as HttpWebResponse;
 

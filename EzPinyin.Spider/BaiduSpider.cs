@@ -14,31 +14,12 @@ namespace EzPinyin.Spider
 	/// </summary>
 	internal static class BaiduSpider
 	{
-		private const string BAIKE_CACHE = "../cache/baidu_baike.json";
-		private const string HANYU_CACHE = "../cache/baidu_hanyu.json";
-		private static readonly ConcurrentDictionary<string, string> baikeCache = new ConcurrentDictionary<string, string>();
-		private static readonly ConcurrentDictionary<string, string> hanyuCache = new ConcurrentDictionary<string, string>();
-		private static readonly bool latestBaikeCache;
-		private static readonly bool latestHanyuCache;
-		private static bool saveBaikeCache;
-		private static bool saveHanyuCache;
+		private static readonly PinyinCache baikeCache = new PinyinCache("../cache/baidu_baike.json");
+		private static readonly PinyinCache hanyuCache = new PinyinCache("../cache/baidu_hanyu.json");
 
-		static BaiduSpider()
-		{
-			if (File.Exists(BAIKE_CACHE))
-			{
-				baikeCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(BAIKE_CACHE));
-				latestBaikeCache = File.GetLastWriteTime(BAIKE_CACHE).Date == DateTime.Today;
-			}
-			if (File.Exists(HANYU_CACHE))
-			{
-				hanyuCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(HANYU_CACHE));
-				latestHanyuCache = File.GetLastWriteTime(HANYU_CACHE).Date == DateTime.Today;
-			}
-		}
 
 		/// <summary>
-		/// 以异步方式抓取常用的含多音字的词语列表。
+		/// 以异步方式抓取词汇列表。
 		/// </summary>
 		/// <returns>任务信息</returns>
 		public static async Task LoadSamplesAsync()
@@ -59,21 +40,16 @@ namespace EzPinyin.Spider
 			{
 				return;
 			}
-			if (sample.BPinyin != null)
+			if (sample.BaiduHanyuPinyin != null)
 			{
 				return;
 			}
 
 			string word = sample.ActualWord;
-			if (hanyuCache.TryGetValue(word, out string pinyin))
+			if (BaiduSpider.hanyuCache.TryGetValue(word, out string pinyin))
 			{
-				if (pinyin != null || latestHanyuCache)
-				{
-					sample.BPinyin = pinyin;
-					return;
-				}
-
-				hanyuCache.TryRemove(word, out pinyin);
+				sample.BaiduHanyuPinyin = pinyin;
+				return;
 			}
 
 			try
@@ -87,24 +63,20 @@ namespace EzPinyin.Spider
 				Match match = Regex.Match(html, @"<b>\[\s*([^]]+)\s*\]</b>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					sample.BPinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
+					sample.BaiduHanyuPinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
 				}
 				else
 				{
 					match = Regex.Match(html, @"<div[^>]+>\s*<p>[^<>]*[拼读]音[为是]?\s*([\u0041-\u024F\s]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 					if (match.Success)
 					{
-						sample.BPinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
+						sample.BaiduHanyuPinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
 					}
 				}
 			}
 			finally
 			{
-				if (sample.BPinyin != null)
-				{
-					hanyuCache[word] = sample.BPinyin;
-					saveHanyuCache = true;
-				}
+				BaiduSpider.hanyuCache.Add(word, sample.BaiduHanyuPinyin);
 			}
 		}
 
@@ -120,20 +92,15 @@ namespace EzPinyin.Spider
 				return;
 			}
 
-			if (sample.BKPinyin != null)
+			if (sample.BaiduBaikePinyin != null)
 			{
 				return;
 			}
 			string word = sample.ActualWord;
-			if (baikeCache.TryGetValue(word, out string pinyin))
+			if (BaiduSpider.baikeCache.TryGetValue(word, out string pinyin))
 			{
-				if (pinyin != null || latestBaikeCache)
-				{
-					sample.BKPinyin = pinyin;
-					return;
-				}
-
-				baikeCache.TryRemove(word, out pinyin);
+				sample.BaiduBaikePinyin = pinyin;
+				return;
 			}
 
 			try
@@ -150,7 +117,7 @@ namespace EzPinyin.Spider
 					pinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
 					if (pinyin != null)
 					{
-						sample.BKPinyin = pinyin;
+						sample.BaiduBaikePinyin = pinyin;
 						return;
 					}
 				}
@@ -160,7 +127,7 @@ namespace EzPinyin.Spider
 					pinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
 					if (pinyin != null)
 					{
-						sample.BKPinyin = pinyin;
+						sample.BaiduBaikePinyin = pinyin;
 						return;
 					}
 				}
@@ -170,7 +137,7 @@ namespace EzPinyin.Spider
 					pinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
 					if (pinyin != null)
 					{
-						sample.BKPinyin = pinyin;
+						sample.BaiduBaikePinyin = pinyin;
 						return;
 					}
 				}
@@ -180,7 +147,7 @@ namespace EzPinyin.Spider
 					pinyin = App.ParseWordPinyin(word, match.Groups[2].Value);
 					if (pinyin != null)
 					{
-						sample.BKPinyin = pinyin;
+						sample.BaiduBaikePinyin = pinyin;
 						return;
 					}
 				}
@@ -190,38 +157,19 @@ namespace EzPinyin.Spider
 					pinyin = App.ParseWordPinyin(word, match.Groups[2].Value);
 					if (pinyin != null)
 					{
-						sample.BKPinyin = pinyin;
+						sample.BaiduBaikePinyin = pinyin;
 						return;
 					}
 				}
 				MatchCollection matches = Regex.Matches(html, @"<div[^>]+para[^>]+>[^\n<>]*[拼发读]音[是为]?([^,，。、\n<>\u3400-\uffff]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (matches.Count == 1)
 				{
-					sample.BKPinyin = App.ParseWordPinyin(word, matches[0].Groups[1].Value);
+					sample.BaiduBaikePinyin = App.ParseWordPinyin(word, matches[0].Groups[1].Value);
 				}
 			}
 			finally
 			{
-				if (sample.BKPinyin != null)
-				{
-					baikeCache[word] = sample.BKPinyin;
-					saveBaikeCache = true;
-				}
-			}
-		}
-
-		/// <summary>
-		/// 保存缓存文件。
-		/// </summary>
-		public static void SaveCache()
-		{
-			if (saveBaikeCache)
-			{
-				File.WriteAllText(BAIKE_CACHE, JsonConvert.SerializeObject(baikeCache));
-			}
-			if (saveHanyuCache)
-			{
-				File.WriteAllText(HANYU_CACHE, JsonConvert.SerializeObject(hanyuCache));
+				BaiduSpider.baikeCache.Add(word, sample.BaiduBaikePinyin);
 			}
 		}
 
@@ -324,13 +272,13 @@ namespace EzPinyin.Spider
 										break;
 									}
 
-									if (current == word.ZPinyin)
+									if (current == word.ZDictPinyin)
 									{
 										pinyin = current;
 										break;
 									}
 
-									if (current == word.HPinyin && current == word.CPinyin)
+									if (current == word.HDictPinyin && current == word.CDictPinyin)
 									{
 										pinyin = current;
 										break;
@@ -357,7 +305,7 @@ namespace EzPinyin.Spider
 							}
 						}
 
-						word.BPinyin = App.ParseWordPinyin(name, pinyin);
+						word.BaiduHanyuPinyin = App.ParseWordPinyin(name, pinyin);
 
 					}
 					page++;

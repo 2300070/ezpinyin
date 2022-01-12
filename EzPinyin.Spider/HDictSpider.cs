@@ -12,22 +12,10 @@ namespace EzPinyin.Spider
 	/// </summary>
 	internal static class HDictSpider
 	{
-		private const string CACHE_FILE = "../cache/hdict.json";
-		private static readonly ConcurrentDictionary<string, string> cache = new ConcurrentDictionary<string, string>();
-		private static readonly bool latestCache;
-		private static bool saveCache;
-
-		static HDictSpider()
-		{
-			if (File.Exists(CACHE_FILE))
-			{
-				cache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, string>>(File.ReadAllText(CACHE_FILE));
-				latestCache = File.GetLastWriteTime(CACHE_FILE).Date == DateTime.Today;
-			}
-		}
+		private static readonly PinyinCache cache  = new PinyinCache("../cache/hdict.json");
 
 		/// <summary>
-		/// 以异步方式抓取常用的含多音字的词语列表。
+		/// 以异步方式抓取词汇列表。
 		/// </summary>
 		/// <returns>任务信息</returns>
 		public static async Task LoadSamplesAsync()
@@ -44,25 +32,20 @@ namespace EzPinyin.Spider
 		/// <param name="sample">样本信息</param>
 		public static async Task LoadSampleAsync(WordInfo sample)
 		{
-			string url = sample.HSource;
+			string url = sample.HDictSource;
 			if (url == null)
 			{
 				return;
 			}
-			if (sample.HPinyin != null)
+			if (sample.HDictPinyin != null)
 			{
 				return;
 			}
 			string word = sample.ActualWord;
-			if (cache.TryGetValue(word, out string pinyin))
+			if (HDictSpider.cache.TryGetValue(word, out string pinyin))
 			{
-				if (pinyin != null || latestCache)
-				{
-					sample.HPinyin = pinyin;
-					return;
-				}
-
-				cache.TryRemove(word, out pinyin);
+				sample.HDictPinyin = pinyin;
+				return;
 			}
 
 			try
@@ -75,29 +58,15 @@ namespace EzPinyin.Spider
 				Match match = Regex.Match(html, @"<span[^>]+.pinyin f20.>([^<]+)</span>");
 				if (match.Success)
 				{
-					sample.HPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value);
+					sample.HDictPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value);
 				}
 			}
 			finally
 			{
-				if (sample.HPinyin != null)
-				{
-					cache[word] = sample.HPinyin;
-					saveCache = true;
-				}
+				HDictSpider.cache.Add(word, sample.HDictPinyin);
 			}
 		}
-		
-		/// <summary>
-		/// 保存缓存文件。
-		/// </summary>
-		public static void SaveCache()
-		{
-			if (saveCache)
-			{
-				File.WriteAllText(CACHE_FILE, JsonConvert.SerializeObject(cache));
-			}
-		}
+
 
 		private static async Task LoadSamplesAsync(string character)
 		{
@@ -132,9 +101,9 @@ namespace EzPinyin.Spider
 					string text = match.Groups[4].Value;
 					if (text.Length > 0)
 					{
-						info.HPinyin = App.ParseWordPinyin(word, text);
+						info.HDictPinyin = App.ParseWordPinyin(word, text);
 					}
-					info.EnableHSource($"https://cd.hwxnet.com/{match.Groups[1].Value}");
+					info.EnableHDictSource($"https://cd.hwxnet.com/{match.Groups[1].Value}");
 				}
 
 				if (html.IndexOf(">下一页</a>", StringComparison.Ordinal) == -1)

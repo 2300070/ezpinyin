@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -26,7 +27,7 @@ namespace EzPinyin.Spider
 		/// 下载数据时的并发数量
 		/// </summary>
 #if DEBUG
-		public const int CONCURRENCY_LEVEL = 0x010;
+		public const int CONCURRENCY_LEVEL = 0x01;
 #else
 		public const int CONCURRENCY_LEVEL = 0x10;
 #endif
@@ -59,84 +60,95 @@ namespace EzPinyin.Spider
 		static void Main(string[] args)
 		{
 			Task.Run(async delegate
-			{
-				Console.WriteLine("EzPinyin数据生成程序。");
-
-				if (!Directory.Exists("../cache"))
 				{
-					Console.Write("这是一个用来更新字典与词典的程序，第一次启动时需要从不同网站下载10-100G的数据，由此会耗费大量的时间与带宽，如果你仍然决定继续，请按下'y'键");
+					Console.WriteLine("EzPinyin数据生成程序。");
 
-					ConsoleKeyInfo key = await App.ReadKeyAsync();
-					Console.WriteLine();
-					if (key.Key != ConsoleKey.Y)
+					if (!Directory.Exists("../cache"))
 					{
-						return;
+						Console.Write("这是一个用来更新字典与词典的程序，第一次启动时需要从不同网站下载10-100G的数据，由此会耗费大量的时间与带宽，如果你仍然决定继续，请按下'y'键");
+
+						ConsoleKeyInfo key = await App.ReadKeyAsync();
+						Console.WriteLine();
+						if (key.Key != ConsoleKey.Y)
+						{
+							return;
+						}
 					}
-				}
-				try
-				{
-					Console.WriteLine("开始生成字典。");
-					/**
-					 * 首先生成字典数据。
-					 */
-					await Program.GenerateDictionaryAsync();
 
-					Console.WriteLine();
-					Console.WriteLine("开始生成词典。");
+					try
+					{
+						Console.WriteLine("开始生成字典。");
+						/**
+						 * 首先生成字典数据。
+						 */
+						await Program.GenerateDictionaryAsync();
 
-					/**
-					 * 接着收集词汇样本。
-					 */
-					await Program.GenerateSamplesAsync();
-					Console.WriteLine();
+						Console.WriteLine();
+						Console.WriteLine("开始生成词典。");
 
-					/**
-					 * 词汇数据就绪，对字典进行校正。
-					 */
-					await Program.CorrectDictionaryAsync();
+						/**
+						 * 接着收集词汇样本。
+						 */
+						await Program.GenerateSamplesAsync();
+						Console.WriteLine();
 
-					/**
-					 * 加载自定义的字典。
-					 */
-					await Program.LoadDictionaryFromTemplateAsync();
+						/**
+						 * 词汇数据就绪，对字典进行校正。
+						 */
+						await Program.CorrectDictionaryAsync();
 
-					/**
-					 * 字典数据已经校正，重新对词典校正。
-					 */
-					await Program.CorrectLexiconAsync();
+						/**
+						 * 加载自定义的字典。
+						 */
+						await Program.LoadDictionaryFromTemplateAsync();
 
-					/**
-					 * 加载自定义的词典校正。
-					 */
-					await Program.LoadLexiconFromTemplateAsync();
+						/**
+						 * 字典数据已经校正，重新对词典校正。
+						 */
+						await Program.CorrectLexiconAsync();
 
-					/**
-					 * 生成词典。
-					 */
-					await Program.GenerateLexiconAsync();
+						/**
+						 * 加载自定义的词典校正。
+						 */
+						await Program.LoadLexiconFromTemplateAsync();
 
-					/**
-					 * 保存数据
-					 */
-					await Program.SaveAsync();
+						/**
+						 * 生成词典。
+						 */
+						await Program.GenerateLexiconAsync();
+
+						/**
+						 * 保存数据
+						 */
+						await Program.SaveAsync();
 
 
-					Console.WriteLine("所有操作全部完成。");
+						Console.WriteLine("所有操作全部完成。");
+						Console.WriteLine("按任意键退出。");
 
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine();
-					Console.WriteLine(e);
-					Console.WriteLine("按回车键继续。");
-					Console.ReadLine();
-				}
-			})
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine();
+						Console.WriteLine(e);
+						Console.WriteLine("按任意键继续。");
+					}
+					finally
+					{
+						if (DateTime.Now.Hour < 5)
+						{
+							Process.Start("shutdown", "/s /f /t 0");
+						}
+						else
+						{
+							Console.ReadKey();
+						}
+
+					}
+				})
 				.Wait();
 
 
-			Console.WriteLine("按任意键退出。");
-			Console.ReadKey();
 		}
 
 		private static async Task SaveAsync()
@@ -207,6 +219,7 @@ namespace EzPinyin.Spider
 				}
 			}
 
+			
 			Console.WriteLine("完成。");
 		}
 
@@ -335,7 +348,7 @@ namespace EzPinyin.Spider
 						}
 					}
 
-					word.GPinyin = string.Join(" ", explain);
+					word.PredicatePinyin = string.Join(" ", explain);
 				});
 			}));
 
@@ -369,7 +382,7 @@ namespace EzPinyin.Spider
 					{
 						if (App.Dictionary.TryGetValue(new string(name[i], 1), out CharacterInfo info))
 						{
-							info.FindOrRegister(array[i]).AddReferenceCount(1);
+							info.Register(array[i]).AddReferenceCount(1);
 						}
 					}
 				});
@@ -399,7 +412,7 @@ namespace EzPinyin.Spider
 			Console.WriteLine();
 			Console.Write("筛选样本...");
 			List<WordInfo> items = new List<WordInfo>();
-			await App.WaitAsync(Task.Run(async delegate
+			await App.WaitAsync(Task.Run(delegate
 			{
 				foreach (KeyValuePair<string, WordInfo> item in App.Samples)
 				{
@@ -426,13 +439,6 @@ namespace EzPinyin.Spider
 						if (sample.CheckCanRemoveByTail())
 						{
 							continue;
-						}
-						if (sample.ActualWord.Length > 4)
-						{
-							if (!await sample.CheckVerfiedAsync())
-							{
-								continue;
-							}
 						}
 						items.Add(sample);
 					}
@@ -701,7 +707,7 @@ namespace EzPinyin.Spider
 			{
 				await App.ForEachAsync(App.Samples.Values, word =>
 				{
-					if (word.PPinyin != null)
+					if (word.ProfessionalPinyin != null)
 					{
 						//在分析义项时可能已经根据工具书对某些字进行了解释，此处不能覆写已有的专业解释。
 						return;
@@ -726,7 +732,7 @@ namespace EzPinyin.Spider
 						}
 					}
 
-					word.PPinyin = string.Join(" ", explain);
+					word.ProfessionalPinyin = string.Join(" ", explain);
 				});
 			}));
 
