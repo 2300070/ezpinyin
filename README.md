@@ -44,7 +44,7 @@
 
 ```csharp
 //获得拼音完整字符串
-PinyinHelper.GetPinyin("重庆银行川藏大区成都分行朝阳区长厦路支行重工大厦办事处九楼董事长办公室");//chong qing yin hang chuan zang da qu cheng du fen hang chao yang qu chang xia lu zhi hang zhong gong da sha ban shi chu jiu lou dong shi zhang ban gong shi
+PinyinHelper.GetPinyin("重庆银行川藏大区成都分行朝阳区长厦路支行重工大厦办事处九楼董事长藏宝室");//chong qing yin hang chuan zang da qu cheng du fen hang chao yang qu chang xia lu zhi hang zhong gong da sha ban shi chu jiu lou dong shi zhang cang bao shi
 
 //获得拼音的首字母
 PinyinHelper.GetInitial("㐀㲒䔤䶵𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝𫠠𫿰𬟀𬺰𭡫𮈦𰀀𱍊");//qbpchgfcwdgzmlldjlkspdc𫜴wbyst𬺰𭡫lzc
