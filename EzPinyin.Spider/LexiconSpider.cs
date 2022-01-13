@@ -55,6 +55,7 @@ namespace EzPinyin.Spider
 
 			Console.WriteLine();
 			Console.WriteLine("下载并生成样本数据。");
+			await LexiconSpider.DownloadSampleAsync(App.Samples["行动"]);
 			await App.ForEachAsync(App.Samples.Values, LexiconSpider.DownloadSampleAsync);
 
 			PinyinCache.SaveAll();
@@ -72,6 +73,11 @@ namespace EzPinyin.Spider
 			if (sample.SpecifiedPinyin != null || sample.CustomPinyin != null || sample.ProfessionalPinyin != null)
 			{
 				return;
+			}
+
+			if (sample.ActualWord == "行动")
+			{
+
 			}
 			/**
 			 * 如果是百度汉语从工具书中引用的，则不再进行剩余处理。

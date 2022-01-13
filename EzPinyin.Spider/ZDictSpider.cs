@@ -579,13 +579,7 @@ namespace EzPinyin.Spider
 				MatchCollection words = Regex.Matches(match.Groups[1].Value, @"[:，;]([\w\s]{2,})(\([^)]+\))?", RegexOptions.Compiled);
 				foreach (Match item in words)
 				{
-					string text = item.Groups[1].Value;
-					if (Regex.IsMatch(text, @"[a-z0-9\s]", RegexOptions.Compiled) || !text.Contains(character))
-					{
-						continue;
-					}
-
-					WordInfo word = LexiconSpider.FindOrRegister(text);
+					WordInfo word = LexiconSpider.FindOrRegister(item.Groups[1].Value);
 					if (word.IsValid)
 					{
 						word.ExplainPinyin(character, pinyin.Text);
@@ -602,7 +596,7 @@ namespace EzPinyin.Spider
 				WordInfo word = LexiconSpider.FindOrRegister(match.Groups[1].Value);
 				if (word.IsValid)
 				{
-					word.ExplainPinyin(character, pinyin.Text);
+					word.EnableZDictSource();
 				}
 			}
 		}

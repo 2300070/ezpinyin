@@ -373,6 +373,7 @@ namespace EzPinyin.Spider
 		/// <param name="word">相关词汇。</param>
 		public WordInfo(string word)
 		{
+			word = Regex.Replace(word, @"\s", string.Empty, RegexOptions.Compiled);
 			if (Regex.IsMatch(word, @"[^\u3400-\u4DBF\u4E00-\u9FFF]") || word.Length < 2)
 			{
 				this.IsValid = false;
@@ -727,10 +728,6 @@ namespace EzPinyin.Spider
 			{
 				this.Source = "计算";
 				return this.specifiedPinyin;
-			}
-			if (this.preferedPinyin != null)
-			{
-				return this.preferedPinyin;
 			}
 			if (!this.IsValid)
 			{

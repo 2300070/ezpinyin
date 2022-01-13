@@ -17,7 +17,7 @@ namespace EzPinyin.UnitTest
 			Console.WriteLine(PinyinHelper.GetPinyin("成都"));
 			Console.WriteLine(PinyinHelper.GetPinyin("长城"));
 			Console.WriteLine(PinyinHelper.GetPinyin("〇"));
-			Console.WriteLine(PinyinHelper.GetPinyin("重庆银行川藏大区成都分行朝阳区长厦路支行重工大厦办事处九楼董事长藏宝室"));
+			Console.WriteLine(PinyinHelper.GetPinyin("重庆银行川藏大区成都分行朝阳区长厦路支行重工大厦行动处九楼董事长藏宝室"));
 			Console.WriteLine(PinyinHelper.GetPinyin("长城重工"));
 			Console.WriteLine(PinyinHelper.GetPinyin("厦门和兴铝材"));
 			Console.WriteLine(PinyinHelper.GetPinyin("一埄憈歌甐绔袘鉜鰠龥㐀㲒䔤䶵龦鿕"));

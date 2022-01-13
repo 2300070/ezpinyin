@@ -27,7 +27,7 @@ namespace EzPinyin.Spider
 		/// 下载数据时的并发数量
 		/// </summary>
 #if DEBUG
-		public const int CONCURRENCY_LEVEL = 0x01;
+		public const int CONCURRENCY_LEVEL = 0x010;
 #else
 		public const int CONCURRENCY_LEVEL = 0x10;
 #endif
@@ -705,25 +705,25 @@ namespace EzPinyin.Spider
 
 			await App.WaitAsync(Task.Run(async delegate
 			{
-				await App.ForEachAsync(App.Samples.Values, word =>
+				await App.ForEachAsync(App.Samples.Values, sample =>
 				{
-					if (word.ProfessionalPinyin != null)
+					if (sample.ProfessionalPinyin != null)
 					{
 						//在分析义项时可能已经根据工具书对某些字进行了解释，此处不能覆写已有的专业解释。
 						return;
 					}
-					string[] explain = word.Explain;
+					string[] explain = sample.Explain;
 					if (explain == null)
 					{
 						return;
 					}
-					string name = word.Word;
+					string word = sample.ActualWord;
 					for (int i = 0; i < explain.Length; i++)
 					{
 						string item = explain[i];
 						if (item == null)
 						{
-							if (!App.Dictionary.TryGetValue(new string(name[i], 1), out CharacterInfo info) || info.Count > 1)
+							if (!App.Dictionary.TryGetValue(new string(word[i], 1), out CharacterInfo info) || info.Count != 1)
 							{
 								return;
 							}
@@ -731,8 +731,7 @@ namespace EzPinyin.Spider
 							explain[i] = info[0];
 						}
 					}
-
-					word.ProfessionalPinyin = string.Join(" ", explain);
+					sample.ProfessionalPinyin = string.Join(" ", explain);
 				});
 			}));
 
