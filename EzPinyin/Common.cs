@@ -1143,16 +1143,16 @@ namespace EzPinyin
 				fixed (char* p = word)
 				{
 					char* cursor = p;
-					char* final = p + word.Length;
+					char* end = p + word.Length;
 					do
 					{
-						string item = Common.LoadPinyinTemparory(ref cursor, final);
+						string item = Common.LoadPinyinTemparory(ref cursor, end);
 						if (item == null)
 						{
 							return;
 						}
 						list.Add(item);
-					} while (cursor < final);
+					} while (cursor < end);
 				}
 				pinyin = list.ToArray();
 			}

@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "项目文件", "项目文�
 		icon.png = icon.png
 		LICENSE = LICENSE
 		README.md = README.md
+		EzPinyin.xml = EzPinyin.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EzPinyin.Spider", "EzPinyin.Spider\EzPinyin.Spider.csproj", "{CA2443A8-33D4-4C9D-8629-4E3EBD90BADE}"

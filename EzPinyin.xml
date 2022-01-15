@@ -119,7 +119,7 @@
             验证词汇是否匹配，将拼音字符串写入到指定的缓存区，并且自动移动游标到词汇末尾下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -128,7 +128,7 @@
             验证词汇是否匹配，将拼音首字母写入到指定的缓存区，并且自动移动游标到词汇末尾下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -137,7 +137,7 @@
             验证词汇是否匹配，将拼音字符串写入到指定的缓存区，并且自动移动游标到词汇末尾下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="index">分隔符。</param>
         </member>
@@ -151,7 +151,7 @@
             验证词汇是否匹配，将拼音字符串写入到指定的缓存区，并且自动移动游标到词汇末尾下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -160,7 +160,7 @@
             验证词汇是否匹配，将拼音首字母写入到指定的缓存区，并且自动移动游标到词汇末尾下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -169,7 +169,7 @@
             验证词汇是否匹配，将拼音字符串写入到指定的缓存区，并且自动移动游标到词汇末尾下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="index">分隔符。</param>
         </member>
@@ -183,7 +183,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -192,7 +192,7 @@
             将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -201,7 +201,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="index">分隔符。</param>
         </member>
@@ -215,7 +215,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -224,7 +224,7 @@
             将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -233,7 +233,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="index">分隔符。</param>
         </member>
@@ -280,7 +280,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -289,7 +289,7 @@
             将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -298,7 +298,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="index">分隔符。</param>
         </member>
@@ -338,12 +338,20 @@
             从指定的文件加载自定义的拼音配置信息。
             </summary>
             <param name="path">配置文件的路径。</param>
+            <remarks>
+            <para>此方法提供了一种除配置文件之外的方式来批量的重定义字符或者词汇的拼音，与使用配置文件的区别在于：这种方式对文件名没有特别的限制，且不会自动装载，这样就可以在必要的时候按需加载使用。</para>
+            <para>此方法不具备线程安全性，多线程环境下可能导致其它方法功能异常，因此请注意线程同步。</para>
+            </remarks>
         </member>
         <member name="M:EzPinyin.PinyinHelper.Load(System.String)">
             <summary>
             加载指定的拼音配置内容。
             </summary>
             <param name="content">配置内容。</param>
+            <remarks>
+            <para>此方法提供了一种除配置文件之外的方式来批量的重定义字符或者词汇的拼音，与使用配置文件的区别在于：这种方式对文件名没有特别的限制，且不会自动装载，这样就可以在必要的时候按需加载使用。</para>
+            <para>此方法不具备线程安全性，多线程环境下可能导致其它方法功能异常，因此请注意线程同步。</para>
+            </remarks>
         </member>
         <member name="M:EzPinyin.PinyinHelper.Define(System.String,System.String)">
             <summary>
@@ -363,7 +371,7 @@
             <param name="pinyin">拼音信息。</param>
             <remarks>
             <para>如果词典中已经存在输入词汇的拼音信息，则该信息将被覆盖；对于重复定义的情形，以最后一次有效操作为准。</para>
-            <para>此方法不具备线程安全性，多线程环境下调用时可能导致功能异常，因此建议仅在全局启动时调用。</para>
+            <para>此方法不具备线程安全性，多线程环境下可能导致其它方法功能异常，因此请注意线程同步。</para>
             </remarks>
         </member>
         <member name="T:EzPinyin.PinyinNode">
@@ -395,7 +403,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -404,7 +412,7 @@
             将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -413,7 +421,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置</param>
+            <param name="end">字符串中最后一个字符的位置</param>
             <param name="buffer">目标缓存区。</param>
             <param name="index">分隔符。</param>
         </member>
@@ -476,7 +484,7 @@
             将游标处的字符写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="end">字符串中最后一个字符的位置。</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -485,7 +493,7 @@
             将游标处的字符写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="end">字符串中最后一个字符的位置。</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -494,7 +502,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="end">字符串中最后一个字符的位置。</param>
             <param name="buffer">目标缓存区。</param>
             <param name="index">分隔符。</param>
         </member>
@@ -527,7 +535,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="end">字符串中最后一个字符的位置。</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -536,7 +544,7 @@
             将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="end">字符串中最后一个字符的位置。</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -545,7 +553,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="end">字符串中最后一个字符的位置。</param>
             <param name="buffer">目标缓存区。</param>
             <param name="index">分隔符。</param>
         </member>
@@ -583,7 +591,7 @@
             将游标处的两个字符写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="end">字符串中最后一个字符的位置。</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -592,7 +600,7 @@
             将游标处的两个字符写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="end">字符串中最后一个字符的位置。</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -601,7 +609,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="end">字符串中最后一个字符的位置。</param>
             <param name="buffer">目标缓存区。</param>
             <param name="index">分隔符。</param>
         </member>
@@ -634,7 +642,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="end">字符串中最后一个字符的位置。</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -643,7 +651,7 @@
             将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="end">字符串中最后一个字符的位置。</param>
             <param name="buffer">目标缓存区。</param>
             <param name="separator">分隔符。</param>
         </member>
@@ -652,7 +660,7 @@
             将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
             </summary>
             <param name="cursor">游标信息。</param>
-            <param name="final">字符串中最后一个字符的位置。</param>
+            <param name="end">字符串中最后一个字符的位置。</param>
             <param name="buffer">目标缓存区。</param>
             <param name="index">分隔符。</param>
         </member>

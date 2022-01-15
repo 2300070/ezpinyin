@@ -31,7 +31,7 @@ namespace EzPinyin
 				{
 					StringBuilder buffer = Common.AcquireBuffer();
 					char* cursor = p;
-					char* final = p + length - 1;
+					char* end = p + length - 1;
 
 					/**
 					 * 循环读取每个字符对应的节点，写入处理结果，并且自动移动游标到下一个字符的位置。
@@ -40,14 +40,14 @@ namespace EzPinyin
 					do
 					{
 
-						Common.MapAnyNode(cursor).WritePinyin(ref cursor, final, buffer, separator);
+						Common.MapAnyNode(cursor).WritePinyin(ref cursor, end, buffer, separator);
 
-					} while (cursor < final);
+					} while (cursor < end);
 
 					/**
 					 * 如果游标与最终的指针相等，说明还余下一个字符没有处理，需要补上最后一个字符。
 					 */
-					if (cursor == final)
+					if (cursor == end)
 					{
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="Common.MapUtf16Node(char*)"/>方法即可。
@@ -91,7 +91,7 @@ namespace EzPinyin
 				if (length > 1)
 				{
 					char* cursor = p;
-					char* final = p + length - 1;
+					char* end = p + length - 1;
 					string[] buffer = new string[length];
 					int index = 0;
 
@@ -101,14 +101,14 @@ namespace EzPinyin
 					 */
 					do
 					{
-						Common.MapAnyNode(cursor).WritePinyin(ref cursor, final, buffer, ref index);
+						Common.MapAnyNode(cursor).WritePinyin(ref cursor, end, buffer, ref index);
 
-					} while (cursor < final);
+					} while (cursor < end);
 
 					/**
 					 * 如果游标与最终的指针相等，说明还余下一个字符没有处理，需要补上最后一个字符。
 					 */
-					if (cursor == final)
+					if (cursor == end)
 					{
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="Common.MapUtf16Node(char*)"/>方法即可。
@@ -164,7 +164,7 @@ namespace EzPinyin
 				{
 					StringBuilder buffer = Common.AcquireBuffer();
 					char* cursor = p;
-					char* final = p + length - 1;
+					char* end = p + length - 1;
 
 					/**
 					 * 循环读取每个字符对应的节点，写入处理结果，并且自动移动游标到下一个字符的位置。
@@ -172,14 +172,14 @@ namespace EzPinyin
 					 */
 					do
 					{
-						Common.MapAnyNode(cursor).WriteInitial(ref cursor, final, buffer, separator);
+						Common.MapAnyNode(cursor).WriteInitial(ref cursor, end, buffer, separator);
 
-					} while (cursor < final);
+					} while (cursor < end);
 
 					/**
 					 * 如果游标与最终的指针相等，说明还余下一个字符没有处理，需要补上最后一个字符。
 					 */
-					if (cursor == final)
+					if (cursor == end)
 					{
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="Common.MapUtf16Node(char*)"/>方法即可。
@@ -205,6 +205,10 @@ namespace EzPinyin
 		/// 从指定的文件加载自定义的拼音配置信息。
 		/// </summary>
 		/// <param name="path">配置文件的路径。</param>
+		/// <remarks>
+		/// <para>此方法提供了一种除配置文件之外的方式来批量的重定义字符或者词汇的拼音，与使用配置文件的区别在于：这种方式对文件名没有特别的限制，且不会自动装载，这样就可以在必要的时候按需加载使用。</para>
+		/// <para>此方法不具备线程安全性，多线程环境下可能导致其它方法功能异常，因此请注意线程同步。</para>
+		/// </remarks>
 		public static void LoadFrom(string path)
 		{
 			if (string.IsNullOrEmpty(path))
@@ -227,6 +231,10 @@ namespace EzPinyin
 		/// 加载指定的拼音配置内容。
 		/// </summary>
 		/// <param name="content">配置内容。</param>
+		/// <remarks>
+		/// <para>此方法提供了一种除配置文件之外的方式来批量的重定义字符或者词汇的拼音，与使用配置文件的区别在于：这种方式对文件名没有特别的限制，且不会自动装载，这样就可以在必要的时候按需加载使用。</para>
+		/// <para>此方法不具备线程安全性，多线程环境下可能导致其它方法功能异常，因此请注意线程同步。</para>
+		/// </remarks>
 		public static void Load(string content)
 		{
 			if (string.IsNullOrEmpty(content))
@@ -282,7 +290,7 @@ namespace EzPinyin
 		/// <param name="pinyin">拼音信息。</param>
 		/// <remarks>
 		/// <para>如果词典中已经存在输入词汇的拼音信息，则该信息将被覆盖；对于重复定义的情形，以最后一次有效操作为准。</para>
-		/// <para>此方法不具备线程安全性，多线程环境下调用时可能导致功能异常，因此建议仅在全局启动时调用。</para>
+		/// <para>此方法不具备线程安全性，多线程环境下可能导致其它方法功能异常，因此请注意线程同步。</para>
 		/// </remarks>
 		public static void Define(string word, string[] pinyin)
 		{

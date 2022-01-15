@@ -14,7 +14,7 @@
     <AssemblyVersion>1.0.0.1</AssemblyVersion>
     <FileVersion>1.0.0.1</FileVersion>
     <PackageIconUrl>https://gitee.com/s230/ezpinyin/raw/master/icon.png</PackageIconUrl>
-    <Version>1.0.9</Version>
+    <Version>1.0.10</Version>
     <PackageTags>pinyin;拼音;汉字</PackageTags>
     <PackageReadmeFile>README.MD</PackageReadmeFile>
     <PackageLicenseExpression> BSD-3-Clause</PackageLicenseExpression>
@@ -22,13 +22,17 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <DocumentationFile>C:\Users\sean\Documents\works\EZPinYin\EzPinyin\EzPinyin.xml</DocumentationFile>
+    <DocumentationFile>C:\Users\sean\Documents\works\EZPinYin\EzPinyin.xml</DocumentationFile>
     <NoWarn>1701;1702;1587</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="EzPinyin.xml" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Properties\" />

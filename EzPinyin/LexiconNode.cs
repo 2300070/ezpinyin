@@ -76,28 +76,28 @@ namespace EzPinyin
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
 		/// </summary>
 		/// <param name="cursor">游标信息。</param>
-		/// <param name="final">字符串中最后一个字符的位置</param>
+		/// <param name="end">字符串中最后一个字符的位置</param>
 		/// <param name="buffer">目标缓存区。</param>
 		/// <param name="separator">分隔符。</param>
-		public override unsafe void WritePinyin(ref char* cursor, char* final, StringBuilder buffer, string separator) => this.nodes[*(cursor + 1) % this.size].WritePinyin(ref cursor, final, buffer, separator);
+		public override unsafe void WritePinyin(ref char* cursor, char* end, StringBuilder buffer, string separator) => this.nodes[*(cursor + 1) % this.size].WritePinyin(ref cursor, end, buffer, separator);
 
 		/// <summary>
 		/// 将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
 		/// </summary>
 		/// <param name="cursor">游标信息。</param>
-		/// <param name="final">字符串中最后一个字符的位置</param>
+		/// <param name="end">字符串中最后一个字符的位置</param>
 		/// <param name="buffer">目标缓存区。</param>
 		/// <param name="separator">分隔符。</param>
-		public override unsafe void WriteInitial(ref char* cursor, char* final, StringBuilder buffer, string separator) => this.nodes[*(cursor + 1) % this.size].WriteInitial(ref cursor, final, buffer, separator);
+		public override unsafe void WriteInitial(ref char* cursor, char* end, StringBuilder buffer, string separator) => this.nodes[*(cursor + 1) % this.size].WriteInitial(ref cursor, end, buffer, separator);
 
 		/// <summary>
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
 		/// </summary>
 		/// <param name="cursor">游标信息。</param>
-		/// <param name="final">字符串中最后一个字符的位置</param>
+		/// <param name="end">字符串中最后一个字符的位置</param>
 		/// <param name="buffer">目标缓存区。</param>
 		/// <param name="index">分隔符。</param>
-		public override unsafe void WritePinyin(ref char* cursor, char* final, string[] buffer, ref int index) => this.nodes[*(cursor + 1) % this.size].WritePinyin(ref cursor, final, buffer, ref index);
+		public override unsafe void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index) => this.nodes[*(cursor + 1) % this.size].WritePinyin(ref cursor, end, buffer, ref index);
 
 		private void Resize(int index)
 		{

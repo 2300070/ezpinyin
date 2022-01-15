@@ -20,23 +20,23 @@ namespace EzPinyin
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
 		/// </summary>
 		/// <param name="cursor">游标信息。</param>
-		/// <param name="final">字符串中最后一个字符的位置</param>
+		/// <param name="end">字符串中最后一个字符的位置</param>
 		/// <param name="buffer">目标缓存区。</param>
 		/// <param name="separator">分隔符。</param>
-		public override unsafe void WritePinyin(ref char* cursor, char* final, StringBuilder buffer, string separator)
+		public override unsafe void WritePinyin(ref char* cursor, char* end, StringBuilder buffer, string separator)
 		{
 			/**
 			 * 先比较前两个字符能否匹配，如果能够匹配，再比较其余的。
 			 */
 			string word = this.Word;
 			int length = this.Length;
-			if (cursor + length - 1 <= final && *(cursor + 1) == word[1] && *(cursor + 2) == word[2])
+			if (cursor + length - 1 <= end && *(cursor + 1) == word[1] && *(cursor + 2) == word[2])
 			{
 				for (int i = 3; i < length; i++)
 				{
 					if (*(cursor + i) != word[i])
 					{
-						this.Next.WritePinyin(ref cursor, final, buffer, separator);
+						this.Next.WritePinyin(ref cursor, end, buffer, separator);
 						return;
 					}
 				}
@@ -51,7 +51,7 @@ namespace EzPinyin
 					buffer.Append(separator).Append(pinyin[i]);
 				}
 
-				if (cursor < final)
+				if (cursor < end)
 				{
 					buffer.Append(separator).Append(pinyin[length]).Append(separator);
 				}
@@ -61,30 +61,30 @@ namespace EzPinyin
 				}
 				return;
 			}
-			this.Next.WritePinyin(ref cursor, final, buffer, separator);
+			this.Next.WritePinyin(ref cursor, end, buffer, separator);
 		}
 
 		/// <summary>
 		/// 将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
 		/// </summary>
 		/// <param name="cursor">游标信息。</param>
-		/// <param name="final">字符串中最后一个字符的位置</param>
+		/// <param name="end">字符串中最后一个字符的位置</param>
 		/// <param name="buffer">目标缓存区。</param>
 		/// <param name="separator">分隔符。</param>
-		public override unsafe void WriteInitial(ref char* cursor, char* final, StringBuilder buffer, string separator)
+		public override unsafe void WriteInitial(ref char* cursor, char* end, StringBuilder buffer, string separator)
 		{
 			/**
 			 * 先比较前两个字符能否匹配，如果能够匹配，再比较其余的。
 			 */
 			string word = this.Word;
 			int length = this.Length;
-			if (cursor + length - 1 <= final && *(cursor + 1) == word[1] && *(cursor + 2) == word[2])
+			if (cursor + length - 1 <= end && *(cursor + 1) == word[1] && *(cursor + 2) == word[2])
 			{
 				for (int i = 3; i < length; i++)
 				{
 					if (*(cursor + i) != word[i])
 					{
-						this.Next.WriteInitial(ref cursor, final, buffer, separator);
+						this.Next.WriteInitial(ref cursor, end, buffer, separator);
 						return;
 					}
 				}
@@ -99,7 +99,7 @@ namespace EzPinyin
 					buffer.Append(separator).Append(pinyin[i][0]);
 				}
 
-				if (cursor < final)
+				if (cursor < end)
 				{
 					buffer.Append(separator).Append(pinyin[length][0]).Append(separator);
 				}
@@ -109,27 +109,27 @@ namespace EzPinyin
 				}
 				return;
 			}
-			this.Next.WriteInitial(ref cursor, final, buffer, separator);
+			this.Next.WriteInitial(ref cursor, end, buffer, separator);
 		}
 
 		/// <summary>
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
 		/// </summary>
 		/// <param name="cursor">游标信息。</param>
-		/// <param name="final">字符串中最后一个字符的位置</param>
+		/// <param name="end">字符串中最后一个字符的位置</param>
 		/// <param name="buffer">目标缓存区。</param>
 		/// <param name="index">分隔符。</param>
-		public override unsafe void WritePinyin(ref char* cursor, char* final, string[] buffer, ref int index)
+		public override unsafe void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index)
 		{
 			string word = this.Word;
 			int length = this.Length;
-			if (cursor + length - 1 <= final && *(cursor + 1) == word[1] && *(cursor + 2) == word[2])
+			if (cursor + length - 1 <= end && *(cursor + 1) == word[1] && *(cursor + 2) == word[2])
 			{
 				for (int i = 3; i < length; i++)
 				{
 					if (*(cursor + i) != word[i])
 					{
-						this.Next.WritePinyin(ref cursor, final, buffer, ref index);
+						this.Next.WritePinyin(ref cursor, end, buffer, ref index);
 						return;
 					}
 				}
@@ -140,7 +140,7 @@ namespace EzPinyin
 				cursor += length;
 				return;
 			}
-			this.Next.WritePinyin(ref cursor, final, buffer, ref index);
+			this.Next.WritePinyin(ref cursor, end, buffer, ref index);
 		}
 	}
 }
