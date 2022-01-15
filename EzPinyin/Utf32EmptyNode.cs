@@ -74,7 +74,7 @@ namespace EzPinyin
 		/// <param name="index">分隔符。</param>
 		public override unsafe void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index)
 		{
-			buffer[index++] = new string(new char[] { *cursor, *(cursor + 1) });
+			buffer[index++] = new string(cursor, 0, 2);
 			cursor += 2;
 		}
 	}

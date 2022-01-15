@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -22,7 +23,6 @@ namespace EzPinyin.Spider
 		private string customPinyin;
 		private string specifiedPinyin;
 		private bool? hasRarePinyin;
-		private string actualWord;
 		private string baiduBaikePinyin;
 		private string bingPinyin;
 		private string guoxuePinyin;
@@ -332,7 +332,7 @@ namespace EzPinyin.Spider
 		/// 最终可以用于处理的词汇。
 		/// </summary>
 		[JsonIgnore]
-		public string ActualWord => this.actualWord ?? (this.actualWord = App.Normalize(this.Word));
+		public string ActualWord { get; }
 
 		/// <summary>
 		/// 指示这个词汇是否因为头部部分可以组成词汇而被移除。
@@ -374,16 +374,62 @@ namespace EzPinyin.Spider
 		public WordInfo(string word)
 		{
 			word = Regex.Replace(word, @"\s", string.Empty, RegexOptions.Compiled);
-			if (Regex.IsMatch(word, @"[^\u3400-\u4DBF\u4E00-\u9FFF]") || word.Length < 2)
+
+			bool isValid = true;
+
+			/**
+			 * 对词汇进行整理，将简体字转换为繁体字，去除非汉字字符。
+			 */
+			StringBuilder buffer = new StringBuilder(word.Length);
+			for (int i = 0; i < word.Length; i++)
 			{
-				this.IsValid = false;
-			}
-			else
-			{
-				this.IsValid = true;
+				char ch = word[i];
+				if (!App.Simplified.TryGetValue(ch, out char simpilfied))
+				{
+					if (ch >= 0x4E00 && ch <= 0x9FFF || ch == '〇' //基本区+‘〇’
+                         || ch >= 0x3400 && ch <= 0x4DBF //扩展A
+                         || ch > 0xF8FF && ch < 0xFB00 //兼容
+                         || ch > 0x2E7F && ch < 0x2FE0 //部首及部首扩展
+					)
+					{
+						buffer.Append(ch);
+					}
+					else if (char.IsHighSurrogate(ch) && i + 1 < word.Length && char.IsLowSurrogate(word[i + 1]))
+					{
+						int code = char.ConvertToUtf32(ch, word[i + 1]);
+						if (code > 0x1FFFF && code < 0x2A6E0 //扩展B
+						    || code > 0x2A6FF && code < 0x2B739 //扩展C
+						    || code > 0x2B73F && code < 0x2B81E //扩展D
+						    || code > 0x2B81F && code < 0x2CEA2 //扩展E
+						    || code > 0x2CEAF && code < 0x2EBE1 //扩展F
+						    || code > 0x2FFFF && code < 0x3134B //扩展G
+						    || code > 0x2F7FF && code < 0x2FA20 //兼容扩展
+						)
+						{
+							buffer.Append(word, i, 2);
+						}
+						else
+						{
+							isValid = false;
+						}
+
+						i += 1;
+					}
+					else
+					{
+						isValid = false;
+					}
+				}
+				else
+				{
+					buffer.Append(simpilfied);
+				}
+
 			}
 
 			this.Word = word;
+			this.ActualWord = buffer.ToString();
+			this.IsValid = isValid;
 		}
 
 		/// <summary>

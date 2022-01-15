@@ -266,24 +266,6 @@ namespace EzPinyin.Spider
 		}
 
 		/// <summary>
-		/// 对指定的词汇进行处理，去除繁体字，异体字，使之标准化。
-		/// </summary>
-		/// <param name="word">需要处理的字符。</param>
-		/// <returns>处理后的字符。</returns>
-		public static string Normalize(string word)
-		{
-			char[] chars = word.ToCharArray();
-			for (int i = 0; i < chars.Length; i++)
-			{
-				if (App.Simplified.TryGetValue(chars[i], out char ch))
-				{
-					chars[i] = ch;
-				}
-			}
-			return new string(chars);
-		}
-
-		/// <summary>
 		/// 以并发方式异步执行指定的动作。
 		/// </summary>
 		/// <param name="action">需要执行的动作。</param>
