@@ -7,15 +7,15 @@
 #### 特性
 
 - 极快的处理速度，具体请参考性能章节。
-- 小巧简洁，包含字典、词典内容在内，整个文件大小约1M左右，无其他项目依赖，不会造成项目臃肿。
 - 涵盖Unicode平面的基本汉字及补充汉字、汉字扩展区A的全部汉字，涵盖扩展区B、C、D、E、F、G的大部分汉字，总计约覆盖九万汉字、五十万词汇。
 - 更好的字典，通过重新对字典中的多音字进行分析优化，使得此项目对于名称的处理具备更好的效果。
-- 支持在运行时重定义拼音之外，还可以用文件的方式自定义汉字或者词汇的拼音，从而达到修正或者补充的效果。
-- 支持简体与繁体。
+- 除了支持在运行时重定义拼音之外，还可以用配置文件的方式自定义汉字或者词汇的拼音，从而达到修正或者补充的效果。
+- 词典同时适配简体与繁体。
+- 小巧简洁，包含字典、词典内容在内不超过1M，无其他项目依赖。
 
 #### 性能
 
-对常见字符进行处理时，此项目性能如下：
+对常见字符进行处理时，本项目的性能参考数据如下表所示：
 
 | 项目    | 性能(字/秒) |
 |-------|----------|
@@ -53,8 +53,8 @@ PinyinHelper.GetInitial("㐀㲒䔤䶵𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤�
 PinyinHelper.GetArray(text);//string[]
 
 //重新定义拼音信息
-PinyinHelper.Define("𫜴", "lun");//拼音是我胡诌的
-PinyinHelper.Define("𫜴吧", new[]{"lun", "biu"});//拼音是我胡诌的
+PinyinHelper.Define("𫜴", "lun");//拼音仅供演示
+PinyinHelper.Define("𫜴吧", new[]{"lun", "biu"});//拼音仅供演示
 
 //加载自定义的拼音配置文件
 PinyinHelper.LoadFrom("custom_file.txt");//文件内容格式请参考自定义配置章节。
@@ -85,9 +85,9 @@ PinyinHelper.Load("𫜴 liu\n𫜴吧 lun biu");//内容格式请参考自定义�
 此外，此项目也吸收了下列站点的部分内容作为参考，一并致谢。
 - 词典网 http://cd.cidianwang.com
 - 汉文学网 http://cd.hwxnet.com
-- 必应词典 https://cn.bing.com/dict/
-- 百度百科 http://baike.baidu.com
 - 国学大师 http://www.guoxuedashi.net/
+- 必应词典 http://cn.bing.com/dict/
+- 百度百科 http://baike.baidu.com
 
 #### 支持
 
