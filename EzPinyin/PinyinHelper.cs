@@ -124,7 +124,7 @@ namespace EzPinyin
 						return buffer;
 					}
 					string[] array = new string[index];
-					Array.Copy(buffer, array, index);
+					Array.Copy(buffer, 0, array, 0, index);
 					return array;
 
 				}

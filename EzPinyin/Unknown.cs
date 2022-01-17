@@ -10,11 +10,11 @@ namespace EzPinyin
 		/// <summary>
 		/// 存储了所有未知UTF16字符的字典。
 		/// </summary>
-		internal static readonly Dictionary<int, PinyinNode> Utf16 = new Dictionary<int, PinyinNode>();
+		internal static readonly Dictionary<int, PinyinNode> Utf16Nodes = new Dictionary<int, PinyinNode>();
 
 		/// <summary>
 		/// 存储了所有未知UTF32字符的字典。
 		/// </summary>
-		internal static readonly Dictionary<int, PinyinNode> Utf32 = new Dictionary<int, PinyinNode>();
+		internal static readonly Dictionary<int, PinyinNode> Utf32Nodes = new Dictionary<int, PinyinNode>();
 	}
 }

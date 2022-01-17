@@ -334,13 +334,13 @@ namespace EzPinyin
 					return CompatibilitySupplement.Dictionary[code - 0x2F800];
 				}
 
-				if (Unknown.Utf32.TryGetValue(code, out result))
+				if (Unknown.Utf32Nodes.TryGetValue(code, out result))
 				{
 					return result;
 				}
 				return Utf32EmptyNode.Instance;
 			}
-			if (Unknown.Utf16.TryGetValue(ch, out result))
+			if (Unknown.Utf16Nodes.TryGetValue(ch, out result))
 			{
 				return result;
 			}
@@ -441,41 +441,41 @@ namespace EzPinyin
 			return result;
 		}
 
-		private static unsafe string LoadPinyinTemparory(ref char* cursor, char* last)
+		private static unsafe string LoadPinyinDirectly(ref char* cursor, char* last)
 		{
 			/**
-			 * 临时读取拼音。
+			 * 直接从资源包加载拼音信息，而不从相应的API读取，避免触发各Unicode平面相关类型的初始化，导致不必要的内存占用。
 			 */
 			PinyinNode node;
 			char ch = *cursor;
 			if (ch > 0x4DFF && ch < 0xA000)
 			{
 				cursor += 1;
-				return Common.LoadPinyinTemparory("dict_basic", ch - 0x4E00);
+				return Common.LoadPinyinDirectly("dict_basic", ch - 0x4E00);
 			}
 
 			if (ch == '〇')
 			{
 				cursor += 1;
-				return Common.LoadPinyinTemparory("dict_basic", 0x5200);
+				return Common.LoadPinyinDirectly("dict_basic", 0x5200);
 			}
 
 			if (ch > 0x33FF && ch < 0x4DC0)
 			{
 				cursor += 1;
-				return Common.LoadPinyinTemparory("dict_ext_a", ch - 0x3400);
+				return Common.LoadPinyinDirectly("dict_ext_a", ch - 0x3400);
 			}
 
 			if (ch > 0xF8FF && ch < 0xFB00)
 			{
 				cursor += 1;
-				return Common.LoadPinyinTemparory("dict_cmp", ch - 0xF900);
+				return Common.LoadPinyinDirectly("dict_cmp", ch - 0xF900);
 			}
 
 			if (ch > 0x2E7F && ch < 0x2FE0)
 			{
 				cursor += 1;
-				return Common.LoadPinyinTemparory("dict_rad", ch - 0x2E80);
+				return Common.LoadPinyinDirectly("dict_rad", ch - 0x2E80);
 			}
 			char ch2;
 			if (ch > 0xD7FF && ch < 0xDE00 && cursor + 1 < last && (ch2 = *(cursor + 1)) > 0xDBFF && ch2 < 0xE000)
@@ -488,7 +488,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x1FFFF && code < 0x2A6E0)
 				{
-					return Common.LoadPinyinTemparory("dict_ext_b", code - 0x20000);
+					return Common.LoadPinyinDirectly("dict_ext_b", code - 0x20000);
 				}
 
 				/**
@@ -496,7 +496,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2A6FF && code < 0x2B739)
 				{
-					return Common.LoadPinyinTemparory("dict_ext_c", code - 0x2A700);
+					return Common.LoadPinyinDirectly("dict_ext_c", code - 0x2A700);
 				}
 
 				/**
@@ -504,7 +504,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2B73F && code < 0x2B81E)
 				{
-					return Common.LoadPinyinTemparory("dict_ext_d", code - 0x2B740);
+					return Common.LoadPinyinDirectly("dict_ext_d", code - 0x2B740);
 				}
 
 				/**
@@ -512,7 +512,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2B81F && code < 0x2CEA2)
 				{
-					return Common.LoadPinyinTemparory("dict_ext_e", code - 0x2B820);
+					return Common.LoadPinyinDirectly("dict_ext_e", code - 0x2B820);
 				}
 
 				/**
@@ -520,7 +520,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2CEAF && code < 0x2EBE1)
 				{
-					return Common.LoadPinyinTemparory("dict_ext_f", code - 0x2CEB0);
+					return Common.LoadPinyinDirectly("dict_ext_f", code - 0x2CEB0);
 				}
 
 				/**
@@ -528,7 +528,7 @@ namespace EzPinyin
 				 */
 				if (code > 0x2FFFF && code < 0x3134B)
 				{
-					return Common.LoadPinyinTemparory("dict_ext_g", code - 0x30000);
+					return Common.LoadPinyinDirectly("dict_ext_g", code - 0x30000);
 				}
 
 				/**
@@ -536,10 +536,10 @@ namespace EzPinyin
 				 */
 				if (code > 0x2F7FF && code < 0x2FA20)
 				{
-					return Common.LoadPinyinTemparory("dict_cmp_sup", code - 0x2F800);
+					return Common.LoadPinyinDirectly("dict_cmp_sup", code - 0x2F800);
 				}
 
-				if (Unknown.Utf32.TryGetValue(code, out node))
+				if (Unknown.Utf32Nodes.TryGetValue(code, out node))
 				{
 					return node.Pinyin;
 				}
@@ -548,14 +548,14 @@ namespace EzPinyin
 			}
 			cursor += 1;
 
-			if (Unknown.Utf16.TryGetValue(ch, out node))
+			if (Unknown.Utf16Nodes.TryGetValue(ch, out node))
 			{
 				return node.Pinyin;
 			}
 			return null;
 		}
 
-		private static string LoadPinyinTemparory(string name, int index)
+		private static string LoadPinyinDirectly(string name, int index)
 		{
 			/**
 			 * 从指定的资源名称中临时读取一个拼音。
@@ -718,7 +718,7 @@ namespace EzPinyin
 					return true;
 				}
 
-				Unknown.Utf16[code] = node;
+				Unknown.Utf16Nodes[code] = node;
 				return true;
 			}
 
@@ -792,7 +792,7 @@ namespace EzPinyin
 						return true;
 					}
 
-					Unknown.Utf32[code] = node;
+					Unknown.Utf32Nodes[code] = node;
 					return true;
 				}
 			}
@@ -831,12 +831,12 @@ namespace EzPinyin
 					return true;
 				}
 
-				if (Unknown.Utf16.TryGetValue(code, out PinyinNode node))
+				if (Unknown.Utf16Nodes.TryGetValue(code, out PinyinNode node))
 				{
 					if (!(node is LexiconNode lexicon))
 					{
 						lexicon = new LexiconNode(node);
-						Unknown.Utf16[code] = lexicon;
+						Unknown.Utf16Nodes[code] = lexicon;
 					}
 
 					lexicon.Add(word, pinyin);
@@ -845,7 +845,7 @@ namespace EzPinyin
 				{
 					LexiconNode lexicon = new LexiconNode(new Utf16Node(pinyin[0]));
 					lexicon.Add(word, pinyin);
-					Unknown.Utf16[code] = lexicon;
+					Unknown.Utf16Nodes[code] = lexicon;
 				}
 				return true;
 			}
@@ -908,12 +908,12 @@ namespace EzPinyin
 					return true;
 				}
 
-				if (Unknown.Utf32.TryGetValue(code, out PinyinNode node))
+				if (Unknown.Utf32Nodes.TryGetValue(code, out PinyinNode node))
 				{
 					if (!(node is LexiconNode lexicon))
 					{
 						lexicon = new LexiconNode(node);
-						Unknown.Utf32[code] = lexicon;
+						Unknown.Utf32Nodes[code] = lexicon;
 					}
 
 					lexicon.Add(word, pinyin);
@@ -922,7 +922,7 @@ namespace EzPinyin
 				{
 					LexiconNode lexicon = new LexiconNode(new Utf32Node(pinyin[0]));
 					lexicon.Add(word, pinyin);
-					Unknown.Utf32[code] = lexicon;
+					Unknown.Utf32Nodes[code] = lexicon;
 				}
 				return true;
 			}
@@ -1146,7 +1146,7 @@ namespace EzPinyin
 					char* end = p + word.Length;
 					do
 					{
-						string item = Common.LoadPinyinTemparory(ref cursor, end);
+						string item = Common.LoadPinyinDirectly(ref cursor, end);
 						if (item == null)
 						{
 							return;
