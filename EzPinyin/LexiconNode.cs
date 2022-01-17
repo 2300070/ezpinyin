@@ -164,29 +164,30 @@ namespace EzPinyin
 				return;
 			}
 
-			LexiconLinkNode compare = target as LexiconLinkNode;
+			LexiconLinkNode item = (LexiconLinkNode)target;
 			LexiconLinkNode prev = null;
-			while (compare != null)
+			do
 			{
-				if (compare.Word == node.Word)
+				if (item.Word == node.Word)
 				{
 					/**
 					 * 替换现有的节点。
 					 */
 					if (prev == null)
 					{
-						node.Next = compare.Next;
+						node.Next = item.Next;
 						this.nodes[index] = node;
 					}
 					else
 					{
-						node.Next = compare.Next;
+						node.Next = item.Next;
 						prev.Next = node;
 					}
+
 					return;
 				}
 
-				if (node.Length > compare.Length)
+				if (node.Length > item.Length)
 				{
 					/**
 					 * 插入新的节点。
@@ -199,16 +200,17 @@ namespace EzPinyin
 					else
 					{
 						prev.Next = node;
-						node.Next = compare;
+						node.Next = item;
 					}
+
 					this.count++;
 					return;
 				}
 
-				prev = compare;
-				compare = compare.Next as LexiconLinkNode;
-			}
-
+				prev = item;
+				item = item.Next as LexiconLinkNode;
+			} while (item != null);
+			
 			prev.Next = node;
 			node.Next = this.firstNode;
 			this.count++;
