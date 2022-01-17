@@ -124,13 +124,7 @@
   <data name="dict_cmp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\dict_cmp;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="dict_cmp1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\dict_cmp;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="dict_cmp_sup" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\dict_cmp_sup;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="dict_cmp_sup1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\dict_cmp_sup;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="dict_ext_a" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -155,9 +149,6 @@
     <value>resources\dict_ext_g;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="dict_rad" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\dict_rad;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="dict_rad1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\dict_rad;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="lex_basic_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
