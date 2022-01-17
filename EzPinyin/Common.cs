@@ -137,94 +137,92 @@ namespace EzPinyin
 				//大写转小写
 				if (ch >= 'A' && ch <= 'Z')
 				{
-					ch = chars[i] = (char)('a' + ch - 'A');
+					chars[i] = (char)('a' + ch - 'A');
 				}
-
 				//全角转半角
-				if (ch >= 'ａ' && ch <= 'ｚ')
+				else if (ch >= 'ａ' && ch <= 'ｚ')
 				{
-					ch = chars[i] = (char)('a' + ch - 'ａ');
+					chars[i] = (char)('a' + ch - 'ａ');
 				}
-				if (ch >= 'Ａ' && ch <= 'Ｚ')
+				else if (ch >= 'Ａ' && ch <= 'Ｚ')
 				{
-					ch = chars[i] = (char)('a' + ch - 'Ａ');
+					chars[i] = (char)('a' + ch - 'Ａ');
 				}
-
-				switch (ch)
+				else
 				{
-					case 'a':
-					case 'ā':
-					case 'á':
-					case 'ă':
-					case 'ǎ':
-					case 'à':
-					case 'ɑ':
-						chars[i] = 'a';
-						break;
-					case 'o':
-					case 'ō':
-					case 'ó':
-					case 'ŏ':
-					case 'ǒ':
-					case 'ò':
-						chars[i] = 'o';
-						break;
-					case 'e':
-					case 'ē':
-					case 'ĕ':
-					case 'ě':
-					case 'è':
-						chars[i] = 'e';
-						break;
-					case 'i':
-					case 'ī':
-					case 'í':
-					case 'ĭ':
-					case 'ǐ':
-					case 'ì':
-						chars[i] = 'i';
-						break;
-					case 'u':
-					case 'ū':
-					case 'ú':
-					case 'ŭ':
-					case 'ǔ':
-					case 'ù':
-						chars[i] = 'u';
-						break;
-					case 'v':
-					case 'ü':
-					case 'ǖ':
-					case 'ǘ':
-					case 'ǚ':
-					case 'ǜ':
-						if (i + 1 < length)
-						{
-							switch (chars[i + 1])
+					switch (ch)
+					{
+						case 'a':
+						case 'ā':
+						case 'á':
+						case 'ă':
+						case 'ǎ':
+						case 'à':
+						case 'ɑ':
+							chars[i] = 'a';
+							break;
+						case 'o':
+						case 'ō':
+						case 'ó':
+						case 'ŏ':
+						case 'ǒ':
+						case 'ò':
+							chars[i] = 'o';
+							break;
+						case 'e':
+						case 'ē':
+						case 'ĕ':
+						case 'ě':
+						case 'è':
+							chars[i] = 'e';
+							break;
+						case 'i':
+						case 'ī':
+						case 'í':
+						case 'ĭ':
+						case 'ǐ':
+						case 'ì':
+							chars[i] = 'i';
+							break;
+						case 'u':
+						case 'ū':
+						case 'ú':
+						case 'ŭ':
+						case 'ǔ':
+						case 'ù':
+							chars[i] = 'u';
+							break;
+						case 'v':
+						case 'ü':
+						case 'ǖ':
+						case 'ǘ':
+						case 'ǚ':
+						case 'ǜ':
+							if (i + 1 < length)
 							{
-								case 'n':
-								case 'e':
-								case 'ē':
-								case 'é':
-								case 'ĕ':
-								case 'ě':
-								case 'è':
-									chars[i] = 'u';
-									break;
-								default:
-									chars[i] = 'v';
-									break;
+								switch (chars[i + 1])
+								{
+									case 'n':
+									case 'e':
+									case 'ē':
+									case 'é':
+									case 'ĕ':
+									case 'ě':
+									case 'è':
+										chars[i] = 'u';
+										break;
+									default:
+										chars[i] = 'v';
+										break;
+								}
 							}
-						}
-						else
-						{
-							chars[i] = 'v';
-						}
-						break;
-					case 'ɡ':
-						chars[i] = 'g';
-						break;
+							else
+							{
+								chars[i] = 'v';
+							}
+							break;
 
+					}
 				}
 			}
 
