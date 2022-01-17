@@ -38,9 +38,11 @@ namespace EzPinyin.UnitTest
 		[TestMethod]
 		public void TestRuntimeLoad()
 		{
-			PinyinHelper.Load("𫜴 lun\n𫜴吧 lun biu");
-			Console.WriteLine(PinyinHelper.GetPinyin("𫜴"));
-			Console.WriteLine(PinyinHelper.GetPinyin("𫜴吧"));
+			Console.WriteLine(PinyinHelper.GetPinyin("𬺰"));
+			Console.WriteLine(PinyinHelper.GetPinyin("𬺰𭡫"));
+			PinyinHelper.Load("𬺰 lun\n𬺰𭡫 lun biu");
+			Console.WriteLine(PinyinHelper.GetPinyin("𬺰"));
+			Console.WriteLine(PinyinHelper.GetPinyin("𬺰𭡫"));
 		}
 
 		[TestMethod]
