@@ -21,9 +21,9 @@ namespace EzPinyin
 
 		internal static readonly char[] CharacterSeparator = { ' ', '	', ' ' };
 
-		internal static readonly PinyinNode[] Utf16NodeTemplates;
+		internal static readonly PinyinNode[] Utf16Templates;
 
-		internal static readonly PinyinNode[] Utf32NodeTemplates;
+		internal static readonly PinyinNode[] Utf32Templates;
 
 		internal static readonly ResourceManager ResourceManager = new ResourceManager("EzPinyin.Resources", Assembly.GetExecutingAssembly());
 
@@ -62,8 +62,8 @@ namespace EzPinyin
 				}
 			}
 
-			Common.Utf16NodeTemplates = utf16Nodes.ToArray();
-			Common.Utf32NodeTemplates = utf32Nodes.ToArray();
+			Common.Utf16Templates = utf16Nodes.ToArray();
+			Common.Utf32Templates = utf32Nodes.ToArray();
 
 			/**
 			 * 加载繁体字字典
@@ -556,12 +556,13 @@ namespace EzPinyin
 		private static string LoadPinyinDirectly(string name, int index)
 		{
 			/**
-			 * 从指定的资源名称中临时读取一个拼音。
+			 * 从指定的资源中直接读取指定索引位置处的拼音。
 			 */
 			byte[] buffer = (byte[])Common.ResourceManager.GetObject(name);
 			index = index << 1;
-			return Common.Utf16NodeTemplates[(buffer[index] << 8) | buffer[index + 1]].Pinyin;
+			return Common.Utf16Templates[(buffer[index] << 8) | buffer[index + 1]].Pinyin;
 		}
+
 		private static bool TryParseTradional(string simplified, out string result)
 		{
 			/**
@@ -629,6 +630,10 @@ namespace EzPinyin
 				{
 					content = content.Substring(0, index).Trim();
 				}
+				if (content.Length == 0)
+				{
+					continue;
+				}
 
 				/**
 				 * 检查该行是否是单字
@@ -638,7 +643,7 @@ namespace EzPinyin
 				{
 					if (Check.IsIdeEnvironment)
 					{
-						throw new Exception($"检测到第{row}行自定义字典错误：'{line}'的格式不正确。");
+						throw new Exception($"检测到第{row}行的自定义配置错误：'{line}'的格式不正确。");
 					}
 
 					continue;
@@ -656,7 +661,7 @@ namespace EzPinyin
 					{
 						if (Check.IsIdeEnvironment)
 						{
-							throw new FormatException($"无法将第{row}行自定义项添加到字典：'{line}'。");
+							throw new FormatException($"无法将第{row}行的自定义项添加到字典：'{line}'。");
 						}
 					}
 				}
@@ -666,7 +671,7 @@ namespace EzPinyin
 					{
 						if (Check.IsIdeEnvironment)
 						{
-							throw new FormatException($"无法将第{row}行自定义项添加到词典：'{line}'。");
+							throw new FormatException($"无法将第{row}行的自定义项添加到词典：'{line}'。");
 						}
 					}
 				}
@@ -683,10 +688,10 @@ namespace EzPinyin
 
 			if (character.Length == 1)
 			{
-				index = Array.FindIndex(Common.Utf16NodeTemplates, searcher);
+				index = Array.FindIndex(Common.Utf16Templates, searcher);
 				if (index > 0)
 				{
-					node = Common.Utf16NodeTemplates[index];
+					node = Common.Utf16Templates[index];
 				}
 				else
 				{
@@ -722,10 +727,10 @@ namespace EzPinyin
 
 			if (character.Length == 2)
 			{
-				index = Array.FindIndex(Common.Utf32NodeTemplates, searcher);
+				index = Array.FindIndex(Common.Utf32Templates, searcher);
 				if (index > 0)
 				{
-					node = Common.Utf32NodeTemplates[index];
+					node = Common.Utf32Templates[index];
 				}
 				else
 				{
@@ -1103,7 +1108,7 @@ namespace EzPinyin
 			{
 				int byte1 = stream.ReadByte();
 				int byte2 = stream.ReadByte();
-				pinyin[i] = Common.Utf16NodeTemplates[(byte1 << 8) | byte2].Pinyin;
+				pinyin[i] = Common.Utf16Templates[(byte1 << 8) | byte2].Pinyin;
 			}
 
 			return pinyin;

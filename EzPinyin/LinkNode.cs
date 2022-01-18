@@ -3,9 +3,9 @@
 namespace EzPinyin
 {
 	/// <summary>
-	/// 表示一个适用于UTF16字符的链表节点。
+	/// 表示一个特定词汇的链表节点的基类。
 	/// </summary>
-	internal abstract class LexiconLinkNode : PinyinNode
+	internal abstract class LinkNode : PinyinNode
 	{
 		/// <summary>
 		/// 当前节点相关联的词汇。
@@ -31,7 +31,7 @@ namespace EzPinyin
 		/// 初始化新的实例。
 		/// </summary>
 		/// <param name="word">词汇信息。</param>
-		protected LexiconLinkNode(string word)
+		protected LinkNode(string word)
 		{
 			this.Word = word;
 		}

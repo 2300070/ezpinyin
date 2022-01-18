@@ -4,13 +4,13 @@ using System.Text;
 namespace EzPinyin
 {
 	/// <summary>
-	/// 表示适用于包含四个以上字符或者包含UTF-32字符的词汇的节点。
+	/// 表示适用于一个词汇长度不固定的链表节点。
 	/// </summary>
-	internal sealed class LexiconLinkNodeX : LexiconLinkNode
+	internal sealed class LinkNodeX : LinkNode
 	{
 		private readonly string[] pinyin;
 
-		internal LexiconLinkNodeX(string word, string[] pinyin)
+		internal LinkNodeX(string word, string[] pinyin)
 			: base(word)
 		{
 			this.pinyin = pinyin;

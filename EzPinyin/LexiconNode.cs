@@ -4,12 +4,15 @@ using System.Text;
 namespace EzPinyin
 {
 	/// <summary>
-	/// 表示一个适用于UTF16字符的词典节点。
+	/// 表示一个词汇节点。
 	/// </summary>
+	/// <remarks>
+	/// 词汇节点与一般的拼音节点的差别在于：词汇节点在进行解析时首先遍历其关联的链表，链表中的每个节点代表了某个匹配第一个字符的某个词汇的信息，如果词汇与输入字符串匹配，则优先使用链表节点来完成解析处理，当所有链表节点都不满足时，由于每个链表的最后节点即是当前词汇节点的字符节点，因此会自然调用字符节点来做默认处理。
+	/// </remarks>
 	internal sealed class LexiconNode : PinyinNode
 	{
-		private PinyinNode[] nodes;
-		private readonly PinyinNode firstNode;//所有词汇公共的头部词汇。
+		private PinyinNode[] buckets;
+		private readonly PinyinNode characterNode;//所有词汇公共的头部词汇。
 		private int count;//实际节点数量。
 		private int size;//nodes长度。
 		private int index;//size在质数表中的索引位置。
@@ -17,12 +20,12 @@ namespace EzPinyin
 		/// <summary>
 		/// 获得当前节点的拼音字符串，始终抛出<see cref="NotSupportedException"/>。
 		/// </summary>
-		public override string Pinyin => this.firstNode.Pinyin;
+		public override string Pinyin => this.characterNode.Pinyin;
 
 
-		internal LexiconNode(PinyinNode firstNode)
+		internal LexiconNode(PinyinNode characterNode)
 		{
-			this.firstNode = firstNode;
+			this.characterNode = characterNode;
 			this.Resize(0);
 		}
 
@@ -38,17 +41,17 @@ namespace EzPinyin
 				switch (pinyin.Length)
 				{
 					case 2:
-						this.Insert(new LexiconLinkNode2(word, pinyin));
+						this.Insert(new LinkNode2(word, pinyin));
 						return;
 					case 3:
-						this.Insert(new LexiconLinkNode3(word, pinyin));
+						this.Insert(new LinkNode3(word, pinyin));
 						return;
 					case 4:
-						this.Insert(new LexiconLinkNode4(word, pinyin));
+						this.Insert(new LinkNode4(word, pinyin));
 						return;
 				}
 			}
-			this.Insert(new LexiconLinkNodeX(word, pinyin));
+			this.Insert(new LinkNodeX(word, pinyin));
 		}
 
 		/// <summary>
@@ -63,14 +66,14 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="cursor">指向输入字符当前串位置的指针，可以作为游标来遍历整个字符串。</param>
 		/// <returns>所获得的字符串。</returns>
-		public override unsafe string GetPinyin(char* cursor) => this.firstNode.GetPinyin(cursor);
+		public override unsafe string GetPinyin(char* cursor) => this.characterNode.GetPinyin(cursor);
 
 		/// <summary>
 		/// 获得拼音首字母。
 		/// </summary>
 		/// <param name="cursor">指向输入字符当前串位置的指针，可以作为游标来遍历整个字符串。</param>
 		/// <returns>所获得的首字母。</returns>
-		public override unsafe string GetInitial(char* cursor) => this.firstNode.GetInitial(cursor);
+		public override unsafe string GetInitial(char* cursor) => this.characterNode.GetInitial(cursor);
 
 		/// <summary>
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
@@ -79,7 +82,7 @@ namespace EzPinyin
 		/// <param name="end">指向输入字符串最后一个字符位置的指针。</param>
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
 		/// <param name="separator">分隔符。</param>
-		public override unsafe void WritePinyin(ref char* cursor, char* end, StringBuilder buffer, string separator) => this.nodes[*(cursor + 1) % this.size].WritePinyin(ref cursor, end, buffer, separator);
+		public override unsafe void WritePinyin(ref char* cursor, char* end, StringBuilder buffer, string separator) => this.buckets[*(cursor + 1) % this.size].WritePinyin(ref cursor, end, buffer, separator);
 
 		/// <summary>
 		/// 将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
@@ -88,7 +91,7 @@ namespace EzPinyin
 		/// <param name="end">指向输入字符串最后一个字符位置的指针。</param>
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
 		/// <param name="separator">分隔符。</param>
-		public override unsafe void WriteInitial(ref char* cursor, char* end, StringBuilder buffer, string separator) => this.nodes[*(cursor + 1) % this.size].WriteInitial(ref cursor, end, buffer, separator);
+		public override unsafe void WriteInitial(ref char* cursor, char* end, StringBuilder buffer, string separator) => this.buckets[*(cursor + 1) % this.size].WriteInitial(ref cursor, end, buffer, separator);
 
 		/// <summary>
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
@@ -97,7 +100,7 @@ namespace EzPinyin
 		/// <param name="end">指向输入字符串最后一个字符位置的指针。</param>
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
 		/// <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
-		public override unsafe void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index) => this.nodes[*(cursor + 1) % this.size].WritePinyin(ref cursor, end, buffer, ref index);
+		public override unsafe void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index) => this.buckets[*(cursor + 1) % this.size].WritePinyin(ref cursor, end, buffer, ref index);
 
 		private void Resize(int index)
 		{
@@ -108,20 +111,20 @@ namespace EzPinyin
 			{
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
-			PinyinNode[] old = this.nodes;
+			PinyinNode[] old = this.buckets;
 
 			/**
 			 * 使用新的容积大小对节点数组进行初始化
 			 */
 			int size = Common.PrimeTable[index];
-			PinyinNode origin = this.firstNode;
+			PinyinNode character = this.characterNode;
 			PinyinNode[] nodes = new PinyinNode[size];
 			for (int i = 0; i < size; i++)
 			{
-				nodes[i] = origin;
+				nodes[i] = character;
 			}
 
-			this.nodes = nodes;
+			this.buckets = nodes;
 			this.index = index;
 			this.size = size;
 			this.count = 0;
@@ -134,7 +137,7 @@ namespace EzPinyin
 				for (int i = 0; i < old.Length; i++)
 				{
 					PinyinNode node = old[i];
-					while (node is LexiconLinkNode link)
+					while (node is LinkNode link)
 					{
 						node = link.Next;
 						this.Insert(link);
@@ -143,7 +146,7 @@ namespace EzPinyin
 			}
 		}
 
-		private void Insert(LexiconLinkNode node)
+		private void Insert(LinkNode node)
 		{
 			if (this.count + 1 >= this.size && this.size < 0x10)
 			{
@@ -155,17 +158,17 @@ namespace EzPinyin
 			}
 
 			int index = node.Word[1] % this.size;
-			PinyinNode target = this.nodes[index];
-			if (!(target is LexiconLinkNode))
+			PinyinNode target = this.buckets[index];
+			if (!(target is LinkNode))
 			{
 				node.Next = target;
-				this.nodes[index] = node;
+				this.buckets[index] = node;
 				this.count++;
 				return;
 			}
 
-			LexiconLinkNode item = (LexiconLinkNode)target;
-			LexiconLinkNode prev = null;
+			LinkNode item = (LinkNode)target;
+			LinkNode prev = null;
 			do
 			{
 				if (item.Word == node.Word)
@@ -176,7 +179,7 @@ namespace EzPinyin
 					if (prev == null)
 					{
 						node.Next = item.Next;
-						this.nodes[index] = node;
+						this.buckets[index] = node;
 					}
 					else
 					{
@@ -195,7 +198,7 @@ namespace EzPinyin
 					if (prev == null)
 					{
 						node.Next = target;
-						this.nodes[index] = node;
+						this.buckets[index] = node;
 					}
 					else
 					{
@@ -208,11 +211,11 @@ namespace EzPinyin
 				}
 
 				prev = item;
-				item = item.Next as LexiconLinkNode;
+				item = item.Next as LinkNode;
 			} while (item != null);
 			
 			prev.Next = node;
-			node.Next = this.firstNode;
+			node.Next = this.characterNode;
 			this.count++;
 		}
 	}

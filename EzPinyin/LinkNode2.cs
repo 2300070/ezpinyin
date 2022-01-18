@@ -3,15 +3,15 @@
 namespace EzPinyin
 {
 	/// <summary>
-	/// 表示适用于一个包含两个UTF16字符的词汇的节点。
+	/// 表示适用于一个词汇长度为2的链表节点。
 	/// </summary>
-	internal sealed class LexiconLinkNode2 : LexiconLinkNode
+	internal sealed class LinkNode2 : LinkNode
 	{
 		private readonly char char1;
 		private readonly string pinyin0;
 		private readonly string pinyin1;
 
-		internal LexiconLinkNode2(string word, string[] pinyin)
+		internal LinkNode2(string word, string[] pinyin)
 			: base(word)
 		{
 			this.char1 = word[1];
