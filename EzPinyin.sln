@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1340
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EzPinyin", "EzPinyin\EzPinyin.csproj", "{7AF4C7D5-D770-44AA-8F11-53CFB9F82D12}"
 EndProject
@@ -9,10 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EzPinyin.UnitTest", "EzPiny
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "项目文件", "项目文件", "{8832A539-76C4-4A81-9FD9-C05AED0D6F82}"
 	ProjectSection(SolutionItems) = preProject
+		EzPinyin.xml = EzPinyin.xml
 		icon.png = icon.png
 		LICENSE = LICENSE
-		README.md = README.md
-		EzPinyin.xml = EzPinyin.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EzPinyin.Spider", "EzPinyin.Spider\EzPinyin.Spider.csproj", "{CA2443A8-33D4-4C9D-8629-4E3EBD90BADE}"

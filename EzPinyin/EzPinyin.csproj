@@ -14,16 +14,16 @@
     <AssemblyVersion>1.0.0.1</AssemblyVersion>
     <FileVersion>1.0.0.1</FileVersion>
     <PackageIconUrl></PackageIconUrl>
-    <Version>1.0.12</Version>
+    <Version>1.0.13</Version>
     <PackageTags>pinyin;bopomofo;拼音;汉字</PackageTags>
-    <PackageReadmeFile>README.MD</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression> BSD-3-Clause</PackageLicenseExpression>
     <UserSecretsId>18b9bc79-5bc3-48c8-9367-de42dedcb0c0</UserSecretsId>
     <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <DocumentationFile>C:\Users\sean\Documents\works\EZPinYin\EzPinyin.xml</DocumentationFile>
+    <DocumentationFile>C:\Users\sean\Documents\works\EzPinYin\EzPinyin.xml</DocumentationFile>
     <NoWarn>1701;1702;1587</NoWarn>
   </PropertyGroup>
 
@@ -40,7 +40,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="../LICENSE" />
-    <None Include="../README.md" Pack="true" PackagePath="\" />
     <None Include="../icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 </Project>
