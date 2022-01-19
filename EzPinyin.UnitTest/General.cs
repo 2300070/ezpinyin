@@ -36,6 +36,17 @@ namespace EzPinyin.UnitTest
 		}
 
 		[TestMethod]
+		public void TestDefineTradional()
+		{
+			Console.WriteLine(PinyinHelper.GetPinyin("厂长"));
+			PinyinHelper.Define("厂长", new[] { "chang", "chang" });
+			Console.WriteLine(PinyinHelper.GetPinyin("厂长"));//此处应该输出changchang
+			Console.WriteLine(PinyinHelper.GetPinyin("廠長"));//此处应该同样输出changchang，因为定义简体词汇会应用到繁体。
+			PinyinHelper.Define("厂长", new[] { "chang", "zhang" });
+			Console.WriteLine(PinyinHelper.GetPinyin("廠長"));//此处应该输出changzhang，因为繁体已经重新定义。
+		}
+
+		[TestMethod]
 		public void TestRuntimeLoad()
 		{
 			Console.WriteLine(PinyinHelper.GetPinyin("𬺰"));

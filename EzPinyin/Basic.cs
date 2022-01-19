@@ -15,20 +15,8 @@ namespace EzPinyin
 				Dictionary = Common.LoadDictionary("dict_basic", Common.Utf16Templates);
 
 				Common.LoadLexicon(Dictionary, 0x4E00);
-				
 
-				/**
-				 * 搜索并应用用户的自定义字典文件
-				 */
-				string[] files = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*dict*");
-
-				foreach (string file in files)
-				{
-					Common.LoadFrom(file);
-#if DEBUG
-					Console.WriteLine($"Load custom file: {file}.");
-#endif
-				}
+				Common.LoadUserFiles();
 			}
 			finally
 			{

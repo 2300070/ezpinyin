@@ -77,19 +77,21 @@
             获得当前节点的拼音字符串，始终抛出<see cref="T:System.NotSupportedException"/>。
             </summary>
         </member>
-        <member name="M:EzPinyin.LexiconNode.Add(System.String,System.String[])">
+        <member name="M:EzPinyin.LexiconNode.Add(System.String,System.String[],System.Int32)">
             <summary>
             为当前节点注册一个词汇与拼音。
             </summary>
             <param name="word">需要注册的词汇。</param>
             <param name="pinyin">该词汇对应的拼音。</param>
+            <param name="priority">优先级别</param>
         </member>
-        <member name="M:EzPinyin.LexiconNode.Add(System.String,System.String)">
+        <member name="M:EzPinyin.LexiconNode.Add(System.String,System.String,System.Int32)">
             <summary>
             为当前节点注册一个词汇与拼音。
             </summary>
             <param name="word">需要注册的词汇。</param>
             <param name="pinyin">该词汇对应的拼音。</param>
+            <param name="priority">优先级别</param>
         </member>
         <member name="M:EzPinyin.LexiconNode.GetPinyin(System.Char*)">
             <summary>
@@ -142,6 +144,11 @@
             当前节点相关联的词汇。
             </summary>
         </member>
+        <member name="P:EzPinyin.LinkNode.Priority">
+            <summary>
+            节点的优先级别。
+            </summary>
+        </member>
         <member name="P:EzPinyin.LinkNode.Length">
             <summary>
             当前节点相关联的词汇的长度。
@@ -157,11 +164,12 @@
             获得当前节点的拼音字符串。
             </summary>
         </member>
-        <member name="M:EzPinyin.LinkNode.#ctor(System.String)">
+        <member name="M:EzPinyin.LinkNode.#ctor(System.String,System.Int32)">
             <summary>
             初始化新的实例。
             </summary>
             <param name="word">词汇信息。</param>
+            <param name="priority">优先级别</param>
         </member>
         <member name="M:EzPinyin.LinkNode.GetPinyin(System.Char*)">
             <summary>
@@ -446,6 +454,16 @@
         <member name="F:EzPinyin.Unknown.Utf32Nodes">
             <summary>
             存储了所有未知UTF32字符的字典。
+            </summary>
+        </member>
+        <member name="T:EzPinyin.UserDictionary">
+            <summary>
+            表示自定义的用户配置文件。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.UserDictionary.LoadAll">
+            <summary>
+            加载所有的用户自定义字典或者词典。
             </summary>
         </member>
         <member name="T:EzPinyin.Utf16EmptyNode">

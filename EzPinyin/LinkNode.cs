@@ -13,6 +13,11 @@ namespace EzPinyin
 		internal readonly string Word;
 
 		/// <summary>
+		/// 节点的优先级别。
+		/// </summary>
+		internal int Priority { get; }
+
+		/// <summary>
 		/// 当前节点相关联的词汇的长度。
 		/// </summary>
 		internal int Length => this.Word.Length;
@@ -31,9 +36,11 @@ namespace EzPinyin
 		/// 初始化新的实例。
 		/// </summary>
 		/// <param name="word">词汇信息。</param>
-		protected LinkNode(string word)
+		/// <param name="priority">优先级别</param>
+		protected LinkNode(string word, int priority)
 		{
 			this.Word = word;
+			this.Priority = priority;
 		}
 
 		/// <summary>

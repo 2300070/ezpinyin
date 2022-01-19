@@ -34,24 +34,25 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="word">需要注册的词汇。</param>
 		/// <param name="pinyin">该词汇对应的拼音。</param>
-		public void Add(string word, string[] pinyin)
+		/// <param name="priority">优先级别</param>
+		public void Add(string word, string[] pinyin, int priority)
 		{
 			if (word.Length == pinyin.Length)
 			{
 				switch (pinyin.Length)
 				{
 					case 2:
-						this.Insert(new LinkNode2(word, pinyin));
+						this.Insert(new LinkNode2(word, pinyin, priority));
 						return;
 					case 3:
-						this.Insert(new LinkNode3(word, pinyin));
+						this.Insert(new LinkNode3(word, pinyin, priority));
 						return;
 					case 4:
-						this.Insert(new LinkNode4(word, pinyin));
+						this.Insert(new LinkNode4(word, pinyin, priority));
 						return;
 				}
 			}
-			this.Insert(new LinkNodeX(word, pinyin));
+			this.Insert(new LinkNodeX(word, pinyin, priority));
 		}
 
 		/// <summary>
@@ -59,7 +60,8 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="word">需要注册的词汇。</param>
 		/// <param name="pinyin">该词汇对应的拼音。</param>
-		public void Add(string word, string pinyin) => this.Add(word, pinyin.Split(Common.CharacterSeparator, StringSplitOptions.RemoveEmptyEntries));
+		/// <param name="priority">优先级别</param>
+		public void Add(string word, string pinyin, int priority) => this.Add(word, pinyin.Split(Common.CharacterSeparator, StringSplitOptions.RemoveEmptyEntries), priority);
 
 		/// <summary>
 		/// 获得拼音字符串。
@@ -173,6 +175,10 @@ namespace EzPinyin
 			{
 				if (item.Word == node.Word)
 				{
+					if (node.Priority < item.Priority)
+					{
+						return;
+					}
 					/**
 					 * 替换现有的节点。
 					 */
@@ -213,7 +219,7 @@ namespace EzPinyin
 				prev = item;
 				item = item.Next as LinkNode;
 			} while (item != null);
-			
+
 			prev.Next = node;
 			node.Next = this.characterNode;
 			this.count++;
