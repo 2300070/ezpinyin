@@ -485,10 +485,11 @@ namespace EzPinyin.Spider
 
 			for (int i = 0; i < word.Length; i++)
 			{
-				if (array[i] == null || !App.Dictionary.TryGetValue(new string(word[i], 1), out CharacterInfo ch) || (indexes[i] = ch.IndexOf(array[i])) == -1)
+				if (array[i] == null || !App.Dictionary.TryGetValue(new string(word[i], 1), out CharacterInfo ch) || ch.IndexOf(array[i]) == -1 || (indexes[i] = App.PinyinList.IndexOf(array[i])) == -1)
 				{
 					return false;
 				}
+
 			}
 
 			this.preferedPinyinIndexes = indexes;

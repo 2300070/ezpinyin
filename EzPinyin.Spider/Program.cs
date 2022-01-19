@@ -674,18 +674,18 @@ namespace EzPinyin.Spider
 
 		private static async Task GenerateSamplesAsync()
 		{
-			if (File.Exists(App.SAMPLE_CACHE_FILE) && !App.IsDataReloaded)
-			{
-				Console.Write("如果你想要重新扫描样本，请按下'y'键");
-				ConsoleKeyInfo key = await App.ReadKeyAsync();
-				Console.WriteLine();
-				if (key.Key != ConsoleKey.Y)
-				{
-					Console.WriteLine();
-					await App.LoadSamplesAsync();
-					return;
-				}
-			}
+			//if (File.Exists(App.SAMPLE_CACHE_FILE) && !App.IsDataReloaded)
+			//{
+			//	Console.Write("如果你想要重新扫描样本，请按下'y'键");
+			//	ConsoleKeyInfo key = await App.ReadKeyAsync();
+			//	Console.WriteLine();
+			//	if (key.Key != ConsoleKey.Y)
+			//	{
+			//		Console.WriteLine();
+			//		await App.LoadSamplesAsync();
+			//		return;
+			//	}
+			//}
 
 			App.IsDataReloaded = true;
 
