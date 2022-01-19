@@ -171,15 +171,15 @@ namespace EzPinyin.Spider
 						stacks = new HashSet<string> { key };
 					}
 					
-					match = Regex.Match(explain, @"古?[同俗]【<a[^>]+uni=([0-9A-F]{4,})>((?!</a>).)+</a>】");
+					match = Regex.Match(explain, @"古?(同|俗|兼容)【<a[^>]+uni=([0-9A-F]{4,})>((?!</a>).)+</a>】");
 					if (match.Success)
 					{
-						if (await YDictSpider.LoadVariantAsync(result, match.Groups[1].Value, stacks))
+						if (await YDictSpider.LoadVariantAsync(result, match.Groups[2].Value, stacks))
 						{
 							return result;
 						}
 					}
-					match = Regex.Match(explain, @">【<a[^>]+uni=([0-9A-F]{4,})>((?!</a>).)+</a>】[^\n<>]*(简化|二简)");
+					match = Regex.Match(explain, @">【<a[^>]+uni=([0-9A-F]{4,})>((?!</a>).)+</a>】[^\n<>]*的(简化|二简|繁体)");
 					if (match.Success)
 					{
 						if (await YDictSpider.LoadVariantAsync(result, match.Groups[1].Value, stacks))

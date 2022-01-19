@@ -60,7 +60,7 @@ namespace EzPinyin.Spider
 			await App.ForEachAsync(this.characters, async character =>
 			{
 				CharacterInfo info = await DictionarySpider.DownloadAsync(character);
-				if (this.Check && info != null && info.Count == 0 && info.IsTrusted)
+				if (info != null && info.Count == 0 && info.IsTrusted)
 				{
 					buffer.Append(character);
 				}
