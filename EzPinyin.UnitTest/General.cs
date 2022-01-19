@@ -40,10 +40,10 @@ namespace EzPinyin.UnitTest
 		{
 			Console.WriteLine(PinyinHelper.GetPinyin("厂长"));
 			PinyinHelper.Define("厂长", new[] { "chang", "chang" });
-			Console.WriteLine(PinyinHelper.GetPinyin("厂长"));//此处应该输出changchang
-			Console.WriteLine(PinyinHelper.GetPinyin("廠長"));//此处应该同样输出changchang，因为定义简体词汇会应用到繁体。
+			Console.WriteLine(PinyinHelper.GetPinyin("厂长"));//此处应该输出chang chang
+			Console.WriteLine(PinyinHelper.GetPinyin("廠長"));//此处应该同样输出chang chang，因为定义简体词汇会应用到繁体。
 			PinyinHelper.Define("厂长", new[] { "chang", "zhang" });
-			Console.WriteLine(PinyinHelper.GetPinyin("廠長"));//此处应该输出changzhang，因为繁体已经重新定义。
+			Console.WriteLine(PinyinHelper.GetPinyin("廠長"));//此处应该输出chang zhang，因为繁体已经重新定义。
 		}
 
 		[TestMethod]
