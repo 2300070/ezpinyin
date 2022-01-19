@@ -19,6 +19,7 @@
     <PackageReadmeFile>README.MD</PackageReadmeFile>
     <PackageLicenseExpression> BSD-3-Clause</PackageLicenseExpression>
     <UserSecretsId>18b9bc79-5bc3-48c8-9367-de42dedcb0c0</UserSecretsId>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
