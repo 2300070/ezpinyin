@@ -9,12 +9,12 @@
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SignAssembly>false</SignAssembly>
-    <PackageProjectUrl>https://gitee.com/s230/ezpinyin/</PackageProjectUrl>
-    <RepositoryUrl>https://gitee.com/s230/ezpinyin/</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/2300070/ezpinyin</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/2300070/ezpinyin</RepositoryUrl>
     <AssemblyVersion>1.0.0.1</AssemblyVersion>
     <FileVersion>1.0.0.1</FileVersion>
-    <PackageIconUrl>https://gitee.com/s230/ezpinyin/raw/master/icon.png</PackageIconUrl>
-    <Version>1.0.11</Version>
+    <PackageIconUrl></PackageIconUrl>
+    <Version>1.0.12</Version>
     <PackageTags>pinyin;bopomofo;拼音;汉字</PackageTags>
     <PackageReadmeFile>README.MD</PackageReadmeFile>
     <PackageLicenseExpression> BSD-3-Clause</PackageLicenseExpression>
