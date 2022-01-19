@@ -684,11 +684,10 @@ namespace EzPinyin
 
 			int index;
 			int code;
-			Predicate<PinyinNode> searcher = n => n.Pinyin == pinyin;
 
 			if (character.Length == 1)
 			{
-				index = Array.FindIndex(Common.Utf16Templates, searcher);
+				index = Common.FindIndex(Common.Utf16Templates, pinyin);
 				if (index > 0)
 				{
 					node = Common.Utf16Templates[index];
@@ -727,7 +726,7 @@ namespace EzPinyin
 
 			if (character.Length == 2)
 			{
-				index = Array.FindIndex(Common.Utf32Templates, searcher);
+				index = Common.FindIndex(Common.Utf32Templates, pinyin);
 				if (index > 0)
 				{
 					node = Common.Utf32Templates[index];
@@ -931,6 +930,18 @@ namespace EzPinyin
 			}
 
 			return false;
+		}
+
+		private static int FindIndex(PinyinNode[] templates, string pinyin)
+		{
+			for (int i = 1; i < templates.Length; i++)
+			{
+				if (templates[i].Pinyin == pinyin)
+				{
+					return i;
+				}
+			}
+			return -1;
 		}
 
 

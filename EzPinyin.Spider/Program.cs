@@ -156,8 +156,6 @@ namespace EzPinyin.Spider
 			Console.WriteLine();
 			Console.WriteLine("生成最终数据。");
 
-			App.PinyinList.Sort();
-
 			await basic.SaveAsync();
 
 			await extA.SaveAsync();
@@ -247,6 +245,11 @@ namespace EzPinyin.Spider
 						/**
 						 * 写入词汇
 						 */
+						int[] indexes = info.PreferedPinyinIndexes;
+						if (indexes == null)
+						{
+							continue;
+						}
 						string word = info.ActualWord;
 						MemoryStream ms;
 
@@ -280,10 +283,10 @@ namespace EzPinyin.Spider
 							/**
 							 * 写入拼音
 							 */
-							string[] array = info.PreferedPinyinArray;
-							foreach (string pinyin in array)
+							for (int i = 0; i < indexes.Length; i++)
 							{
-								int index = App.PinyinList.IndexOf(pinyin) + 1;
+								int index = indexes[i] + 1;
+
 								buffer[0] = (byte)((index >> 8) & 0xFF);
 								buffer[1] = (byte)(index & 0xFF);
 								ms.Write(buffer, 0, 2);
@@ -395,6 +398,8 @@ namespace EzPinyin.Spider
 		private static async Task GenerateLexiconAsync()
 		{
 			App.IsDataReloaded = true;
+
+			App.PinyinList.Sort();
 
 			/**
 			 * 添加行政区划

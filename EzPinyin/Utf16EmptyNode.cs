@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace EzPinyin
 {
@@ -15,7 +16,7 @@ namespace EzPinyin
 		/// <summary>
 		/// 获得当前节点的拼音字符串。
 		/// </summary>
-		public override string Pinyin =>null;
+		public override string Pinyin => throw new NotSupportedException();
 
 		private Utf16EmptyNode(){}
 

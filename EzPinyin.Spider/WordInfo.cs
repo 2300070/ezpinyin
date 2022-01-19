@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace EzPinyin.Spider
@@ -26,6 +25,7 @@ namespace EzPinyin.Spider
 		private string baiduBaikePinyin;
 		private string bingPinyin;
 		private string guoxuePinyin;
+		private int[] preferedPinyinIndexes;
 
 		/// <summary>
 		/// 词汇的文本信息。
@@ -43,6 +43,22 @@ namespace EzPinyin.Spider
 		/// </summary>
 		[JsonIgnore]
 		public string[] PreferedPinyinArray => this.preferedPinyinArray ?? (this.preferedPinyinArray = this.PreferedPinyin?.Split(' '));
+
+		/// <summary>
+		/// 获得相关词汇经过评估的理想的拼音的索引数组。
+		/// </summary>
+		[JsonIgnore]
+		public int[] PreferedPinyinIndexes
+		{
+			get
+			{
+				if (this.preferedPinyinIndexes == null && this.IsValid)
+				{
+					this.Validate();
+				}
+				return this.preferedPinyinIndexes;
+			}
+		}
 
 		/// <summary>
 		/// 这个词汇在汉典的详细资料地址。
@@ -387,9 +403,9 @@ namespace EzPinyin.Spider
 				if (!App.Simplified.TryGetValue(ch, out char simpilfied))
 				{
 					if (ch >= 0x4E00 && ch <= 0x9FFF || ch == '〇' //基本区+‘〇’
-                         || ch >= 0x3400 && ch <= 0x4DBF //扩展A
-                         || ch > 0xF8FF && ch < 0xFB00 //兼容
-                         || ch > 0x2E7F && ch < 0x2FE0 //部首及部首扩展
+						 || ch >= 0x3400 && ch <= 0x4DBF //扩展A
+						 || ch > 0xF8FF && ch < 0xFB00 //兼容
+						 || ch > 0x2E7F && ch < 0x2FE0 //部首及部首扩展
 					)
 					{
 						buffer.Append(ch);
@@ -398,12 +414,12 @@ namespace EzPinyin.Spider
 					{
 						int code = char.ConvertToUtf32(ch, word[i + 1]);
 						if (code > 0x1FFFF && code < 0x2A6E0 //扩展B
-						    || code > 0x2A6FF && code < 0x2B739 //扩展C
-						    || code > 0x2B73F && code < 0x2B81E //扩展D
-						    || code > 0x2B81F && code < 0x2CEA2 //扩展E
-						    || code > 0x2CEAF && code < 0x2EBE1 //扩展F
-						    || code > 0x2FFFF && code < 0x3134B //扩展G
-						    || code > 0x2F7FF && code < 0x2FA20 //兼容扩展
+							|| code > 0x2A6FF && code < 0x2B739 //扩展C
+							|| code > 0x2B73F && code < 0x2B81E //扩展D
+							|| code > 0x2B81F && code < 0x2CEA2 //扩展E
+							|| code > 0x2CEAF && code < 0x2EBE1 //扩展F
+							|| code > 0x2FFFF && code < 0x3134B //扩展G
+							|| code > 0x2F7FF && code < 0x2FA20 //兼容扩展
 						)
 						{
 							buffer.Append(word, i, 2);
@@ -465,13 +481,17 @@ namespace EzPinyin.Spider
 				return false;
 			}
 
+			int[] indexes = new int[word.Length];
+
 			for (int i = 0; i < word.Length; i++)
 			{
-				if (array[i] == null || !App.Dictionary.TryGetValue(new string(word[i], 1), out CharacterInfo ch) || ch.IndexOf(array[i]) == -1)
+				if (array[i] == null || !App.Dictionary.TryGetValue(new string(word[i], 1), out CharacterInfo ch) || (indexes[i] = ch.IndexOf(array[i])) == -1)
 				{
 					return false;
 				}
 			}
+
+			this.preferedPinyinIndexes = indexes;
 			return true;
 		}
 
@@ -491,7 +511,7 @@ namespace EzPinyin.Spider
 		{
 			this.ZDictSource = $"https://www.zdic.net/hans/{Uri.EscapeDataString(word ?? this.Word)}";
 		}
-		
+
 		/// <summary>
 		/// 指示相关的词汇在国学网有详细资料。
 		/// </summary>
@@ -887,7 +907,7 @@ namespace EzPinyin.Spider
 			{
 				return 0D;
 			}
-			
+
 			double score = 0D;
 			if (p == this.ZDictPinyin)
 			{
