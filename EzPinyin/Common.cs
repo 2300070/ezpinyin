@@ -28,8 +28,12 @@ namespace EzPinyin
 		internal static readonly ResourceManager ResourceManager = new ResourceManager("EzPinyin.Resources", Assembly.GetExecutingAssembly());
 
 		internal static readonly string[] EmptyArray = new string[0];
+
 		internal const int PRIORITY_HIGH = 0x02;
+
 		internal const int PRIORITY_NORMAL = 0x00;
+
+		internal const int PRIORITY_LOW = -0x01;
 
 		static Common()
 		{
@@ -1022,7 +1026,7 @@ namespace EzPinyin
 					 */
 					if (Common.TryParseTradional(word, out string traditional) && traditional != word)
 					{
-						Common.DefinePinyin(dictionary, head, traditional, pinyin, Common.PRIORITY_NORMAL);
+						Common.DefinePinyin(dictionary, head, traditional, pinyin, Common.PRIORITY_LOW);
 					}
 				}
 			}
@@ -1058,7 +1062,7 @@ namespace EzPinyin
 					 */
 					if (Common.TryParseTradional(word, out string traditional) && traditional != word)
 					{
-						Common.DefinePinyin(dictionary, head, traditional, pinyin, Common.PRIORITY_NORMAL);
+						Common.DefinePinyin(dictionary, head, traditional, pinyin, Common.PRIORITY_LOW);
 					}
 				}
 			}
@@ -1092,7 +1096,7 @@ namespace EzPinyin
 					 */
 					if (Common.TryParseTradional(word, out string traditional) && traditional != word)
 					{
-						Common.DefinePinyin(dictionary, head, traditional, null, Common.PRIORITY_NORMAL);
+						Common.DefinePinyin(dictionary, head, traditional, null, Common.PRIORITY_LOW);
 					}
 				}
 			}
@@ -1128,7 +1132,7 @@ namespace EzPinyin
 					 */
 					if (Common.TryParseTradional(word, out string traditional) && traditional != word)
 					{
-						Common.DefinePinyin(dictionary, head, traditional, null, Common.PRIORITY_NORMAL);
+						Common.DefinePinyin(dictionary, head, traditional, null, Common.PRIORITY_LOW);
 					}
 				}
 			}
