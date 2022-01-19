@@ -33,10 +33,10 @@ namespace EzPinyin.Spider
 #endif
 		static Program()
 		{
-			basic = new DictionarySpider("基本汉字", "dict_basic", 0x4E00, 0x9FFF);
+			basic = new DictionarySpider("基本汉字", "dict_basic", 0x4E00, 0x9FFF) { Check = true };
 			basic.Add("〇");
 
-			extA = new DictionarySpider("扩展A", "dict_ext_a", 0x3400, 0x4DBF);
+			extA = new DictionarySpider("扩展A", "dict_ext_a", 0x3400, 0x4DBF) { Check = true };
 
 			extB = new DictionarySpider("扩展B", "dict_ext_b", 0x20000, 0x2A6DF);
 
@@ -108,7 +108,7 @@ namespace EzPinyin.Spider
 						await Program.CorrectLexiconAsync();
 
 						/**
-						 * 加载自定义的词典校正。
+						 * 加载自定义的词典模板。
 						 */
 						await Program.LoadLexiconFromTemplateAsync();
 
@@ -219,7 +219,7 @@ namespace EzPinyin.Spider
 				}
 			}
 
-			
+
 			Console.WriteLine("完成。");
 		}
 
@@ -418,7 +418,7 @@ namespace EzPinyin.Spider
 				{
 					string key = item.Key;
 					WordInfo sample = item.Value;
-					if (sample.PreferedPinyin == null || sample.IsDisabled || !sample.IsValid)
+					if (!sample.Validate())
 					{
 						continue;
 					}
@@ -560,16 +560,7 @@ namespace EzPinyin.Spider
 			{
 				foreach (WordInfo sample in App.Samples.Values)
 				{
-					//if (sample.ActualWord == "支行")
-					//{
-
-					//}
-					if (sample.IsSelected || sample.IsDisabled || sample.PreferedPinyin == null || !sample.IsValid)
-					{
-						continue;
-					}
-
-					if (sample.PreferedPinyin == null)
+					if (sample.IsSelected || !sample.IsValid)
 					{
 						continue;
 					}
@@ -581,10 +572,6 @@ namespace EzPinyin.Spider
 
 					foreach (WordInfo item in items)
 					{
-						//if (item.ActualWord == "朝阳" && sample.ActualWord == "朝阳区")
-						//{
-
-						//}
 						if (item.CheckIntersect(sample))
 						{
 							sample.IsIntersection = true;
@@ -745,6 +732,8 @@ namespace EzPinyin.Spider
 
 		private static async Task GenerateDictionaryAsync()
 		{
+			//await DictionarySpider.DownloadAsync("䎍");
+
 			if (File.Exists(App.DICTIONARY_CACHE_FILE))
 			{
 				Console.Write("如果你想要重新扫描字符，请按下'y'键");

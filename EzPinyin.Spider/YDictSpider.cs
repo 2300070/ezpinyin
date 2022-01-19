@@ -39,8 +39,7 @@ namespace EzPinyin.Spider
 			{
 				return result;
 			}
-
-			App.Dictionary.TryRemove(character, out result);
+			
 			return null;
 
 		}
@@ -171,8 +170,16 @@ namespace EzPinyin.Spider
 					{
 						stacks = new HashSet<string> { key };
 					}
-
-					match = Regex.Match(explain, @"古?同【<a[^>]+uni=([0-9A-F]{4,})>((?!</a>).)+</a>】");
+					
+					match = Regex.Match(explain, @"古?[同俗]【<a[^>]+uni=([0-9A-F]{4,})>((?!</a>).)+</a>】");
+					if (match.Success)
+					{
+						if (await YDictSpider.LoadVariantAsync(result, match.Groups[1].Value, stacks))
+						{
+							return result;
+						}
+					}
+					match = Regex.Match(explain, @">【<a[^>]+uni=([0-9A-F]{4,})>((?!</a>).)+</a>】[^\n<>]*(简化|二简)");
 					if (match.Success)
 					{
 						if (await YDictSpider.LoadVariantAsync(result, match.Groups[1].Value, stacks))

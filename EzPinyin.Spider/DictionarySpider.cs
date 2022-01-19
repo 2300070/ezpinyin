@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace EzPinyin.Spider
@@ -16,6 +16,8 @@ namespace EzPinyin.Spider
 		private readonly List<string> characters = new List<string>();
 
 		public int Count => this.characters.Count;
+
+		public bool Check { get; set; }
 
 		public DictionarySpider(string name, string file, int from, int to)
 		{
@@ -54,20 +56,42 @@ namespace EzPinyin.Spider
 		{
 			Console.WriteLine();
 			Console.WriteLine($"开始抓取{this.name}数据。");
-			await App.ForEachAsync(this.characters, DownloadAsync);
+			StringBuilder buffer = new StringBuilder();
+			await App.ForEachAsync(this.characters, async character =>
+			{
+				CharacterInfo info = await DictionarySpider.DownloadAsync(character);
+				if (this.Check && info != null && info.Count == 0 && info.IsTrusted)
+				{
+					buffer.Append(character);
+				}
+			});
 
 
 			Console.WriteLine($"操作完成，抓取了{this.Count}个字符。");
+			if (buffer.Length > 0)
+			{
+				string text = buffer.ToString();
+				File.WriteAllText($"{this.file}_failed.txt", text);
+				Console.WriteLine("警告，抓取下列字符失败：");
+				Console.WriteLine(text);
+				Console.Write("按返回键继续。");
+				Console.ReadLine();
+				Console.WriteLine();
+			}
 			Console.WriteLine();
 		}
 
-		public static async Task DownloadAsync(string character)
+		public static async Task<CharacterInfo> DownloadAsync(string character)
 		{
 			CharacterInfo info = await ZDictSpider.LoadCharacterAsync(character);
 			if (info == null || info.Count == 0 || !info.IsStandard)
 			{
 				info?.Clear();
-				info = await YDictSpider.LoadCharacterAsync(character) ?? await GuoxueSpider.LoadCharacterAsync(character);
+				info = await YDictSpider.LoadCharacterAsync(character);
+				if (info == null || info.Count == 0)
+				{
+					info = await GuoxueSpider.LoadCharacterAsync(character);
+				}
 				if (info != null && info.IsTrusted)
 				{
 					string pinyin = info.PreferedPinyin;
@@ -77,6 +101,8 @@ namespace EzPinyin.Spider
 					}
 				}
 			}
+
+			return info;
 		}
 
 		public async Task SaveAsync()

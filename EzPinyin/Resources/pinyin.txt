@@ -104,6 +104,8 @@ gei
 gen
 geng
 gong
+gongdan
+gongdou
 gongfen
 gongli
 gou
@@ -137,6 +139,7 @@ hun
 huo
 ji
 jia
+jiajia
 jialun
 jian
 jiang
@@ -146,6 +149,7 @@ jin
 jing
 jiong
 jiu
+jiujiu
 ju
 juan
 jue
@@ -195,6 +199,7 @@ lue
 lun
 luo
 lv
+m
 ma
 mai
 man

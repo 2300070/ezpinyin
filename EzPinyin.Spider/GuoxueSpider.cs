@@ -68,7 +68,7 @@ namespace EzPinyin.Spider
 		{
 			if (App.Dictionary.TryGetValue(character, out CharacterInfo result))
 			{
-				if (result.IsTrusted || result.IsStandard)
+				if (result.Count > 0 && (result.IsTrusted || result.IsStandard))
 				{
 					return result;
 				}

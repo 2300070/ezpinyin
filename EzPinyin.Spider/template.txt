@@ -1,2 +1,4 @@
 ﻿#拼音纠正模板
 厦 xia
+䇆 gongdou
+䇉 gongdan

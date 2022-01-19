@@ -332,7 +332,7 @@ namespace EzPinyin.Spider
 		/// 最终可以用于处理的词汇。
 		/// </summary>
 		[JsonIgnore]
-		public string ActualWord { get; }
+		public string ActualWord { get; set; }
 
 		/// <summary>
 		/// 指示这个词汇是否因为头部部分可以组成词汇而被移除。
@@ -430,6 +430,49 @@ namespace EzPinyin.Spider
 			this.Word = word;
 			this.ActualWord = buffer.ToString();
 			this.IsValid = isValid;
+		}
+
+		/// <summary>
+		/// 重新验证关键信息
+		/// </summary>
+		public bool Validate()
+		{
+			if (!this.IsValid)
+			{
+				return false;
+			}
+
+			if (this.PreferedPinyinArray != null && !this.IsDisabled)
+			{
+				if (this.Validate(this.ActualWord, this.PreferedPinyinArray))
+				{
+					return true;
+				}
+				if (this.Validate(this.Word, this.PreferedPinyinArray))
+				{
+					this.ActualWord = this.Word;
+					return true;
+				}
+			}
+
+			return this.IsValid = false;
+		}
+
+		private bool Validate(string word, string[] array)
+		{
+			if (word == null || word.Length < 2 || array == null || array.Length != word.Length)
+			{
+				return false;
+			}
+
+			for (int i = 0; i < word.Length; i++)
+			{
+				if (array[i] == null || !App.Dictionary.TryGetValue(new string(word[i], 1), out CharacterInfo ch) || ch.IndexOf(array[i]) == -1)
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 
 		/// <summary>
@@ -909,7 +952,7 @@ namespace EzPinyin.Spider
 			{
 				return false;
 			}
-			if (other.PreferedPinyin == null || other.IsDisabled)
+			if (!other.IsValid)
 			{
 				return false;
 			}

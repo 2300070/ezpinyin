@@ -123,7 +123,7 @@ namespace EzPinyin.Spider
 			}
 			set => this.isValid = value;
 		}
-		
+
 		/// <summary>
 		/// 此字符是否被可信来源收录。
 		/// </summary>
@@ -248,6 +248,22 @@ namespace EzPinyin.Spider
 			{
 				return this.Register(this.YDictPinyin);
 			}
+
+			if (this.pinyinList.Count == 0)
+			{
+				if (this.YDictPinyin != null)
+				{
+					return this.Register(this.YDictPinyin);
+				}
+				if (this.ZDictPinyin != null)
+				{
+					return this.Register(this.ZDictPinyin);
+				}
+				if (this.GuoxuePinyin != null)
+				{
+					return this.Register(this.GuoxuePinyin);
+				}
+			}
 			PinyinInfo result = null;
 			foreach (PinyinInfo pinyin in this.pinyinList)
 			{
@@ -272,5 +288,12 @@ namespace EzPinyin.Spider
 			}
 			this.pinyinList = new List<PinyinInfo>(other.pinyinList);
 		}
+
+		/// <summary>
+		/// 获得指定拼音的索引。
+		/// </summary>
+		/// <param name="pinyin">拼音信息。</param>
+		/// <returns>索引值，如果不存在，则返回-1.</returns>
+		public int IndexOf(string pinyin) => this.pinyinList.FindIndex(x => x.Text == pinyin);
 	}
 }
