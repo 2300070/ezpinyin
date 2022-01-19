@@ -37,6 +37,10 @@ namespace EzPinyin
 		/// <param name="priority">优先级别</param>
 		public void Add(string word, string[] pinyin, int priority)
 		{
+			if (string.IsNullOrEmpty(word))
+			{
+				throw new ArgumentNullException(nameof(word));
+			}
 			if (word.Length == pinyin.Length)
 			{
 				switch (pinyin.Length)

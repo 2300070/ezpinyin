@@ -39,6 +39,10 @@ namespace EzPinyin
 		/// <param name="priority">优先级别</param>
 		protected LinkNode(string word, int priority)
 		{
+			if (string.IsNullOrEmpty(word))
+			{
+				throw new ArgumentNullException(nameof(word));
+			}
 			this.Word = word;
 			this.Priority = priority;
 		}

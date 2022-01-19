@@ -467,7 +467,7 @@ namespace EzPinyin
 			return result;
 		}
 
-		private static unsafe string LoadPinyinDirectly(ref char* cursor, char* last)
+		private static unsafe string LoadPinyinDirectly(ref char* cursor, char* end)
 		{
 			/**
 			 * 直接从资源包加载拼音信息，而不从相应的API读取，避免触发各Unicode平面相关类型的初始化，导致不必要的内存占用。
@@ -504,7 +504,7 @@ namespace EzPinyin
 				return Common.LoadPinyinDirectly("dict_rad", ch - 0x2E80);
 			}
 			char ch2;
-			if (ch > 0xD7FF && ch < 0xDE00 && cursor + 1 < last && (ch2 = *(cursor + 1)) > 0xDBFF && ch2 < 0xE000)
+			if (ch > 0xD7FF && ch < 0xDE00 && cursor + 1 < end && (ch2 = *(cursor + 1)) > 0xDBFF && ch2 < 0xE000)
 			{
 				cursor += 2;
 				int code = (ch - 0xD800) * 1024 + (ch2 - 0xDC00) + 0x10000;//使用高位字符与低位字符获得UTF-32编码。
