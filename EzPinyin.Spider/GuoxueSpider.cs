@@ -107,13 +107,10 @@ namespace EzPinyin.Spider
 			Match match = Regex.Match(html, @"<td colspan=.2.>拼音[:：]([^<]+)</td>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 			if (match.Success)
 			{
-				if ((result.GuoxuePinyin = result.RegisterAll(match.Groups[1].Value)?.Text) != null)
-				{
-					return result;
-				}
+				result.GuoxuePinyin = result.RegisterAll(match.Groups[1].Value)?.Text;
 			}
 
-			return null;
+			return result;
 		}
 
 		/// <summary>

@@ -66,7 +66,7 @@ namespace EzPinyin.Spider
 			html = await App.DownloadAsync(new DownloadSettings($"http://yedict.com/zscontent.asp?uni={key}") { IgnoreCache = ignoreCache });
 			if (html != null)
 			{
-				match = Regex.Match(html, @"参考资料：《([^《》壮]|《[^《》壮]+》)+》|中华字海：第\d+页第\d+字", RegexOptions.Compiled);
+				match = Regex.Match(html, @"参考资料：《([^《》壮の]|《[^《》壮の]+》)+》|中华字海：第\d+页第\d+字", RegexOptions.Compiled);
 				if (match.Success)
 				{
 					trusted = true;

@@ -456,16 +456,6 @@
             存储了所有未知UTF32字符的字典。
             </summary>
         </member>
-        <member name="T:EzPinyin.UserDictionary">
-            <summary>
-            表示自定义的用户配置文件。
-            </summary>
-        </member>
-        <member name="M:EzPinyin.UserDictionary.LoadAll">
-            <summary>
-            加载所有的用户自定义字典或者词典。
-            </summary>
-        </member>
         <member name="T:EzPinyin.Utf16EmptyNode">
             <summary>
             表示空的UTF16字符节点。

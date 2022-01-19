@@ -80,6 +80,7 @@ dui
 dun
 duo
 e
+ei
 en
 eng
 er
@@ -119,6 +120,7 @@ gun
 guo
 ha
 hai
+haili
 han
 hang
 hao
@@ -139,7 +141,6 @@ hun
 huo
 ji
 jia
-jiajia
 jialun
 jian
 jiang
@@ -149,7 +150,6 @@ jin
 jing
 jiong
 jiu
-jiujiu
 ju
 juan
 jue
@@ -159,6 +159,7 @@ kai
 kan
 kang
 kao
+kasei
 ke
 kei
 ken
@@ -191,6 +192,7 @@ lin
 ling
 liu
 liwa
+lo
 long
 lou
 lu
@@ -205,6 +207,7 @@ mai
 man
 mang
 mao
+maowa
 me
 mei
 men
@@ -219,6 +222,7 @@ miu
 mo
 mou
 mu
+n
 na
 nai
 nan
@@ -282,6 +286,7 @@ qu
 quan
 que
 qun
+ra
 ran
 rang
 rao

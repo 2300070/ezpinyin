@@ -88,17 +88,18 @@ namespace EzPinyin.Spider
 			{
 				info?.Clear();
 				info = await YDictSpider.LoadCharacterAsync(character);
-				if (info == null || info.Count == 0)
+				if (info == null || info.Count == 0 || !info.IsStandard)
 				{
+					info?.Clear();
 					info = await GuoxueSpider.LoadCharacterAsync(character);
 				}
-				if (info != null && info.IsTrusted)
+			}
+			if (info != null && info.IsTrusted)
+			{
+				string pinyin = info.PreferedPinyin;
+				if (pinyin != null)
 				{
-					string pinyin = info.PreferedPinyin;
-					if (pinyin != null)
-					{
-						App.EnsurePinyin(pinyin);
-					}
+					App.EnsurePinyin(pinyin);
 				}
 			}
 

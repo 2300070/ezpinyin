@@ -737,7 +737,7 @@ namespace EzPinyin.Spider
 
 		private static async Task GenerateDictionaryAsync()
 		{
-			//await DictionarySpider.DownloadAsync("䎍");
+			//await DictionarySpider.DownloadAsync("瓱");
 
 			if (File.Exists(App.DICTIONARY_CACHE_FILE))
 			{
