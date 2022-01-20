@@ -3,6 +3,13 @@ using System.Text;
 
 namespace EzPinyin
 {
+	/**
+	 * 当前算法并未考虑UTF32词汇导致的杂凑效率降低的问题:
+	 * 1.当第一个字符是UTF32字符时，由于读取的第二个char是第一个字符的低半代理，必然导致所有的链表节点获得一样的杂凑码，从而导致只有一个链表生效。
+	 * 2.当第一个字符为UTF16字符，而第二个字符是UTF32字符时，由于读取的第二个char是第二个字符的高半代理，因此同样容易出现杂凑效果严重下降的问题。，
+	 * 但由于目前基本没有UTF32词汇，个别词汇不会影响整体效果，因此暂时不做修补。
+	 */
+
 	/// <summary>
 	/// 表示一个词汇节点。
 	/// </summary>
@@ -119,20 +126,20 @@ namespace EzPinyin
 			{
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
-			PinyinNode[] old = this.linkedLists;
+			PinyinNode[] oldLists = this.linkedLists;
 
 			/**
 			 * 使用新的容积大小对节点数组进行初始化
 			 */
 			int size = primeTable[index];
 			PinyinNode character = this.character;
-			PinyinNode[] nodes = new PinyinNode[size];
+			PinyinNode[] newLists = new PinyinNode[size];
 			for (int i = 0; i < size; i++)
 			{
-				nodes[i] = character;
+				newLists[i] = character;
 			}
 
-			this.linkedLists = nodes;
+			this.linkedLists = newLists;
 			this.index = index;
 			this.size = size;
 			this.count = 0;
@@ -140,15 +147,15 @@ namespace EzPinyin
 			/**
 			 * 将原有的节点插入到新的节点数组中。
 			 */
-			if (old != null)
+			if (oldLists != null)
 			{
-				for (int i = 0; i < old.Length; i++)
+				for (int i = 0; i < oldLists.Length; i++)
 				{
-					PinyinNode node = old[i];
-					while (node is LinkNode link)
+					PinyinNode node = oldLists[i];
+					while (node is LinkNode linkNode)
 					{
-						node = link.Next;
-						this.Insert(link);
+						node = linkNode.Next;
+						this.Insert(linkNode);
 					}
 				}
 			}
@@ -160,7 +167,7 @@ namespace EzPinyin
 			{
 				this.Resize(this.index + 1);
 			}
-			else if (this.count + 1 >= this.size * 2)
+			else if (this.count + 1 > this.size * 2)
 			{
 				this.Resize(this.index + 1);
 			}
@@ -201,6 +208,9 @@ namespace EzPinyin
 					}
 					else
 					{
+						/**
+						 * 插入到链表内部时，应先更新node.Next，再更新prev.Next，这样可以避免线程不同步的场景下可能出现NullReferenceException的出现，下同。
+						 */
 						node.Next = item.Next;
 						prev.Next = node;
 					}
@@ -223,8 +233,8 @@ namespace EzPinyin
 					}
 					else
 					{
-						prev.Next = node;
 						node.Next = item;
+						prev.Next = node;
 					}
 
 					this.count++;

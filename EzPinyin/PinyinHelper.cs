@@ -10,9 +10,9 @@ namespace EzPinyin
 	public static unsafe class PinyinHelper
 	{
 		/// <summary>
-		/// 将指定的字符串转换为对应的拼音字符串。
+		/// 获得指定的字符串中每个字符的拼音所组成的字符串。
 		/// </summary>
-		/// <param name="text">需要处理的字符串</param>
+		/// <param name="text">需要处理的输入字符串。</param>
 		/// <param name="separator">额外指定一个用于分隔的字符串。</param>
 		/// <returns><paramref name="text"/>对应的拼音字符串，如果<paramref name="text"/>为null，则返回null。</returns>
 		public static string GetPinyin(string text, string separator = " ")
@@ -34,8 +34,9 @@ namespace EzPinyin
 					char* end = p + length - 1;
 
 					/**
-					 * 循环读取每个字符对应的节点，写入处理结果，并且自动移动游标到下一个字符的位置。
-					 * 在没有读到最后一个字符之前时，可能得到一个UTF-16或者UTF-32的字符，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
+					 * 循环映射字符串每个位置对应的节点，通知节点进行对应的操作，并且将游标移动游标到下一个需要处理的位置。
+					 * 一般情况下，如果某个位置是UTF16字符节点，处理完之后游标下移一个位置，如果是UTF32字符节点，则下移两个位置；如果是词汇节点，则下移的位置等于词汇中字符的数量，如果词汇包含UTF32字符，每个UTF32字符还会额外移动一个位置。
+					 * 在没有读到最后一个字符之前时，对应位置可能是UTF16字符或者UTF32字符相关节点，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
 					 */
 					do
 					{
@@ -50,7 +51,7 @@ namespace EzPinyin
 					if (cursor == end)
 					{
 						/**
-						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="Common.MapUtf16Node(char*)"/>方法即可。
+						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
 						buffer.Append(Common.MapUtf16Node(cursor).GetPinyin(cursor));
 					}
@@ -72,9 +73,9 @@ namespace EzPinyin
 
 
 		/// <summary>
-		/// 将指定的字符串转换为对应的拼音数组。
+		/// 获得指定的字符串中每个字符的拼音，并以数组的形式返回。
 		/// </summary>
-		/// <param name="text">需要处理的字符串</param>
+		/// <param name="text">需要处理的输入字符串。</param>
 		/// <returns>包含输入字符串的拼音信息的结果数组，若<paramref name="text"/>为null，则返回null。</returns>
 		public static string[] GetArray(string text)
 		{
@@ -96,8 +97,9 @@ namespace EzPinyin
 					int index = 0;
 
 					/**
-					 * 循环读取每个字符对应的节点，写入处理结果，并且自动移动游标到下一个字符的位置。
-					 * 在没有读到最后一个字符之前时，可能得到一个UTF-16或者UTF-32的字符，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
+					 * 循环映射字符串每个位置对应的节点，通知节点进行对应的操作，并且将游标移动游标到下一个需要处理的位置。
+					 * 一般情况下，如果某个位置是UTF16字符节点，处理完之后游标下移一个位置，如果是UTF32字符节点，则下移两个位置；如果是词汇节点，则下移的位置等于词汇中字符的数量，如果词汇包含UTF32字符，每个UTF32字符还会额外移动一个位置。
+					 * 在没有读到最后一个字符之前时，对应位置可能是UTF16字符或者UTF32字符相关节点，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
 					 */
 					do
 					{
@@ -111,7 +113,7 @@ namespace EzPinyin
 					if (cursor == end)
 					{
 						/**
-						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="Common.MapUtf16Node(char*)"/>方法即可。
+						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
 						buffer[index++] = Common.MapUtf16Node(cursor).GetPinyin(cursor);
 					}
@@ -140,9 +142,9 @@ namespace EzPinyin
 		}
 
 		/// <summary>
-		/// 将指定的字符串转换为对应的拼音首字母字符串。
+		/// 获得指定的字符串中每个字符的拼音首字母。
 		/// </summary>
-		/// <param name="text">需要处理的字符串</param>
+		/// <param name="text">需要处理的输入字符串。</param>
 		/// <param name="separator">额外指定一个用于分隔的字符串。</param>
 		/// <returns><paramref name="text"/>对应的拼音首字母字符串，如果<paramref name="text"/>为null，则返回null。</returns>
 		/// <remarks>
@@ -167,8 +169,9 @@ namespace EzPinyin
 					char* end = p + length - 1;
 
 					/**
-					 * 循环读取每个字符对应的节点，写入处理结果，并且自动移动游标到下一个字符的位置。
-					 * 在没有读到最后一个字符之前时，可能得到一个UTF-16或者UTF-32的字符，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
+					 * 循环映射字符串每个位置对应的节点，通知节点进行对应的操作，并且将游标移动游标到下一个需要处理的位置。
+					 * 一般情况下，如果某个位置是UTF16字符节点，处理完之后游标下移一个位置，如果是UTF32字符节点，则下移两个位置；如果是词汇节点，则下移的位置等于词汇中字符的数量，如果词汇包含UTF32字符，每个UTF32字符还会额外移动一个位置。
+					 * 在没有读到最后一个字符之前时，对应位置可能是UTF16字符或者UTF32字符相关节点，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
 					 */
 					do
 					{
@@ -182,7 +185,7 @@ namespace EzPinyin
 					if (cursor == end)
 					{
 						/**
-						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，所以直接调用<see cref="Common.MapUtf16Node(char*)"/>方法即可。
+						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
 						buffer.Append(Common.MapUtf16Node(cursor).GetInitial(cursor));
 					}
@@ -207,7 +210,7 @@ namespace EzPinyin
 		/// <param name="path">配置文件的路径。</param>
 		/// <remarks>
 		/// <para>此方法提供了一种除配置文件之外的方式来批量的重定义字符或者词汇的拼音，与使用配置文件的区别在于：这种方式对文件名没有特别的限制，且不会自动装载，这样就可以在必要的时候按需加载使用。</para>
-		/// <para>此方法不具备线程安全性，多线程环境下可能导致其它方法功能异常，因此请注意线程同步。</para>
+		/// <para>此方法不具备线程安全性，因此请注意线程同步。</para>
 		/// </remarks>
 		public static void LoadFrom(string path)
 		{
@@ -233,7 +236,7 @@ namespace EzPinyin
 		/// <param name="content">配置内容。</param>
 		/// <remarks>
 		/// <para>此方法提供了一种除配置文件之外的方式来批量的重定义字符或者词汇的拼音，与使用配置文件的区别在于：这种方式对文件名没有特别的限制，且不会自动装载，这样就可以在必要的时候按需加载使用。</para>
-		/// <para>此方法不具备线程安全性，多线程环境下可能导致其它方法功能异常，因此请注意线程同步。</para>
+		/// <para>此方法不具备线程安全性，因此请注意线程同步。</para>
 		/// </remarks>
 		public static void Load(string content)
 		{
