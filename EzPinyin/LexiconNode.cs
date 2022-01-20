@@ -11,8 +11,10 @@ namespace EzPinyin
 	/// </remarks>
 	internal sealed class LexiconNode : PinyinNode
 	{
+		private static readonly int[] primeTable = { 3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919, 1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591, 17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437, 187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263, 1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369 };
+
 		private PinyinNode[] buckets;
-		private readonly PinyinNode characterNode;//所有词汇公共的头部词汇。
+		private readonly PinyinNode character;//所有词汇公共的头部词汇。
 		private int count;//实际节点数量。
 		private int size;//nodes长度。
 		private int index;//size在质数表中的索引位置。
@@ -20,12 +22,12 @@ namespace EzPinyin
 		/// <summary>
 		/// 获得当前节点的拼音字符串，始终抛出<see cref="NotSupportedException"/>。
 		/// </summary>
-		public override string Pinyin => this.characterNode.Pinyin;
+		public override string Pinyin => this.character.Pinyin;
 
 
-		internal LexiconNode(PinyinNode characterNode)
+		internal LexiconNode(PinyinNode character)
 		{
-			this.characterNode = characterNode;
+			this.character = character;
 			this.Resize(0);
 		}
 
@@ -72,14 +74,14 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
 		/// <returns>所获得的字符串。</returns>
-		public override unsafe string GetPinyin(char* cursor) => this.characterNode.GetPinyin(cursor);
+		public override unsafe string GetPinyin(char* cursor) => this.character.GetPinyin(cursor);
 
 		/// <summary>
 		/// 获得拼音首字母。
 		/// </summary>
 		/// <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
 		/// <returns>所获得的首字母。</returns>
-		public override unsafe string GetInitial(char* cursor) => this.characterNode.GetInitial(cursor);
+		public override unsafe string GetInitial(char* cursor) => this.character.GetInitial(cursor);
 
 		/// <summary>
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
@@ -113,7 +115,7 @@ namespace EzPinyin
 			/**
 			 * 重新调整当前节点的容积。
 			 */
-			if (index < 0 || index >= Common.PrimeTable.Length)
+			if (index < 0 || index >= primeTable.Length)
 			{
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
@@ -122,8 +124,8 @@ namespace EzPinyin
 			/**
 			 * 使用新的容积大小对节点数组进行初始化
 			 */
-			int size = Common.PrimeTable[index];
-			PinyinNode character = this.characterNode;
+			int size = primeTable[index];
+			PinyinNode character = this.character;
 			PinyinNode[] nodes = new PinyinNode[size];
 			for (int i = 0; i < size; i++)
 			{
@@ -225,7 +227,7 @@ namespace EzPinyin
 			} while (item != null);
 
 			prev.Next = node;
-			node.Next = this.characterNode;
+			node.Next = this.character;
 			this.count++;
 		}
 	}
