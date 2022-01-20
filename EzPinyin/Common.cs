@@ -27,12 +27,6 @@ namespace EzPinyin
 
 		internal static readonly string[] EmptyArray = new string[0];
 
-		internal const int PRIORITY_HIGH = 0x02;
-
-		internal const int PRIORITY_NORMAL = 0x00;
-
-		internal const int PRIORITY_LOW = -0x01;
-
 		static Common()
 		{
 			/**
@@ -82,7 +76,7 @@ namespace EzPinyin
 
 			foreach (string file in files)
 			{
-				Common.LoadFrom(file, Common.PRIORITY_NORMAL);
+				Common.LoadFrom(file, LinkNodePriority.Normal);
 #if DEBUG
 				Console.WriteLine($"Load custom file: {file}.");
 #endif
@@ -610,7 +604,7 @@ namespace EzPinyin
 			return succ;
 		}
 
-		internal static void LoadFrom(string file, int priority)
+		internal static void LoadFrom(string file, LinkNodePriority priority)
 		{
 			/**
 			 * 从指定的文件加载自定义的拼音定义，并且更新到对应的字典中。
@@ -622,7 +616,7 @@ namespace EzPinyin
 			}
 		}
 
-		internal static void LoadFrom(TextReader reader, int priority)
+		internal static void LoadFrom(TextReader reader, LinkNodePriority priority)
 		{
 			int row = 0;
 
@@ -828,7 +822,7 @@ namespace EzPinyin
 			return false;
 		}
 
-		internal static bool OverrideLexicon(string word, string[] pinyin, int priority)
+		internal static bool OverrideLexicon(string word, string[] pinyin, LinkNodePriority priority)
 		{
 			if (OverrideLexiconItem(word, pinyin, priority))
 			{
@@ -840,7 +834,7 @@ namespace EzPinyin
 			}
 			return false;
 		}
-		private static bool OverrideLexiconItem(string word, string[] pinyin, int priority)
+		private static bool OverrideLexiconItem(string word, string[] pinyin, LinkNodePriority priority)
 		{
 			int code;
 
@@ -1017,14 +1011,14 @@ namespace EzPinyin
 					/**
 					 * 首先尝试查找简体词汇在给定字典中的索引。
 					 */
-					Common.DefinePinyin(dictionary, head, word, pinyin, Common.PRIORITY_NORMAL);
+					Common.DefinePinyin(dictionary, head, word, pinyin, LinkNodePriority.Normal);
 
 					/**
 					 * 接着尝试查找繁体词汇在给点字典中的索引。
 					 */
 					if (Common.TryParseTradional(word, out string traditional) && traditional != word)
 					{
-						Common.DefinePinyin(dictionary, head, traditional, pinyin, Common.PRIORITY_LOW);
+						Common.DefinePinyin(dictionary, head, traditional, pinyin, LinkNodePriority.Low);
 					}
 				}
 			}
@@ -1053,14 +1047,14 @@ namespace EzPinyin
 					/**
 					 * 首先尝试查找简体词汇在给定字典中的索引。
 					 */
-					Common.DefinePinyin(dictionary, head, word, pinyin, Common.PRIORITY_NORMAL);
+					Common.DefinePinyin(dictionary, head, word, pinyin, LinkNodePriority.Normal);
 
 					/**
 					 * 接着尝试查找繁体词汇在给点字典中的索引。
 					 */
 					if (Common.TryParseTradional(word, out string traditional) && traditional != word)
 					{
-						Common.DefinePinyin(dictionary, head, traditional, pinyin, Common.PRIORITY_LOW);
+						Common.DefinePinyin(dictionary, head, traditional, pinyin, LinkNodePriority.Low);
 					}
 				}
 			}
@@ -1087,14 +1081,14 @@ namespace EzPinyin
 					/**
 					 * 首先尝试查找简体词汇在给定字典中的索引。
 					 */
-					Common.DefinePinyin(dictionary, head, word, null, Common.PRIORITY_NORMAL);
+					Common.DefinePinyin(dictionary, head, word, null, LinkNodePriority.Normal);
 
 					/**
 					 * 接着尝试查找繁体词汇在给点字典中的索引。
 					 */
 					if (Common.TryParseTradional(word, out string traditional) && traditional != word)
 					{
-						Common.DefinePinyin(dictionary, head, traditional, null, Common.PRIORITY_LOW);
+						Common.DefinePinyin(dictionary, head, traditional, null, LinkNodePriority.Low);
 					}
 				}
 			}
@@ -1123,14 +1117,14 @@ namespace EzPinyin
 					/**
 					 * 首先尝试查找简体词汇在给定字典中的索引。
 					 */
-					Common.DefinePinyin(dictionary, head, word, null, Common.PRIORITY_NORMAL);
+					Common.DefinePinyin(dictionary, head, word, null, LinkNodePriority.Normal);
 
 					/**
 					 * 接着尝试查找繁体词汇在给点字典中的索引。
 					 */
 					if (Common.TryParseTradional(word, out string traditional) && traditional != word)
 					{
-						Common.DefinePinyin(dictionary, head, traditional, null, Common.PRIORITY_LOW);
+						Common.DefinePinyin(dictionary, head, traditional, null, LinkNodePriority.Low);
 					}
 				}
 			}
@@ -1161,7 +1155,7 @@ namespace EzPinyin
 			return pinyin;
 		}
 
-		private static unsafe void DefinePinyin(PinyinNode[] dictionary, int head, string word, string[] pinyin, int priority)
+		private static unsafe void DefinePinyin(PinyinNode[] dictionary, int head, string word, string[] pinyin, LinkNodePriority priority)
 		{
 			int index;
 			if (char.IsHighSurrogate(word[0]) && char.IsLowSurrogate(word[1]))
@@ -1210,7 +1204,7 @@ namespace EzPinyin
 			Common.AddLexiconNode(dictionary, index, word, pinyin, priority);
 		}
 
-		private static void AddLexiconNode(PinyinNode[] dictionary, int index, string word, string[] pinyin, int priority)
+		private static void AddLexiconNode(PinyinNode[] dictionary, int index, string word, string[] pinyin, LinkNodePriority priority)
 		{
 			LexiconNode node = dictionary[index] as LexiconNode;
 			if (node == null)
@@ -1236,7 +1230,7 @@ namespace EzPinyin
 
 				foreach (string file in files)
 				{
-					Common.LoadFrom(file, Common.PRIORITY_NORMAL);
+					Common.LoadFrom(file, LinkNodePriority.Normal);
 #if DEBUG
 					Console.WriteLine($"Load custom file: {file}.");
 #endif

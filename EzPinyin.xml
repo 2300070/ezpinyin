@@ -77,15 +77,15 @@
             获得当前节点的拼音字符串，始终抛出<see cref="T:System.NotSupportedException"/>。
             </summary>
         </member>
-        <member name="M:EzPinyin.LexiconNode.Add(System.String,System.String[],System.Int32)">
+        <member name="M:EzPinyin.LexiconNode.Add(System.String,System.String[],EzPinyin.LinkNodePriority)">
             <summary>
             为当前节点注册一个词汇与拼音。
             </summary>
             <param name="word">需要注册的词汇。</param>
             <param name="pinyin">该词汇对应的拼音。</param>
-            <param name="priority">优先级别</param>
+            <param name="priority">优先级别。</param>
         </member>
-        <member name="M:EzPinyin.LexiconNode.Add(System.String,System.String,System.Int32)">
+        <member name="M:EzPinyin.LexiconNode.Add(System.String,System.String,EzPinyin.LinkNodePriority)">
             <summary>
             为当前节点注册一个词汇与拼音。
             </summary>
@@ -148,6 +148,9 @@
             <summary>
             节点的优先级别。
             </summary>
+            <remarks>
+            高优先级别的节点可以代替低优先级别的节点，优先级相同的情况下，后定义的节点可以替代先定义的节点。
+            </remarks>
         </member>
         <member name="P:EzPinyin.LinkNode.Length">
             <summary>
@@ -164,12 +167,12 @@
             获得当前节点的拼音字符串。
             </summary>
         </member>
-        <member name="M:EzPinyin.LinkNode.#ctor(System.String,System.Int32)">
+        <member name="M:EzPinyin.LinkNode.#ctor(System.String,EzPinyin.LinkNodePriority)">
             <summary>
             初始化新的实例。
             </summary>
             <param name="word">词汇信息。</param>
-            <param name="priority">优先级别</param>
+            <param name="priority">优先级别。</param>
         </member>
         <member name="M:EzPinyin.LinkNode.GetPinyin(System.Char*)">
             <summary>

@@ -15,7 +15,10 @@ namespace EzPinyin
 		/// <summary>
 		/// 节点的优先级别。
 		/// </summary>
-		internal int Priority { get; }
+		/// <remarks>
+		/// 高优先级别的节点可以代替低优先级别的节点，优先级相同的情况下，后定义的节点可以替代先定义的节点。
+		/// </remarks>
+		internal LinkNodePriority Priority { get; }
 
 		/// <summary>
 		/// 当前节点相关联的词汇的长度。
@@ -36,8 +39,8 @@ namespace EzPinyin
 		/// 初始化新的实例。
 		/// </summary>
 		/// <param name="word">词汇信息。</param>
-		/// <param name="priority">优先级别</param>
-		protected LinkNode(string word, int priority)
+		/// <param name="priority">优先级别。</param>
+		protected LinkNode(string word, LinkNodePriority priority)
 		{
 			if (string.IsNullOrEmpty(word))
 			{

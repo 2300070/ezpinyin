@@ -223,7 +223,7 @@ namespace EzPinyin
 
 			using (StreamReader sr = new StreamReader(path, Encoding.UTF8, true))
 			{
-				Common.LoadFrom(sr, Common.PRIORITY_HIGH);
+				Common.LoadFrom(sr, LinkNodePriority.High);
 			}
 		}
 
@@ -245,7 +245,7 @@ namespace EzPinyin
 
 			using (StringReader sr = new StringReader(content))
 			{
-				Common.LoadFrom(sr, Common.PRIORITY_HIGH);
+				Common.LoadFrom(sr, LinkNodePriority.High);
 			}
 		}
 
@@ -303,7 +303,7 @@ namespace EzPinyin
 				throw new ArgumentNullException(nameof(pinyin));
 			}
 
-			if (!Common.OverrideLexicon(word, pinyin, Common.PRIORITY_HIGH))
+			if (!Common.OverrideLexicon(word, pinyin, LinkNodePriority.High))
 			{
 				throw new Exception($"重写‘{word}’的拼音失败，当前支持的汉字为Unicode基本区及补充区、扩展区A-G，请检查首字符是否属于此范围内。");
 			}

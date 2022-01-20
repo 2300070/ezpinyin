@@ -10,7 +10,7 @@ namespace EzPinyin
 	{
 		private readonly string[] pinyin;
 
-		internal LinkNodeX(string word, string[] pinyin, int priority)
+		internal LinkNodeX(string word, string[] pinyin, LinkNodePriority priority)
 			: base(word, priority)
 		{
 			this.pinyin = pinyin;

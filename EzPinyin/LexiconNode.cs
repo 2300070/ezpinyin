@@ -13,7 +13,7 @@ namespace EzPinyin
 	{
 		private static readonly int[] primeTable = { 3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919, 1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591, 17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437, 187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263, 1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369 };
 
-		private PinyinNode[] buckets;
+		private PinyinNode[] linkedLists;//所有以character节点所表示的词汇开头的词汇所组成的链表，以词汇的第二个字符与数组长度的余数作为依据来进行分组，每个组即构成一个链表，链表中的节点按照词汇的字数多少来倒序排列，每个链表的最后一个节点永远是character字段。
 		private readonly PinyinNode character;//所有词汇公共的头部词汇。
 		private int count;//实际节点数量。
 		private int size;//nodes长度。
@@ -36,8 +36,8 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="word">需要注册的词汇。</param>
 		/// <param name="pinyin">该词汇对应的拼音。</param>
-		/// <param name="priority">优先级别</param>
-		public void Add(string word, string[] pinyin, int priority)
+		/// <param name="priority">优先级别。</param>
+		public void Add(string word, string[] pinyin, LinkNodePriority priority)
 		{
 			if (string.IsNullOrEmpty(word))
 			{
@@ -66,8 +66,8 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="word">需要注册的词汇。</param>
 		/// <param name="pinyin">该词汇对应的拼音。</param>
-		/// <param name="priority">优先级别</param>
-		public void Add(string word, string pinyin, int priority) => this.Add(word, pinyin.Split(Common.CharacterSeparator, StringSplitOptions.RemoveEmptyEntries), priority);
+		/// <param name="priority">优先级别。</param>
+		public void Add(string word, string pinyin, LinkNodePriority priority) => this.Add(word, pinyin.Split(Common.CharacterSeparator, StringSplitOptions.RemoveEmptyEntries), priority);
 
 		/// <summary>
 		/// 获得拼音字符串。
@@ -90,7 +90,7 @@ namespace EzPinyin
 		/// <param name="end">指向输入字符串最后一个字符位置的指针。</param>
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
 		/// <param name="separator">分隔符。</param>
-		public override unsafe void WritePinyin(ref char* cursor, char* end, StringBuilder buffer, string separator) => this.buckets[*(cursor + 1) % this.size].WritePinyin(ref cursor, end, buffer, separator);
+		public override unsafe void WritePinyin(ref char* cursor, char* end, StringBuilder buffer, string separator) => this.linkedLists[*(cursor + 1) % this.size].WritePinyin(ref cursor, end, buffer, separator);
 
 		/// <summary>
 		/// 将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
@@ -99,7 +99,7 @@ namespace EzPinyin
 		/// <param name="end">指向输入字符串最后一个字符位置的指针。</param>
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
 		/// <param name="separator">分隔符。</param>
-		public override unsafe void WriteInitial(ref char* cursor, char* end, StringBuilder buffer, string separator) => this.buckets[*(cursor + 1) % this.size].WriteInitial(ref cursor, end, buffer, separator);
+		public override unsafe void WriteInitial(ref char* cursor, char* end, StringBuilder buffer, string separator) => this.linkedLists[*(cursor + 1) % this.size].WriteInitial(ref cursor, end, buffer, separator);
 
 		/// <summary>
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
@@ -108,7 +108,7 @@ namespace EzPinyin
 		/// <param name="end">指向输入字符串最后一个字符位置的指针。</param>
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
 		/// <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
-		public override unsafe void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index) => this.buckets[*(cursor + 1) % this.size].WritePinyin(ref cursor, end, buffer, ref index);
+		public override unsafe void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index) => this.linkedLists[*(cursor + 1) % this.size].WritePinyin(ref cursor, end, buffer, ref index);
 
 		private void Resize(int index)
 		{
@@ -119,7 +119,7 @@ namespace EzPinyin
 			{
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
-			PinyinNode[] old = this.buckets;
+			PinyinNode[] old = this.linkedLists;
 
 			/**
 			 * 使用新的容积大小对节点数组进行初始化
@@ -132,7 +132,7 @@ namespace EzPinyin
 				nodes[i] = character;
 			}
 
-			this.buckets = nodes;
+			this.linkedLists = nodes;
 			this.index = index;
 			this.size = size;
 			this.count = 0;
@@ -166,11 +166,14 @@ namespace EzPinyin
 			}
 
 			int index = node.Word[1] % this.size;
-			PinyinNode target = this.buckets[index];
+			PinyinNode target = this.linkedLists[index];
 			if (!(target is LinkNode))
 			{
+				/**
+				 * 当前链表为空。
+				 */
 				node.Next = target;
-				this.buckets[index] = node;
+				this.linkedLists[index] = node;
 				this.count++;
 				return;
 			}
@@ -190,8 +193,11 @@ namespace EzPinyin
 					 */
 					if (prev == null)
 					{
+						/**
+						 * 替换链表中的第一个元素。
+						 */
 						node.Next = item.Next;
-						this.buckets[index] = node;
+						this.linkedLists[index] = node;
 					}
 					else
 					{
@@ -209,8 +215,11 @@ namespace EzPinyin
 					 */
 					if (prev == null)
 					{
+						/**
+						 * 插入到链表的头部。
+						 */
 						node.Next = target;
-						this.buckets[index] = node;
+						this.linkedLists[index] = node;
 					}
 					else
 					{
