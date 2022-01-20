@@ -91,7 +91,7 @@
             </summary>
             <param name="word">需要注册的词汇。</param>
             <param name="pinyin">该词汇对应的拼音。</param>
-            <param name="priority">优先级别</param>
+            <param name="priority">优先级别。</param>
         </member>
         <member name="M:EzPinyin.LexiconNode.GetPinyin(System.Char*)">
             <summary>
@@ -283,6 +283,26 @@
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
             <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
+        </member>
+        <member name="T:EzPinyin.LinkNodePriority">
+            <summary>
+            表示链表中的某个词汇节点的优先级别。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.LinkNodePriority.Low">
+            <summary>
+            低优先级别，一般是添加简体字词汇时自动添加的繁体词汇节点所使用的优先级别。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.LinkNodePriority.Normal">
+            <summary>
+            一般优先级别，一般是添加项目内置词汇节点时所使用的优先级别。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.LinkNodePriority.High">
+            <summary>
+            高优先级别，一般是在运行时添加自定义的词汇节点时所使用的优先级别。
+            </summary>
         </member>
         <member name="T:EzPinyin.LinkNodeX">
             <summary>
