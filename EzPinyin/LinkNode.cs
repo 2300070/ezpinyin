@@ -51,17 +51,17 @@ namespace EzPinyin
 		}
 
 		/// <summary>
-		/// 获得拼音字符串，永远抛出<see cref="NotSupportedException"/>异常。
+		/// 设计用于获得拼音字符串，本案例中则永远抛出<see cref="NotSupportedException"/>异常。
 		/// </summary>
 		/// <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
-		/// <returns>所获得的字符串。</returns>
+		/// <returns>此方法永远抛出<see cref="NotSupportedException"/>，没有返回结果。</returns>
 		public override unsafe string GetPinyin(char* cursor) => throw new NotSupportedException();
 
 		/// <summary>
-		/// 获得拼音首字母，永远抛出<see cref="NotSupportedException"/>异常。
+		/// 设计用于获得拼音首字母，本案例中则永远抛出<see cref="NotSupportedException"/>异常。
 		/// </summary>
 		/// <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
-		/// <returns>所获得的首字母。</returns>
+		/// <returns>此方法永远抛出<see cref="NotSupportedException"/>，没有返回结果。</returns>
 		public override unsafe string GetInitial(char* cursor) => throw new NotSupportedException();
 	}
 }
