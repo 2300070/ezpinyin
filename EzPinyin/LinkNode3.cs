@@ -30,7 +30,7 @@ namespace EzPinyin
 		/// <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
 		/// <param name="end">指向输入字符串最后一个字符位置的指针。</param>
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
-		/// <param name="separator">分隔符。</param>
+		/// <param name="separator">额外指定的分隔符。</param>
 		public override unsafe void WritePinyin(ref char* cursor, char* end, StringBuilder buffer, string separator)
 		{
 			/**
@@ -58,7 +58,7 @@ namespace EzPinyin
 		/// <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
 		/// <param name="end">指向输入字符串最后一个字符位置的指针。</param>
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
-		/// <param name="separator">分隔符。</param>
+		/// <param name="separator">额外指定的分隔符。</param>
 		public override unsafe void WriteInitial(ref char* cursor, char* end, StringBuilder buffer, string separator)
 		{
 			/**
