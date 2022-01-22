@@ -23,7 +23,7 @@ namespace EzPinyin.Spider
 			Console.WriteLine();
 			Console.WriteLine("扫描汉文学网词汇数据。");
 
-			await App.ForEachAsync(LexiconSpider.Characters, HDictSpider.LoadSamplesAsync);
+			await Common.ForEachAsync(LexiconSpider.Characters, HDictSpider.LoadSamplesAsync);
 		}
 
 		/// <summary>
@@ -50,7 +50,7 @@ namespace EzPinyin.Spider
 
 			try
 			{
-				string html = await App.DownloadAsync(url);
+				string html = await Common.DownloadAsync(url);
 				if (html == null)
 				{
 					return;
@@ -58,7 +58,7 @@ namespace EzPinyin.Spider
 				Match match = Regex.Match(html, @"<span[^>]+.pinyin f20.>([^<]+)</span>");
 				if (match.Success)
 				{
-					sample.HDictPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value);
+					sample.HDictPinyin = Common.ParseWordPinyin(sample.Word, match.Groups[1].Value);
 				}
 			}
 			finally
@@ -73,7 +73,7 @@ namespace EzPinyin.Spider
 			int page = 1;
 			while (true)
 			{
-				string html = await App.DownloadAsync($"https://cd.hwxnet.com/search.do?wd={Uri.EscapeDataString(character)}&pageno={page}");
+				string html = await Common.DownloadAsync($"https://cd.hwxnet.com/search.do?wd={Uri.EscapeDataString(character)}&pageno={page}");
 				if (string.IsNullOrEmpty(html))
 				{
 					break;
@@ -88,7 +88,7 @@ namespace EzPinyin.Spider
 				foreach (Match match in matches)
 				{
 					string word = match.Groups[2].Value.Trim();
-					if (word.IndexOfAny(App.Dots) > -1)
+					if (word.IndexOfAny(Common.Dots) > -1)
 					{
 						continue;
 					}
@@ -101,7 +101,7 @@ namespace EzPinyin.Spider
 					string text = match.Groups[4].Value;
 					if (text.Length > 0)
 					{
-						info.HDictPinyin = App.ParseWordPinyin(word, text);
+						info.HDictPinyin = Common.ParseWordPinyin(word, text);
 					}
 					info.EnableHDictSource($"https://cd.hwxnet.com/{match.Groups[1].Value}");
 				}

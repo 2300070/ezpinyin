@@ -10,7 +10,7 @@ namespace EzPinyin
 	internal enum LinkNodePriority
 	{
 		/// <summary>
-		/// 低优先级别，一般是添加简体字词汇时自动添加的繁体词汇节点所使用的优先级别。
+		/// 低优先级别，一般是添加简体字词汇时同步添加的繁体词汇节点所使用的优先级别。
 		/// </summary>
 		Low = 0,
 		/// <summary>

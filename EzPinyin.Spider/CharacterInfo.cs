@@ -200,7 +200,7 @@ namespace EzPinyin.Spider
 			PinyinInfo result = null;
 			for (int i = 0; i < items.Length; i++)
 			{
-				string item = App.FixPinyin(items[i]);
+				string item = Common.FixPinyin(items[i]);
 				if (!string.IsNullOrEmpty(item))
 				{
 					PinyinInfo info = this.Register(item);

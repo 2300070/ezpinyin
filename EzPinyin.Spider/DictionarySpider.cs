@@ -46,7 +46,7 @@ namespace EzPinyin.Spider
 			Console.WriteLine();
 			Console.WriteLine($"开始加载{this.name}的繁简数据。");
 
-			await App.ForEachAsync(this.characters, async ch =>
+			await Common.ForEachAsync(this.characters, async ch =>
 			{
 				await ZDictSpider.LoadSimplifiedAsync(ch);
 			});
@@ -57,7 +57,7 @@ namespace EzPinyin.Spider
 			Console.WriteLine();
 			Console.WriteLine($"开始抓取{this.name}数据。");
 			StringBuilder buffer = new StringBuilder();
-			await App.ForEachAsync(this.characters, async character =>
+			await Common.ForEachAsync(this.characters, async character =>
 			{
 				CharacterInfo info = await DictionarySpider.DownloadAsync(character);
 				if (info != null && info.Count == 0 && info.IsTrusted)
@@ -99,7 +99,7 @@ namespace EzPinyin.Spider
 				string pinyin = info.PreferedPinyin;
 				if (pinyin != null)
 				{
-					App.EnsurePinyin(pinyin);
+					Common.EnsurePinyin(pinyin);
 				}
 			}
 
@@ -110,7 +110,7 @@ namespace EzPinyin.Spider
 		{
 			Console.WriteLine($"生成{this.name}字典。");
 
-			App.PinyinList.Sort();
+			Common.PinyinList.Sort();
 			using (FileStream fs = new FileStream(this.file, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
 			{
 				List<string> characters = this.characters;
@@ -118,7 +118,7 @@ namespace EzPinyin.Spider
 				{
 					string pinyin;
 					string ch = this.characters[i];
-					if (!App.Dictionary.TryGetValue(ch, out CharacterInfo info) || info.Count == 0)
+					if (!Common.Dictionary.TryGetValue(ch, out CharacterInfo info) || info.Count == 0)
 					{
 						pinyin = null;
 					}
@@ -126,7 +126,7 @@ namespace EzPinyin.Spider
 					{
 						pinyin = info.PreferedPinyin;
 					}
-					int index = App.PinyinList.IndexOf(pinyin) + 1;
+					int index = Common.PinyinList.IndexOf(pinyin) + 1;
 					fs.WriteByte((byte)((index & 0xFF00) >> 8));
 					fs.WriteByte((byte)(index & 0xFF));
 				}
@@ -141,7 +141,7 @@ namespace EzPinyin.Spider
 		/// </summary>
 		public static void UpdateCorrection()
 		{
-			foreach (KeyValuePair<string, CharacterInfo> item in App.Dictionary)
+			foreach (KeyValuePair<string, CharacterInfo> item in Common.Dictionary)
 			{
 				string character = item.Key;
 				if (character.Length > 1)
@@ -153,11 +153,11 @@ namespace EzPinyin.Spider
 				CharacterInfo info = item.Value;
 				if (info.Simplified > 0)
 				{
-					App.Simplified[ch] = info.Simplified;
+					Common.Simplified[ch] = info.Simplified;
 				}
 				else if (info.Traditional > 0)
 				{
-					App.Simplified[info.Traditional] = ch;
+					Common.Simplified[info.Traditional] = ch;
 				}
 			}
 		}

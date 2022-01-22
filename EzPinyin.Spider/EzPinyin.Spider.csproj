@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App.cs" />
+    <Compile Include="Common.cs" />
     <Compile Include="BaiduSpider.cs" />
     <Compile Include="BingSpider.cs" />
     <Compile Include="DownloadSettings.cs" />
@@ -58,7 +58,6 @@
     <Compile Include="LexiconSpider.cs" />
     <Compile Include="PinyinInfo.cs" />
     <Compile Include="CharacterInfo.cs" />
-    <Compile Include="PinyinConfidence.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Progress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

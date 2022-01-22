@@ -374,7 +374,7 @@ namespace EzPinyin.Spider
 		[JsonIgnore]
 		public bool HasRarePinyin
 		{
-			get => (this.hasRarePinyin ?? (this.hasRarePinyin = App.CheckRarePinyin(this.ActualWord, this.PreferedPinyinArray))).Value;
+			get => (this.hasRarePinyin ?? (this.hasRarePinyin = Common.CheckRarePinyin(this.ActualWord, this.PreferedPinyinArray))).Value;
 			set => this.hasRarePinyin = value;
 		}
 
@@ -400,7 +400,7 @@ namespace EzPinyin.Spider
 			for (int i = 0; i < word.Length; i++)
 			{
 				char ch = word[i];
-				if (!App.Simplified.TryGetValue(ch, out char simpilfied))
+				if (!Common.Simplified.TryGetValue(ch, out char simpilfied))
 				{
 					if (ch >= 0x4E00 && ch <= 0x9FFF || ch == '〇' //基本区+‘〇’
 						 || ch >= 0x3400 && ch <= 0x4DBF //扩展A
@@ -485,7 +485,8 @@ namespace EzPinyin.Spider
 
 			for (int i = 0; i < word.Length; i++)
 			{
-				if (array[i] == null || !App.Dictionary.TryGetValue(new string(word[i], 1), out CharacterInfo ch) || ch.IndexOf(array[i]) == -1 || (indexes[i] = App.PinyinList.IndexOf(array[i])) == -1)
+				string pinyin = array[i];
+				if (pinyin == null || !Common.Dictionary.TryGetValue(new string(word[i], 1), out CharacterInfo ch) || ch.IndexOf(pinyin) == -1 || (indexes[i] = Common.PinyinList.IndexOf(pinyin)) == -1)
 				{
 					return false;
 				}
@@ -583,14 +584,14 @@ namespace EzPinyin.Spider
 
 			for (int i = 0; i < index; i++)
 			{
-				if (App.Dictionary.TryGetValue(new string(otherName[i], 1), out CharacterInfo info) && info.PreferedPinyin != array[i])
+				if (Common.Dictionary.TryGetValue(new string(otherName[i], 1), out CharacterInfo info) && info.PreferedPinyin != array[i])
 				{
 					return false;
 				}
 			}
 			for (int i = index + name.Length; i < otherName.Length; i++)
 			{
-				if (App.Dictionary.TryGetValue(new string(otherName[i], 1), out CharacterInfo info) && info.PreferedPinyin != array[i])
+				if (Common.Dictionary.TryGetValue(new string(otherName[i], 1), out CharacterInfo info) && info.PreferedPinyin != array[i])
 				{
 					return false;
 				}
@@ -618,7 +619,7 @@ namespace EzPinyin.Spider
 				while (len < name.Length)
 				{
 					string child = name.Substring(0, 2);
-					if (App.Samples.TryGetValue(child, out WordInfo info) && info.CanReplace(this))
+					if (Common.Samples.TryGetValue(child, out WordInfo info) && info.CanReplace(this))
 					{
 						return (this.CanRemoveByHead = true).Value;
 					}
@@ -649,7 +650,7 @@ namespace EzPinyin.Spider
 				while (len < name.Length)
 				{
 					string child = name.Substring(name.Length - len);
-					if (App.Samples.TryGetValue(child, out WordInfo info) && info.CanReplace(this))
+					if (Common.Samples.TryGetValue(child, out WordInfo info) && info.CanReplace(this))
 					{
 						return (this.CanRemoveByTail = true).Value;
 					}
@@ -717,11 +718,11 @@ namespace EzPinyin.Spider
 				 */
 				if ("的地得着了过啊哦呵哈了么呢吧啦咧咯啰喽吗嘛".IndexOf(ch) > -1)
 				{
-					CharacterInfo info = App.Dictionary[new string(ch, 1)];
+					CharacterInfo info = Common.Dictionary[new string(ch, 1)];
 					if (info.PreferedPinyin == this.PreferedPinyinArray[index])
 					{
 						name = name.Substring(0, index);
-						if (App.Samples.TryGetValue(name, out WordInfo result))
+						if (Common.Samples.TryGetValue(name, out WordInfo result))
 						{
 							if (result.PreferedPinyin == null)
 							{
@@ -741,13 +742,13 @@ namespace EzPinyin.Spider
 					for (int i = 0, max = name.Length - len; i <= max; i++)
 					{
 						child = name.Substring(i, len);
-						if (App.Samples.TryGetValue(child, out other) && this.CheckShrink(other))
+						if (Common.Samples.TryGetValue(child, out other) && this.CheckShrink(other))
 						{
 							return other;
 						}
 					}
 					child = name.Substring(len);
-					if (App.Samples.TryGetValue(child, out other) && !other.HasRarePinyin)
+					if (Common.Samples.TryGetValue(child, out other) && !other.HasRarePinyin)
 					{
 						WordInfo result = new WordInfo(name.Substring(0, len));
 						string[] array = new string[len];
@@ -815,7 +816,7 @@ namespace EzPinyin.Spider
 			List<string> blocks = new List<string>(word.Length);
 			foreach (char ch in word)
 			{
-				if (App.Dictionary.TryGetValue(new string(ch, 1), out CharacterInfo character))
+				if (Common.Dictionary.TryGetValue(new string(ch, 1), out CharacterInfo character))
 				{
 					blocks.Add(character.PreferedPinyin);
 				}
@@ -987,7 +988,7 @@ namespace EzPinyin.Spider
 				}
 			}
 
-			if (!App.CheckRarePinyin(name, pinyin, 0, index) && !App.CheckRarePinyin(name, pinyin, index + otherName.Length, name.Length - index - otherName.Length))
+			if (!Common.CheckRarePinyin(name, pinyin, 0, index) && !Common.CheckRarePinyin(name, pinyin, index + otherName.Length, name.Length - index - otherName.Length))
 			{
 				return true;
 			}

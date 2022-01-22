@@ -27,7 +27,7 @@ namespace EzPinyin.Spider
 			Console.WriteLine();
 			Console.WriteLine("扫描百度汉语词汇数据。");
 
-			await App.ForEachAsync(LexiconSpider.Characters, BaiduSpider.LoadSamplesAsync);
+			await Common.ForEachAsync(LexiconSpider.Characters, BaiduSpider.LoadSamplesAsync);
 		}
 
 		/// <summary>
@@ -54,7 +54,7 @@ namespace EzPinyin.Spider
 
 			try
 			{
-				string html = await App.DownloadAsync($"https://hanyu.baidu.com/s?wd={Uri.EscapeDataString(word)}&ptype=zici");
+				string html = await Common.DownloadAsync($"https://hanyu.baidu.com/s?wd={Uri.EscapeDataString(word)}&ptype=zici");
 				if (html == null)
 				{
 					return;
@@ -63,14 +63,14 @@ namespace EzPinyin.Spider
 				Match match = Regex.Match(html, @"<b>\[\s*([^]]+)\s*\]</b>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					sample.BaiduHanyuPinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
+					sample.BaiduHanyuPinyin = Common.ParseWordPinyin(word, match.Groups[1].Value);
 				}
 				else
 				{
 					match = Regex.Match(html, @"<div[^>]+>\s*<p>[^<>]*[拼读]音[为是]?\s*([\u0041-\u024F\s]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 					if (match.Success)
 					{
-						sample.BaiduHanyuPinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
+						sample.BaiduHanyuPinyin = Common.ParseWordPinyin(word, match.Groups[1].Value);
 					}
 				}
 			}
@@ -105,7 +105,7 @@ namespace EzPinyin.Spider
 
 			try
 			{
-				string html = await App.DownloadAsync($"https://baike.baidu.com/item/{Uri.EscapeDataString(word)}");
+				string html = await Common.DownloadAsync($"https://baike.baidu.com/item/{Uri.EscapeDataString(word)}");
 				if (html == null || !html.Contains($">{word}</h"))
 				{
 					return;
@@ -114,7 +114,7 @@ namespace EzPinyin.Spider
 				Match match = Regex.Match(html, @"[拼发][^<]*音</dt>\s*<dd[^>]+>\s*([^<]+?)\s*</dd>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					pinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
+					pinyin = Common.ParseWordPinyin(word, match.Groups[1].Value);
 					if (pinyin != null)
 					{
 						sample.BaiduBaikePinyin = pinyin;
@@ -124,7 +124,7 @@ namespace EzPinyin.Spider
 				match = Regex.Match(html, @"content=.[^\n]*[拼发读]音[是为]?([^,，。、\n<>]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					pinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
+					pinyin = Common.ParseWordPinyin(word, match.Groups[1].Value);
 					if (pinyin != null)
 					{
 						sample.BaiduBaikePinyin = pinyin;
@@ -134,7 +134,7 @@ namespace EzPinyin.Spider
 				match = Regex.Match(html, @"<span[^>]+pinyin[^>]+>\s*<span[^>]+>\[([^\]]+)\]</span>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					pinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
+					pinyin = Common.ParseWordPinyin(word, match.Groups[1].Value);
 					if (pinyin != null)
 					{
 						sample.BaiduBaikePinyin = pinyin;
@@ -144,7 +144,7 @@ namespace EzPinyin.Spider
 				match = Regex.Match(html, $@"<div[^>]+para[^>]+>[^\n<>]*<b>{word}</b>([^\n<]*[拼发读]音[是为]?)?([^,，。、\n<>\u3400-\uffff]+)", RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					pinyin = App.ParseWordPinyin(word, match.Groups[2].Value);
+					pinyin = Common.ParseWordPinyin(word, match.Groups[2].Value);
 					if (pinyin != null)
 					{
 						sample.BaiduBaikePinyin = pinyin;
@@ -154,7 +154,7 @@ namespace EzPinyin.Spider
 				match = Regex.Match(html, $@"<div[^>]+para[^>]+>[^\n<>]*{word}[：\:]([^\n<]*[拼发读]音[是为]?)?([^,，。、\n<>\u3400-\uffff]+)", RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					pinyin = App.ParseWordPinyin(word, match.Groups[2].Value);
+					pinyin = Common.ParseWordPinyin(word, match.Groups[2].Value);
 					if (pinyin != null)
 					{
 						sample.BaiduBaikePinyin = pinyin;
@@ -164,7 +164,7 @@ namespace EzPinyin.Spider
 				MatchCollection matches = Regex.Matches(html, @"<div[^>]+para[^>]+>[^\n<>]*[拼发读]音[是为]?([^,，。、\n<>\u3400-\uffff]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (matches.Count == 1)
 				{
-					sample.BaiduBaikePinyin = App.ParseWordPinyin(word, matches[0].Groups[1].Value);
+					sample.BaiduBaikePinyin = Common.ParseWordPinyin(word, matches[0].Groups[1].Value);
 				}
 			}
 			finally
@@ -178,7 +178,7 @@ namespace EzPinyin.Spider
 			int page = 1;
 			while (true)
 			{
-				string json = await App.DownloadAsync($"https://hanyu.baidu.com/hanyu/ajax/search_list?wd={Uri.EscapeDataString($"{character}组词")}&cf=zuci&pn={page}");
+				string json = await Common.DownloadAsync($"https://hanyu.baidu.com/hanyu/ajax/search_list?wd={Uri.EscapeDataString($"{character}组词")}&cf=zuci&pn={page}");
 				if (string.IsNullOrEmpty(json))
 				{
 					return;
@@ -199,7 +199,7 @@ namespace EzPinyin.Spider
 							continue;
 						}
 						string name = value[0].ToString();
-						if (name.IndexOfAny(App.Dots) > -1)
+						if (name.IndexOfAny(Common.Dots) > -1)
 						{
 							continue;
 						}
@@ -223,7 +223,7 @@ namespace EzPinyin.Spider
 						}
 						else
 						{
-							string prefered = string.Join(" ", Array.ConvertAll(name.ToCharArray(), c => App.Dictionary[new string(c, 1)].PreferedPinyin));
+							string prefered = string.Join(" ", Array.ConvertAll(name.ToCharArray(), c => Common.Dictionary[new string(c, 1)].PreferedPinyin));
 							JArray meanings = item["mean_list"] as JArray;
 							if (meanings != null && meanings.Count > 0)
 							{
@@ -265,7 +265,7 @@ namespace EzPinyin.Spider
 										}
 									}
 
-									string current = App.FixPinyin(meaning["pinyin"]?[0]?.ToString(), true);
+									string current = Common.FixPinyin(meaning["pinyin"]?[0]?.ToString(), true);
 									if (current == prefered)
 									{
 										pinyin = prefered;
@@ -305,7 +305,7 @@ namespace EzPinyin.Spider
 							}
 						}
 
-						word.BaiduHanyuPinyin = App.ParseWordPinyin(name, pinyin);
+						word.BaiduHanyuPinyin = Common.ParseWordPinyin(name, pinyin);
 
 					}
 					page++;

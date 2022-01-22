@@ -29,7 +29,7 @@ namespace EzPinyin.Spider
 
 			try
 			{
-				string html = await App.DownloadAsync($"https://cn.bing.com/dict/search?q={Uri.EscapeDataString(word)}");
+				string html = await Common.DownloadAsync($"https://cn.bing.com/dict/search?q={Uri.EscapeDataString(word)}");
 				if (html == null)
 				{
 					return;
@@ -38,7 +38,7 @@ namespace EzPinyin.Spider
 				Match match = Regex.Match(html, @"<div[^>]+>\[([^]]+)\]\s*</div>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 				if (match.Success)
 				{
-					sample.BingPinyin = App.ParseWordPinyin(word, match.Groups[1].Value);
+					sample.BingPinyin = Common.ParseWordPinyin(word, match.Groups[1].Value);
 				}
 			}
 			finally

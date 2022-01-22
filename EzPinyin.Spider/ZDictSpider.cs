@@ -25,7 +25,7 @@ namespace EzPinyin.Spider
 		/// <returns>该字符的拼音信息，如果没有抓取到拼音，则返回null。</returns>
 		public static async Task LoadSimplifiedAsync(string character)
 		{
-			string html = await App.DownloadAsync($"https://www.zdic.net/hans/{Uri.EscapeUriString(character)}");
+			string html = await Common.DownloadAsync($"https://www.zdic.net/hans/{Uri.EscapeUriString(character)}");
 
 			Match match;
 			string header = null;
@@ -48,10 +48,10 @@ namespace EzPinyin.Spider
 						{
 							case "简":
 							case "簡":
-								App.Simplified[character[0]] = ch;
+								Common.Simplified[character[0]] = ch;
 								break;
 							default:
-								App.Simplified[ch] = character[0];
+								Common.Simplified[ch] = character[0];
 								break;
 						}
 					}
@@ -76,7 +76,7 @@ namespace EzPinyin.Spider
 				return result;
 			}
 
-			if (!App.Dictionary.TryGetValue(character, out result))
+			if (!Common.Dictionary.TryGetValue(character, out result))
 			{
 				result = new CharacterInfo(character);
 			}
@@ -87,7 +87,7 @@ namespace EzPinyin.Spider
 
 			dictionary[character] = result;
 
-			string html = await App.DownloadAsync($"https://www.zdic.net/hans/{Uri.EscapeUriString(character)}");
+			string html = await Common.DownloadAsync($"https://www.zdic.net/hans/{Uri.EscapeUriString(character)}");
 
 			Match match;
 			string header = null;
@@ -171,7 +171,7 @@ namespace EzPinyin.Spider
 			{
 				return null;
 			}
-			App.Dictionary[character] = result;
+			Common.Dictionary[character] = result;
 			result.ZDictPinyin = result.ComputePrefered()?.Text;
 			result.IsTrusted = true;
 			return result;
@@ -185,7 +185,7 @@ namespace EzPinyin.Spider
 		{
 			Console.WriteLine();
 			Console.WriteLine("扫描汉典词汇数据。");
-			await App.ForEachAsync(LexiconSpider.Characters, ZDictSpider.LoadSamplesAsync);
+			await Common.ForEachAsync(LexiconSpider.Characters, ZDictSpider.LoadSamplesAsync);
 		}
 
 		/// <summary>
@@ -213,7 +213,7 @@ namespace EzPinyin.Spider
 
 			try
 			{
-				string html = await App.DownloadAsync(url);
+				string html = await Common.DownloadAsync(url);
 				if (html == null)
 				{
 					return;
@@ -242,7 +242,7 @@ namespace EzPinyin.Spider
 			page = 0;
 			while (true)
 			{
-				html = await App.DownloadAsync($"https://www.zdic.net/e/sci/index.php?page={page}&keyboard={Uri.EscapeDataString(character)}E&classid=8&sear=1");
+				html = await Common.DownloadAsync($"https://www.zdic.net/e/sci/index.php?page={page}&keyboard={Uri.EscapeDataString(character)}E&classid=8&sear=1");
 				if (html == null)
 				{
 					break;
@@ -268,7 +268,7 @@ namespace EzPinyin.Spider
 					if (info.IsValid)
 					{
 						info.EnableZDictSource();
-						info.ZDictPinyin = App.ParseWordPinyin(word, match.Groups[3].Value);
+						info.ZDictPinyin = Common.ParseWordPinyin(word, match.Groups[3].Value);
 					}
 
 				}
@@ -285,7 +285,7 @@ namespace EzPinyin.Spider
 			page = 1;
 			while (true)
 			{
-				html = await App.DownloadAsync($"https://www.zdic.net/cd/bs/ci/?z={Uri.EscapeDataString(character)}|{page}");
+				html = await Common.DownloadAsync($"https://www.zdic.net/cd/bs/ci/?z={Uri.EscapeDataString(character)}|{page}");
 				page++;
 				if (html == null)
 				{
@@ -375,14 +375,14 @@ namespace EzPinyin.Spider
 				if (Regex.IsMatch(explain, @"([地省市州县]名)(?=\W)", RegexOptions.Compiled))
 				{
 					type = CharacterType.Noun;
-					pinyin.AddEvaluation(App.EXTRA_EVALUATION);
+					pinyin.AddEvaluation(Common.EXTRA_EVALUATION);
 				}
 
 				MatchCollection collection = Regex.Matches(explain, @"(\w+用字|译音字)", RegexOptions.Compiled);
 				if (collection.Count > 0)
 				{
 					type = CharacterType.Noun;
-					pinyin.AddEvaluation(App.EXTRA_EVALUATION * collection.Count);
+					pinyin.AddEvaluation(Common.EXTRA_EVALUATION * collection.Count);
 				}
 
 				/**
@@ -447,7 +447,7 @@ namespace EzPinyin.Spider
 						 * 如果词汇比较老，则防止覆盖现有拼音。
 						 */
 						string description = match.Groups[2].Value;
-						if (Regex.IsMatch(description, "古[代时]|戏[曲文]|旧小说|封建|[帝王将相]") && App.Samples.ContainsKey(text))
+						if (Regex.IsMatch(description, "古[代时]|戏[曲文]|旧小说|封建|[帝王将相]") && Common.Samples.ContainsKey(text))
 						{
 							continue;
 						}
@@ -542,7 +542,7 @@ namespace EzPinyin.Spider
 				if (Regex.IsMatch(explain, @"([地|省|市|州|县]名)(?=\W)", RegexOptions.Compiled))
 				{
 					type = CharacterType.Noun;
-					pinyin.AddEvaluation(App.EXTRA_EVALUATION);
+					pinyin.AddEvaluation(Common.EXTRA_EVALUATION);
 				}
 
 				pinyin.AddType(type, Regex.Matches(explain, @"<span[^>]+.cino.>").Count);
@@ -615,7 +615,7 @@ namespace EzPinyin.Spider
 			match = Regex.Match(html, @"<strong>[^<]+</strong>\s*<span[^>]+dicpy.>\s*([^<]+)\s*<", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 			if (match.Success)
 			{
-				if ((sample.ZDictPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
+				if ((sample.ZDictPinyin = Common.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
 				{
 					sample.Verified = true;
 					return;
@@ -628,7 +628,7 @@ namespace EzPinyin.Spider
 			match = Regex.Match(html, @"<rt>([^<]+)<span[^>]+ptr.><a[^>]+audio_play_button", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 			if (match.Success)
 			{
-				if ((sample.ZDictPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
+				if ((sample.ZDictPinyin = Common.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
 				{
 					return;
 				}
@@ -636,7 +636,7 @@ namespace EzPinyin.Spider
 			match = Regex.Match(html, @"<rt>([^<]+)</rt>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 			if (match.Success)
 			{
-				if ((sample.ZDictPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
+				if ((sample.ZDictPinyin = Common.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
 				{
 					return;
 				}
@@ -648,7 +648,7 @@ namespace EzPinyin.Spider
 			match = Regex.Match(html, @"拼音[^\n]+dicpy[^>]+>([^<]+)</span>[^\n]+z_d song[^\n]+ptr[^\n]+audio_play_button", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 			if (match.Success)
 			{
-				if ((sample.ZDictPinyin = App.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
+				if ((sample.ZDictPinyin = Common.ParseWordPinyin(sample.Word, match.Groups[1].Value)) != null)
 				{
 					return;
 				}
