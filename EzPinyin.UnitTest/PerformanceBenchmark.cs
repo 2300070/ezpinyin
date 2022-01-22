@@ -73,22 +73,22 @@ namespace EzPinyin.UnitTest
 		[TestMethod]
 		public void BasicBenchmark()
 		{
-			PerformanceBenchmark.ApplyBenchmark("重庆银行川藏大区成都分行驻厦门朝阳区长厦路支行");
+			PerformanceBenchmark.ApplyBenchmark("重庆银行川藏大区成都分行朝阳区长厦路重工大厦行动处九楼张朝阳董事长藏宝室");
 		}
 		[TestMethod]
 		public void ExtensionABenchmark()
 		{
-			PerformanceBenchmark.ApplyBenchmark("重庆银行川藏大区成都分行朝阳区长厦路支行，㐀㲒䔤䶵。");
+			PerformanceBenchmark.ApplyBenchmark("重庆银行川藏大区成都分行朝阳区长厦路重工大厦行动处九楼张朝阳董事长藏宝室，㐀㲒䔤䶵。");
 		}
 		[TestMethod]
 		public void ExtensionABCDBenchmark()
 		{
-			PerformanceBenchmark.ApplyBenchmark("重庆银行川藏大区成都分行朝阳区长厦路支行，㐀㲒䔤䶵，𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝", false);
+			PerformanceBenchmark.ApplyBenchmark("重庆银行川藏大区成都分行朝阳区长厦路重工大厦行动处九楼张朝阳董事长藏宝室，㐀㲒䔤䶵，𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝", false);
 		}
 		[TestMethod]
 		public void ExtensionABCDEFGBenchmark()
 		{
-			PerformanceBenchmark.ApplyBenchmark("重庆银行川藏大区成都分行朝阳区长厦路支行，㐀㲒䔤䶵，𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝𫠠𫿰𬟀𬺰𭡫𮈦𰀀𱍊", false);
+			PerformanceBenchmark.ApplyBenchmark("重庆银行川藏大区成都分行朝阳区长厦路重工大厦行动处九楼张朝阳董事长藏宝室，㐀㲒䔤䶵，𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝𫠠𫿰𬟀𬺰𭡫𮈦𰀀𱍊", false);
 		}
 
 

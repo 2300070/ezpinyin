@@ -65,6 +65,10 @@
             </summary>
         </member>
         <member name="T:EzPinyin.LexiconNode">
+            当前算法并未考虑UTF32词汇导致的杂凑效率降低的问题:
+            1.当第一个字符是UTF32字符时，由于读取的第二个char是第一个字符的低半代理，必然导致所有的链表节点获得一样的杂凑码，从而导致只有一个链表生效。
+            2.当第一个字符为UTF16字符，而第二个字符是UTF32字符时，由于读取的第二个char是第二个字符的高半代理，因此同样容易出现杂凑效果严重下降的问题。，
+            但由于目前基本没有UTF32词汇，个别词汇不会影响整体效果，因此暂时不做修补。
             <summary>
             表示一个词汇节点。
             </summary>
@@ -114,7 +118,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.LexiconNode.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
             <summary>
@@ -123,7 +127,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.LexiconNode.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
             <summary>
@@ -176,17 +180,17 @@
         </member>
         <member name="M:EzPinyin.LinkNode.GetPinyin(System.Char*)">
             <summary>
-            获得拼音字符串，永远抛出<see cref="T:System.NotSupportedException"/>异常。
+            设计用于获得拼音字符串，本案例中则永远抛出<see cref="T:System.NotSupportedException"/>异常。
             </summary>
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
-            <returns>所获得的字符串。</returns>
+            <returns>此方法永远抛出<see cref="T:System.NotSupportedException"/>，没有返回结果。</returns>
         </member>
         <member name="M:EzPinyin.LinkNode.GetInitial(System.Char*)">
             <summary>
-            获得拼音首字母，永远抛出<see cref="T:System.NotSupportedException"/>异常。
+            设计用于获得拼音首字母，本案例中则永远抛出<see cref="T:System.NotSupportedException"/>异常。
             </summary>
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
-            <returns>所获得的首字母。</returns>
+            <returns>此方法永远抛出<see cref="T:System.NotSupportedException"/>，没有返回结果。</returns>
         </member>
         <member name="T:EzPinyin.LinkNode2">
             <summary>
@@ -200,7 +204,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.LinkNode2.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
             <summary>
@@ -209,7 +213,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.LinkNode2.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
             <summary>
@@ -232,7 +236,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.LinkNode3.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
             <summary>
@@ -241,7 +245,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.LinkNode3.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
             <summary>
@@ -264,7 +268,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.LinkNode4.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
             <summary>
@@ -273,7 +277,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.LinkNode4.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
             <summary>
@@ -291,7 +295,7 @@
         </member>
         <member name="F:EzPinyin.LinkNodePriority.Low">
             <summary>
-            低优先级别，一般是添加简体字词汇时自动添加的繁体词汇节点所使用的优先级别。
+            低优先级别，一般是添加简体字词汇时同步添加的繁体词汇节点所使用的优先级别。
             </summary>
         </member>
         <member name="F:EzPinyin.LinkNodePriority.Normal">
@@ -316,7 +320,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.LinkNodeX.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
             <summary>
@@ -325,7 +329,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.LinkNodeX.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
             <summary>
@@ -343,24 +347,24 @@
         </member>
         <member name="M:EzPinyin.PinyinHelper.GetPinyin(System.String,System.String)">
             <summary>
-            将指定的字符串转换为对应的拼音字符串。
+            获得指定的字符串中每个字符的拼音所组成的字符串。
             </summary>
-            <param name="text">需要处理的字符串</param>
+            <param name="text">需要处理的输入字符串。</param>
             <param name="separator">额外指定一个用于分隔的字符串。</param>
             <returns><paramref name="text"/>对应的拼音字符串，如果<paramref name="text"/>为null，则返回null。</returns>
         </member>
         <member name="M:EzPinyin.PinyinHelper.GetArray(System.String)">
             <summary>
-            将指定的字符串转换为对应的拼音数组。
+            获得指定的字符串中每个字符的拼音，并以数组的形式返回。
             </summary>
-            <param name="text">需要处理的字符串</param>
+            <param name="text">需要处理的输入字符串。</param>
             <returns>包含输入字符串的拼音信息的结果数组，若<paramref name="text"/>为null，则返回null。</returns>
         </member>
         <member name="M:EzPinyin.PinyinHelper.GetInitial(System.String,System.String)">
             <summary>
-            将指定的字符串转换为对应的拼音首字母字符串。
+            获得指定的字符串中每个字符的拼音首字母。
             </summary>
-            <param name="text">需要处理的字符串</param>
+            <param name="text">需要处理的输入字符串。</param>
             <param name="separator">额外指定一个用于分隔的字符串。</param>
             <returns><paramref name="text"/>对应的拼音首字母字符串，如果<paramref name="text"/>为null，则返回null。</returns>
             <remarks>
@@ -374,7 +378,7 @@
             <param name="path">配置文件的路径。</param>
             <remarks>
             <para>此方法提供了一种除配置文件之外的方式来批量的重定义字符或者词汇的拼音，与使用配置文件的区别在于：这种方式对文件名没有特别的限制，且不会自动装载，这样就可以在必要的时候按需加载使用。</para>
-            <para>此方法不具备线程安全性，多线程环境下可能导致其它方法功能异常，因此请注意线程同步。</para>
+            <para>此方法不具备线程安全性，因此请注意线程同步。</para>
             </remarks>
         </member>
         <member name="M:EzPinyin.PinyinHelper.Load(System.String)">
@@ -384,7 +388,7 @@
             <param name="content">配置内容。</param>
             <remarks>
             <para>此方法提供了一种除配置文件之外的方式来批量的重定义字符或者词汇的拼音，与使用配置文件的区别在于：这种方式对文件名没有特别的限制，且不会自动装载，这样就可以在必要的时候按需加载使用。</para>
-            <para>此方法不具备线程安全性，多线程环境下可能导致其它方法功能异常，因此请注意线程同步。</para>
+            <para>此方法不具备线程安全性，因此请注意线程同步。</para>
             </remarks>
         </member>
         <member name="M:EzPinyin.PinyinHelper.Define(System.String,System.String)">
@@ -439,7 +443,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.PinyinNode.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
             <summary>
@@ -448,7 +452,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.PinyinNode.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
             <summary>
@@ -491,7 +495,7 @@
         </member>
         <member name="P:EzPinyin.Utf16EmptyNode.Pinyin">
             <summary>
-            获得当前节点的拼音字符串。
+            设计用于获得当前节点的拼音字符串，此处总是抛出<see cref="T:System.NotSupportedException"/>。
             </summary>
         </member>
         <member name="M:EzPinyin.Utf16EmptyNode.GetPinyin(System.Char*)">
@@ -515,7 +519,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.Utf16EmptyNode.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
             <summary>
@@ -524,7 +528,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.Utf16EmptyNode.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
             <summary>
@@ -566,7 +570,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.Utf16Node.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
             <summary>
@@ -575,7 +579,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.Utf16Node.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
             <summary>
@@ -598,7 +602,7 @@
         </member>
         <member name="P:EzPinyin.Utf32EmptyNode.Pinyin">
             <summary>
-            获得当前节点的拼音字符串。
+            设计用于获得当前节点的拼音字符串，此处总是抛出<see cref="T:System.NotSupportedException"/>。
             </summary>
         </member>
         <member name="M:EzPinyin.Utf32EmptyNode.GetPinyin(System.Char*)">
@@ -622,7 +626,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.Utf32EmptyNode.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
             <summary>
@@ -631,7 +635,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.Utf32EmptyNode.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
             <summary>
@@ -673,7 +677,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.Utf32Node.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
             <summary>
@@ -682,7 +686,7 @@
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">分隔符。</param>
+            <param name="separator">额外指定的分隔符。</param>
         </member>
         <member name="M:EzPinyin.Utf32Node.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
             <summary>

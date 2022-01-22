@@ -71,7 +71,6 @@ namespace EzPinyin
 
 		}
 
-
 		/// <summary>
 		/// 获得指定的字符串中每个字符的拼音，并以数组的形式返回。
 		/// </summary>

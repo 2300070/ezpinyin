@@ -625,16 +625,16 @@ namespace EzPinyin
 			 */
 			while (reader.Peek() > -1)
 			{
+				string line = reader.ReadLine();
+				row++;
+
 				/**
 				 * 检查该行是否是空白
 				 */
-				string line = reader.ReadLine();
 				if (string.IsNullOrEmpty(line))
 				{
 					continue;
 				}
-
-				row++;
 
 				/**
 				 * 检查该行是否有注释

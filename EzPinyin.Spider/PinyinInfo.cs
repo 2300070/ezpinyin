@@ -37,7 +37,7 @@ namespace EzPinyin.Spider
 		public PinyinInfo(string text)
 		{
 			this.Text = text;
-			this.IsStandard = App.StandardPinyinList.Contains(text);
+			this.IsStandard = Common.StandardPinyinList.Contains(text);
 		}
 
 		/// <summary>

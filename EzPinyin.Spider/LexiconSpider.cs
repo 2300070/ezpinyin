@@ -13,7 +13,7 @@ namespace EzPinyin.Spider
 
 		static LexiconSpider()
 		{
-			foreach (char ch in App.GB2312_CHARACTERS)
+			foreach (char ch in Common.GB2312_CHARACTERS)
 			{
 				Characters.Add(new string(ch, 1));
 			}
@@ -26,13 +26,13 @@ namespace EzPinyin.Spider
 		/// <returns>所找到的词汇，如果词汇不存在，则创建新的词汇样本，注册并返回。</returns>
 		public static WordInfo FindOrRegister(string word)
 		{
-			if (App.Samples.TryGetValue(word, out WordInfo result))
+			if (Common.Samples.TryGetValue(word, out WordInfo result))
 			{
 				return result;
 			}
 
 			result = new WordInfo(word);
-			return result.IsValid ? App.Samples.GetOrAdd(result.ActualWord, result) : result;
+			return result.IsValid ? Common.Samples.GetOrAdd(result.ActualWord, result) : result;
 		}
 
 		/// <summary>
@@ -55,8 +55,8 @@ namespace EzPinyin.Spider
 
 			Console.WriteLine();
 			Console.WriteLine("下载并生成样本数据。");
-			await LexiconSpider.DownloadSampleAsync(App.Samples["行动"]);
-			await App.ForEachAsync(App.Samples.Values, LexiconSpider.DownloadSampleAsync);
+			await LexiconSpider.DownloadSampleAsync(Common.Samples["行动"]);
+			await Common.ForEachAsync(Common.Samples.Values, LexiconSpider.DownloadSampleAsync);
 
 			PinyinCache.SaveAll();
 

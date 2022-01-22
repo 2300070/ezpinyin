@@ -7,7 +7,7 @@
 #### 特性
 
 - 极快的处理速度，具体请参考性能章节。
-- 涵盖Unicode平面的基本汉字及补充汉字、汉字扩展区A的全部汉字，涵盖扩展区B、C、D、E、F、G的大部分汉字，总计约覆盖九万汉字、五十万词汇。
+- 涵盖统一码平面A的基本汉字区及补充汉字区、汉字扩展区A的全部汉字，涵盖统一码平面B的汉字扩展区B、C、D、E、F、G的大部分汉字，总计约覆盖九万汉字、五十万词汇。
 - 高质量的字典，通过重新对字典中的多音字进行分析优化，使得此项目对于名称的处理具备更好的效果。
 - 除了支持在运行时重定义拼音之外，还可以用配置文件的方式自定义汉字或者词汇的拼音，从而达到修正或者补充的效果。
 - 词典同时适配简体与繁体。
@@ -44,7 +44,7 @@
 
 ```csharp
 //获得拼音完整字符串
-PinyinHelper.GetPinyin("重庆银行川藏大区成都分行朝阳区长厦路支行重工大厦行动处九楼董事长藏宝室");//chong qing yin hang chuan zang da qu cheng du fen hang chao yang qu chang xia lu zhi hang zhong gong da sha xing dong chu jiu lou dong shi zhang cang bao shi
+PinyinHelper.GetPinyin("重庆银行川藏大区成都分行朝阳区长厦路重工大厦行动处九楼张朝阳董事长藏宝室");//chong qing yin hang chuan zang da qu cheng du fen hang chao yang qu chang xia lu zhong gong da sha xing dong chu jiu lou dong shi zhang cang bao shi
 
 //获得拼音的首字母
 PinyinHelper.GetInitial("㐀㲒䔤䶵𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝𫠠𫿰𬟀𬺰𭡫𮈦𰀀𱍊");//qbpchgfcwdgzmlldjlkspdc𫜴wbyst𬺰𭡫lzc
@@ -72,7 +72,7 @@ PinyinHelper.Load("𫜴 liu\n𫜴吧 lun biu");//内容格式请参考自定义�
 
 #### 免责声明
 
-如你所见，这个项目不是为了纯粹的拼音转换而开发的。由于多音字在汉字的不同语义下使用十分复杂，因而这个项目在处理多音字时仍然会出现错误，尤其不适用于以阅读为目的的拼音转换。任何使用本项目的开发人员应该理解这个问题并谨慎使用，此项目的开发者不对此项目的任何功能或者问题（或损失）提供任何（直接或间接）担保与承诺。
+由于多音字在不同语义下的意涵十分复杂，因而这个项目在处理多音字时仍然会出现错误。任何使用本项目的开发人员应该理解这个问题并谨慎使用，此项目的开发者不对此项目的任何功能或者问题（或损失）提供任何（直接或间接）担保与承诺。
 
 #### 特别致谢
 

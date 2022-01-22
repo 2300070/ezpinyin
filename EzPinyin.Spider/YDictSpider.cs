@@ -20,7 +20,7 @@ namespace EzPinyin.Spider
 
 			string key = (character.Length == 1 ? character[0] : char.ConvertToUtf32(character[0], character[1])).ToString("X");
 
-			if (App.Dictionary.TryGetValue(character, out CharacterInfo result))
+			if (Common.Dictionary.TryGetValue(character, out CharacterInfo result))
 			{
 				if (result.IsStandard)
 				{
@@ -30,7 +30,7 @@ namespace EzPinyin.Spider
 			else
 			{
 				result = new CharacterInfo(character);
-				App.Dictionary[character] = result;
+				Common.Dictionary[character] = result;
 			}
 
 			await YDictSpider.LoadByKeyAsync(character, key);
@@ -47,10 +47,10 @@ namespace EzPinyin.Spider
 		private static async Task<CharacterInfo> LoadByKeyAsync(string character, string key, HashSet<string> stacks = null)
 		{
 
-			if (!App.Dictionary.TryGetValue(character, out CharacterInfo result))
+			if (!Common.Dictionary.TryGetValue(character, out CharacterInfo result))
 			{
 				result = new CharacterInfo(character);
-				App.Dictionary[character] = result;
+				Common.Dictionary[character] = result;
 			}
 
 
@@ -63,7 +63,7 @@ namespace EzPinyin.Spider
 			 * 下载叶典的页面
 			 */
 			TRY_AGAIN:
-			html = await App.DownloadAsync(new DownloadSettings($"http://yedict.com/zscontent.asp?uni={key}") { IgnoreCache = ignoreCache });
+			html = await Common.DownloadAsync(new DownloadSettings($"http://yedict.com/zscontent.asp?uni={key}") { IgnoreCache = ignoreCache });
 			if (html != null)
 			{
 				match = Regex.Match(html, @"参考资料：《([^《》壮の]|《[^《》壮の]+》)+》|中华字海：第\d+页第\d+字", RegexOptions.Compiled);
@@ -111,7 +111,7 @@ namespace EzPinyin.Spider
 								string pinyinText = matches[i].Groups[1].Value;
 								if (result.ZDictPinyin != null)
 								{
-									pinyin = App.FixPinyin(pinyinText);
+									pinyin = Common.FixPinyin(pinyinText);
 									if (pinyin == result.ZDictPinyin)
 									{
 										/**
@@ -132,10 +132,10 @@ namespace EzPinyin.Spider
 								info = null;
 								for (int j = 0; j < collection.Count; j++)
 								{
-									string item = App.FixPinyin(collection[j].Value);
+									string item = Common.FixPinyin(collection[j].Value);
 									if (item != null)
 									{
-										if (App.PinyinList.Contains(item))
+										if (Common.PinyinList.Contains(item))
 										{
 											pinyin = item;
 											info = result.Register(item);
@@ -255,7 +255,7 @@ namespace EzPinyin.Spider
 					}
 					if (ch != null)
 					{
-						if (!App.Dictionary.TryGetValue(ch, out CharacterInfo variant))
+						if (!Common.Dictionary.TryGetValue(ch, out CharacterInfo variant))
 						{
 							variant = await YDictSpider.LoadByKeyAsync(ch, key, stacks);
 						}

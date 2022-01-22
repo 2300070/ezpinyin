@@ -15,7 +15,7 @@ namespace EzPinyin.Spider
 	/// <summary>
 	/// 提供应用程序全局的杂项功能。
 	/// </summary>
-	internal static class App
+	internal static class Common
 	{
 		#region 常用字
 		/// <summary>
@@ -40,14 +40,7 @@ namespace EzPinyin.Spider
 
 		#endregion
 
-		/// <summary>
-		/// 字典缓存。
-		/// </summary>
-		public const string DICTIONARY_CACHE_FILE = "../cache/dictionary.json";
-		/// <summary>
-		/// 样本缓存。
-		/// </summary>
-		public const string SAMPLE_CACHE_FILE = "../cache/samples.json";
+
 		/// <summary>
 		/// 中文标点符号集合。
 		/// </summary>
@@ -93,7 +86,7 @@ namespace EzPinyin.Spider
 		/// </summary>
 		public const double EXTRA_EVALUATION = 5D;
 
-		static App()
+		static Common()
 		{
 		}
 
@@ -103,7 +96,7 @@ namespace EzPinyin.Spider
 		/// <param name="word">需要检查的词汇。</param>
 		/// <param name="pinyin">该词汇的拼音。</param>
 		/// <returns>如果该词汇中某个字符的读音与其一般读音不一致，则返回true。</returns>
-		public static bool CheckRarePinyin(string word, string[] pinyin) => App.CheckRarePinyin(word, pinyin, 0, word.Length);
+		public static bool CheckRarePinyin(string word, string[] pinyin) => Common.CheckRarePinyin(word, pinyin, 0, word.Length);
 
 		/// <summary>
 		/// 检查指定词汇是否包含生僻的读音。
@@ -123,7 +116,7 @@ namespace EzPinyin.Spider
 			count += offset;
 			for (int i = offset; i < count; i++)
 			{
-				if (!App.Dictionary.TryGetValue(new string(word[i], 1), out CharacterInfo ch) || ch == null)
+				if (!Common.Dictionary.TryGetValue(new string(word[i], 1), out CharacterInfo ch) || ch == null)
 				{
 					return false;
 				}
@@ -134,81 +127,6 @@ namespace EzPinyin.Spider
 			}
 
 			return false;
-		}
-
-		/// <summary>
-		/// 保存词汇的原始样本。
-		/// </summary>
-		/// <returns>需要保存的样本。</returns>
-		public static void SaveSamples()
-		{
-			Console.WriteLine("保存词汇样本。");
-
-			File.WriteAllText(SAMPLE_CACHE_FILE, JsonConvert.SerializeObject(App.Samples.Values));
-
-			Console.WriteLine("完成。");
-		}
-
-		/// <summary>
-		/// 加载词汇的原始样本。
-		/// </summary>
-		public static async Task LoadSamplesAsync()
-		{
-			Console.Write("加载词汇样本...");
-			await App.WaitAsync(Task.Run(delegate
-			{
-				WordInfo[] array = JsonConvert.DeserializeObject<WordInfo[]>(File.ReadAllText(SAMPLE_CACHE_FILE));
-				App.Samples.Clear();
-				foreach (WordInfo word in array)
-				{
-					App.Samples.TryAdd(word.Word, word);
-				}
-			}));
-			Console.WriteLine("完成。");
-			Console.WriteLine($"共加载{ App.Samples.Count}个词汇样本。");
-		}
-
-		/// <summary>
-		/// 保存字典相关的文件。
-		/// </summary>
-		public static async Task LoadDictionaryAsync()
-		{
-			Console.Write("加载字典数据...");
-			await App.WaitAsync(Task.Run(delegate
-			{
-				App.Dictionary = JsonConvert.DeserializeObject<ConcurrentDictionary<string, CharacterInfo>>(File.ReadAllText(DICTIONARY_CACHE_FILE));
-
-				if (File.Exists("pinyin.txt"))
-				{
-					string[] lines = File.ReadAllLines("pinyin.txt");
-					foreach (string pinyin in lines)
-					{
-						if (!string.IsNullOrEmpty(pinyin))
-						{
-							App.EnsurePinyin(pinyin);
-						}
-					}
-				}
-
-				foreach (KeyValuePair<string, CharacterInfo> item in App.Dictionary)
-				{
-					char ch = item.Key[0];
-					CharacterInfo info = item.Value;
-					info.Character = item.Key;
-					if (info.Simplified > 0)
-					{
-						App.Simplified[ch] = info.Simplified;
-					}
-
-					if (info.Traditional > 0)
-					{
-						App.Simplified[info.Traditional] = ch;
-					}
-				}
-			}));
-
-			Console.WriteLine("完成。");
-			Console.WriteLine($"共加载{ App.Dictionary.Count}个字符。");
 		}
 
 		/// <summary>
@@ -410,7 +328,7 @@ namespace EzPinyin.Spider
 
 			foreach (char ch in word)
 			{
-				if (!App.Dictionary.TryGetValue(new string(ch, 1), out CharacterInfo info) || info == null)
+				if (!Common.Dictionary.TryGetValue(new string(ch, 1), out CharacterInfo info) || info == null)
 				{
 					return false;
 				}
@@ -594,7 +512,7 @@ namespace EzPinyin.Spider
 				pinyin = pinyin.Substring(0, match.Index);
 			}
 
-			pinyin = App.FixPinyin(pinyin, true);
+			pinyin = Common.FixPinyin(pinyin, true);
 
 			if (String.IsNullOrEmpty(pinyin))
 			{
@@ -612,14 +530,14 @@ namespace EzPinyin.Spider
 					for (int w = 0, p = 0; w < word.Length && p < array.Length; w++)
 					{
 						pinyin = array[p];
-						if (App.PinyinList.Contains(pinyin))
+						if (Common.PinyinList.Contains(pinyin))
 						{
 							list.Add(pinyin);
 							p++;
 							continue;
 						}
 
-						if (!App.Dictionary.TryGetValue(word[w].ToString(), out CharacterInfo info))
+						if (!Common.Dictionary.TryGetValue(word[w].ToString(), out CharacterInfo info))
 						{
 							break;
 						}
@@ -671,9 +589,9 @@ namespace EzPinyin.Spider
 			for (int i = 0; i < array.Length; i++)
 			{
 				string item = array[i];
-				if (!App.PinyinList.Contains(item))
+				if (!Common.PinyinList.Contains(item))
 				{
-					if (App.Dictionary.TryGetValue(new string(word[i], 1), out CharacterInfo ch) && ch.Count == 1)
+					if (Common.Dictionary.TryGetValue(new string(word[i], 1), out CharacterInfo ch) && ch.Count == 1)
 					{
 						array[i] = ch.PreferedPinyin;
 						continue;
@@ -695,7 +613,7 @@ namespace EzPinyin.Spider
 			{
 				return;
 			}
-			List<string> list = App.PinyinList;
+			List<string> list = Common.PinyinList;
 			lock (list)
 			{
 				if (!list.Contains(pinyin))
