@@ -6,7 +6,6 @@
     <Authors>wudexiang</Authors>
     <Description>拼音组件，支持汉字转拼音、汉字转声母（首字母）。具备极快的速度、较小的体积、自带经过优化的高质量字典与词典、支持繁简、支持重定义、支持自定义。</Description>
     <Copyright>Copyright 2021 wudexiang, all rights reserved.</Copyright>
-    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SignAssembly>false</SignAssembly>
     <PackageProjectUrl>https://github.com/2300070/ezpinyin</PackageProjectUrl>
@@ -20,6 +19,7 @@
     <UserSecretsId>18b9bc79-5bc3-48c8-9367-de42dedcb0c0</UserSecretsId>
     <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
