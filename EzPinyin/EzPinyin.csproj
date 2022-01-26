@@ -39,7 +39,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-		<None Include="C:\Users\sean\Documents\works\EzPinyin\LICENSE" Link="LICENSE">
+		<None Include="../LICENSE" Link="LICENSE">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
