@@ -8,7 +8,7 @@
     <Copyright>Copyright 2021 wudexiang, all rights reserved.</Copyright>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SignAssembly>false</SignAssembly>
-    <PackageProjectUrl>https://github.com/2300070/ezpinyin</PackageProjectUrl>
+    <PackageProjectUrl>https://www.nuget.org/packages/EzPinyin/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/2300070/ezpinyin</RepositoryUrl>
     <AssemblyVersion>1.0.0.1</AssemblyVersion>
     <FileVersion>1.0.0.1</FileVersion>
