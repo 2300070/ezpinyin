@@ -33,6 +33,7 @@ namespace EzPinyin.UnitTest
 			PinyinHelper.Define("𫜴吧", new[]{"lun", "biu"});
 			Console.WriteLine(PinyinHelper.GetPinyin("𫜴"));
 			Console.WriteLine(PinyinHelper.GetPinyin("𫜴吧"));
+			Console.WriteLine(PinyinHelper.GetPinyin("𫜴吧一一"));
 		}
 
 		[TestMethod]
@@ -89,6 +90,7 @@ namespace EzPinyin.UnitTest
 		public void TestXCharacterWord()
 		{
 			Console.WriteLine(PinyinHelper.GetPinyin("到什么山上唱什么歌"));
+			Console.WriteLine(PinyinHelper.GetPinyin("到什么山上唱什么歌到什么山上唱什么歌"));
 		}
 
 		[TestMethod]

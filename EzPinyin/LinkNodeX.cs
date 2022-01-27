@@ -49,19 +49,15 @@ namespace EzPinyin
 				string[] pinyin = this.pinyin;
 				buffer.Append(pinyin[0]).Append(separator).Append(pinyin[1]);
 
-				int max = pinyin.Length - 1;
-				for (int i = 2; i < max; i++)
+				length = pinyin.Length;
+				for (int i = 2; i < length; i++)
 				{
 					buffer.Append(separator).Append(pinyin[i]);
 				}
 
 				if (cursor < end)
 				{
-					buffer.Append(separator).Append(pinyin[max]).Append(separator);
-				}
-				else if (max > 1)
-				{
-					buffer.Append(separator).Append(pinyin[max]);
+					buffer.Append(separator);
 				}
 				return;
 			}
@@ -98,19 +94,15 @@ namespace EzPinyin
 				string[] pinyin = this.pinyin;
 				buffer.Append(pinyin[0][0]).Append(separator).Append(pinyin[1][0]);
 
-				int max = pinyin.Length - 1;
-				for (int i = 2; i < max; i++)
+				length = pinyin.Length;
+				for (int i = 2; i < length; i++)
 				{
 					buffer.Append(separator).Append(pinyin[i][0]);
 				}
 
 				if (cursor < end)
 				{
-					buffer.Append(separator).Append(pinyin[max][0]).Append(separator);
-				}
-				else if (max > 1)
-				{
-					buffer.Append(separator).Append(pinyin[max][0]);
+					buffer.Append(separator);
 				}
 				return;
 			}
