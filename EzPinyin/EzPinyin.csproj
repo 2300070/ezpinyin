@@ -13,7 +13,7 @@
     <AssemblyVersion>1.0.0.1</AssemblyVersion>
     <FileVersion>1.0.0.1</FileVersion>
     <PackageIconUrl></PackageIconUrl>
-    <Version>1.0.14</Version>
+    <Version>1.0.15</Version>
     <PackageTags>pinyin;bopomofo;拼音;汉字</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <UserSecretsId>18b9bc79-5bc3-48c8-9367-de42dedcb0c0</UserSecretsId>
