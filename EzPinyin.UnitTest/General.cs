@@ -70,29 +70,25 @@ namespace EzPinyin.UnitTest
 		[TestMethod]
 		public void Test3CharacterWord()
 		{
-			Console.WriteLine(PinyinHelper.GetPinyin("朝阳市"));
-			Console.WriteLine(PinyinHelper.GetInitial("朝阳市"));
+			Console.WriteLine(PinyinHelper.GetPinyin("当涂县"));
 		}
 
 		[TestMethod]
 		public void Test4CharacterWord()
 		{
-			Console.WriteLine(PinyinHelper.GetPinyin("潮来潮往"));
-			Console.WriteLine(PinyinHelper.GetInitial("潮来潮往"));
+			Console.WriteLine(PinyinHelper.GetPinyin("倒打一耙"));
 		}
 
 		[TestMethod]
 		public void Test5CharacterWord()
 		{
-			Console.WriteLine(PinyinHelper.GetPinyin("吃了砒霜药"));
-			Console.WriteLine(PinyinHelper.GetInitial("吃了砒霜药"));
+			Console.WriteLine(PinyinHelper.GetPinyin("刀口上舔血"));
 		}
 
 		[TestMethod]
 		public void TestXCharacterWord()
 		{
-			Console.WriteLine(PinyinHelper.GetPinyin("吃了老娘洗脚水"));
-			Console.WriteLine(PinyinHelper.GetInitial("吃了老娘洗脚水"));
+			Console.WriteLine(PinyinHelper.GetPinyin("到什么山上唱什么歌"));
 		}
 
 		[TestMethod]

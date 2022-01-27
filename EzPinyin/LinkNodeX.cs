@@ -26,13 +26,16 @@ namespace EzPinyin
 		public override unsafe void WritePinyin(ref char* cursor, char* end, StringBuilder buffer, string separator)
 		{
 			/**
-			 * 先比较前两个字符能否匹配，如果能够匹配，再比较其余的。
+			 * 先比较前三个字符能否匹配，如果能够匹配，再比较其余的。
 			 */
 			string word = this.Word;
 			int length = this.Length;
+			/**
+			 * 由于word要么包含一个UTF32字符，要么长度大于4，所以无论什么情形下长度至少不小于3个字符，所以无需考虑cursor+2溢出的问题。
+			 */
 			if (cursor + length - 1 <= end && *(cursor + 1) == word[1] && *(cursor + 2) == word[2])
 			{
-				for (int i = 3; i < length; i++)
+				for (int i = length - 1; i > 2; i--)
 				{
 					if (*(cursor + i) != word[i])
 					{
