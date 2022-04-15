@@ -30,7 +30,7 @@ namespace EzPinyin.UnitTest
 		public void TestRuntimeDefine()
 		{
 			PinyinHelper.Define("𫜴", "lun");
-			PinyinHelper.Define("𫜴吧", new[]{"lun", "biu"});
+			PinyinHelper.Define("𫜴吧", new[] { "lun", "biu" });
 			Console.WriteLine(PinyinHelper.GetPinyin("𫜴"));
 			Console.WriteLine(PinyinHelper.GetPinyin("𫜴吧"));
 			Console.WriteLine(PinyinHelper.GetPinyin("𫜴吧一一"));
@@ -43,7 +43,7 @@ namespace EzPinyin.UnitTest
 			PinyinHelper.Define("厂长", new[] { "chang", "chang" });
 			Console.WriteLine(PinyinHelper.GetPinyin("厂长"));//此处应该输出chang chang
 			Console.WriteLine(PinyinHelper.GetPinyin("廠長"));//此处应该同样输出chang chang，因为定义简体词汇会应用到繁体。
-			PinyinHelper.Define("厂长", new[] { "chang", "zhang" });
+			PinyinHelper.Define("廠長", new[] { "chang", "zhang" });
 			Console.WriteLine(PinyinHelper.GetPinyin("廠長"));//此处应该输出chang zhang，因为繁体已经重新定义。
 		}
 

@@ -13,7 +13,7 @@ namespace EzPinyin
 		{
 			try
 			{
-				Dictionary = Common.LoadDictionary("dict_cmp", Common.Utf16Templates);
+				Dictionary = Common.LoadDictionary("dict_cmp", Common.Utf16Templates, 0xF900);
 			}
 			finally
 			{

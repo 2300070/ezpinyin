@@ -108,6 +108,12 @@ namespace EzPinyin.Spider
 		public string GuoxuePinyin { get; set; }
 
 		/// <summary>
+		/// 指示是否包含词典项。
+		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+		public bool HasLexiconItem { get; set; }
+
+		/// <summary>
 		/// 指示该字符信息是否合规。
 		/// </summary>
 		[JsonIgnore]

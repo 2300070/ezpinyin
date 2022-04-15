@@ -31,16 +31,16 @@ namespace EzPinyin
 			/**
 			 * 只需验证后一个字符。
 			 */
-			if (cursor + 1 < end && *(cursor + 1) == this.char1)
+			if (cursor + 1 <= end && *(cursor + 1) == this.char1)
 			{
-				buffer.Append(this.pinyin0).Append(separator).Append(this.pinyin1).Append(separator);
-				cursor += 2;
-				return;
-			}
-
-			if (cursor + 1 == end && *(cursor + 1) == this.char1)
-			{
-				buffer.Append(this.pinyin0).Append(separator).Append(this.pinyin1);
+				if (separator != null && buffer.Length > 0)
+				{
+					buffer.Append(separator).Append(this.pinyin0).Append(separator).Append(this.pinyin1);
+				}
+				else
+				{
+					buffer.Append(this.pinyin0).Append(separator).Append(this.pinyin1);
+				}
 				cursor += 2;
 				return;
 			}
@@ -60,19 +60,20 @@ namespace EzPinyin
 			/**
 			 * 只需验证后一个字符。
 			 */
-			if (cursor + 1 < end && *(cursor + 1) == this.char1)
+			if (cursor + 1 <= end && *(cursor + 1) == this.char1)
 			{
-				buffer.Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]).Append(separator);
+				if (separator != null && buffer.Length > 0)
+				{
+					buffer.Append(separator).Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]);
+				}
+				else
+				{
+					buffer.Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]);
+				}
 				cursor += 2;
 				return;
 			}
 
-			if (cursor + 1 == end && *(cursor + 1) == this.char1)
-			{
-				buffer.Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]);
-				cursor += 2;
-				return;
-			}
 
 			this.Next.WriteInitial(ref cursor, end, buffer, separator);
 		}

@@ -53,7 +53,14 @@ namespace EzPinyin
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
-						buffer.Append(Common.MapUtf16Node(cursor).GetPinyin(cursor));
+						if (separator != null && buffer.Length > 0)
+						{
+							buffer.Append(separator).Append(Common.MapUtf16Node(cursor).GetPinyin(cursor));
+						}
+						else
+						{
+							buffer.Append(Common.MapUtf16Node(cursor).GetPinyin(cursor));
+						}
 					}
 
 					return Common.ReturnBuffer(buffer);
@@ -186,7 +193,14 @@ namespace EzPinyin
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
-						buffer.Append(Common.MapUtf16Node(cursor).GetInitial(cursor));
+						if (separator != null && buffer.Length > 0)
+						{
+							buffer.Append(separator).Append(Common.MapUtf16Node(cursor).GetInitial(cursor));
+						}
+						else
+						{
+							buffer.Append(Common.MapUtf16Node(cursor).GetInitial(cursor));
+						}
 					}
 
 					return Common.ReturnBuffer(buffer);

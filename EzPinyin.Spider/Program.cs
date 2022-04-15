@@ -190,8 +190,8 @@ namespace EzPinyin.Spider
 			Console.WriteLine("完成。");
 
 			Console.WriteLine();
-			Console.Write("生成交叉词典...");
-			await Program.WriteLexiconAsync("it", false);//it=intersection
+			Console.Write("生成补充词典...");
+			await Program.WriteLexiconAsync("auxilliary", false);
 
 			Console.WriteLine("完成。");
 
@@ -205,10 +205,10 @@ namespace EzPinyin.Spider
 			Console.WriteLine();
 			Console.WriteLine("生成简繁字典。");
 
-			using (FileStream fs = new FileStream("simplified", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+			using (FileStream fs = new FileStream("convertion", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
 			{
 				byte[] buffer = new byte[4];
-				foreach (KeyValuePair<char, char> item in Common.Simplified)
+				foreach (KeyValuePair<char, char> item in Common.Convertion)
 				{
 					int val = item.Key;
 					buffer[0] = (byte)((val >> 8) & 0xFF);
@@ -238,9 +238,10 @@ namespace EzPinyin.Spider
 					MemoryStream[] streams = { new MemoryStream(), new MemoryStream(), new MemoryStream() };
 					MemoryStream x = new MemoryStream();
 					byte[] buffer = new byte[2];
-					foreach (KeyValuePair<string, WordInfo> item in Common.Lexicon)
+					List<WordInfo> samples = Common.ResultSamples;
+
+					foreach (WordInfo sample in samples)
 					{
-						WordInfo sample = item.Value;
 #if DEBUG
 						if (sample.ActualWord == TEST_WORD)
 						{
@@ -333,6 +334,36 @@ namespace EzPinyin.Spider
 				Console.WriteLine(e);
 				throw;
 			}
+		}
+
+		private static int CompateWord(WordInfo w1, WordInfo w2)
+		{
+			string x = w1.ActualWord;
+			string y = w2.ActualWord;
+
+			int a, b;
+			if (char.IsHighSurrogate(x[0]) && char.IsLowSurrogate(x[1]))
+			{
+				a = char.ConvertToUtf32(x[0], x[1]);
+			}
+			else
+			{
+				a = x[0];
+			}
+			if (char.IsHighSurrogate(y[0]) && char.IsLowSurrogate(y[1]))
+			{
+				b = char.ConvertToUtf32(y[0], y[1]);
+			}
+			else
+			{
+				b = y[0];
+			}
+
+			if (a != b)
+			{
+				return a.CompareTo(b);
+			}
+			return string.CompareOrdinal(x, y);
 		}
 
 		private static async Task CorrectLexiconAsync()
@@ -580,11 +611,11 @@ namespace EzPinyin.Spider
 			Console.WriteLine($"剩余{items.Count}样本。");
 
 			Console.WriteLine();
-			Console.Write("收集交叉样本...");
+			Console.Write("收集补充样本...");
 			/**
-			 * 收集交叉词汇样本。
+			 * 收集补充词汇样本。
 			 */
-			HashSet<WordInfo> intersections = new HashSet<WordInfo>();
+			HashSet<WordInfo> auxilliaries = new HashSet<WordInfo>();
 
 			await Common.WaitAsync(Task.Run(delegate
 			{
@@ -610,11 +641,11 @@ namespace EzPinyin.Spider
 					{
 						if (item.CheckIntersect(sample))
 						{
-							sample.IsIntersection = true;
+							sample.IsAuxilliary = true;
 							sample.IsSelected = true;
-							lock (intersections)
+							lock (auxilliaries)
 							{
-								intersections.Add(sample);
+								auxilliaries.Add(sample);
 							}
 
 							break;
@@ -625,15 +656,16 @@ namespace EzPinyin.Spider
 
 			Console.WriteLine("完成。");
 
-			Console.WriteLine($"共收集{intersections.Count}交叉样本。");
+			Console.WriteLine($"共收集{auxilliaries.Count}补充样本。");
 
 			foreach (WordInfo word in items)
 			{
-				Common.Lexicon.TryAdd(word.ActualWord, word);
+				Program.AddToLexicon(word);
 			}
-			foreach (WordInfo word in intersections)
+
+			foreach (WordInfo word in auxilliaries)
 			{
-				Common.Lexicon.TryAdd(word.ActualWord, word);
+				Program.AddToLexicon(word);
 			}
 
 			Console.WriteLine($"合并所有样本后得到{Common.Lexicon.Count}必要词汇。");
@@ -647,24 +679,11 @@ namespace EzPinyin.Spider
 			buffer.Clear();
 			await Common.WaitAsync(Task.Run(delegate
 			{
-				List<WordInfo> words = new List<WordInfo>(Common.Lexicon.Values);
-				words.Sort((x, y) =>
-				{
-					int compare = string.Compare(x.PreferedPinyinArray[0], y.PreferedPinyinArray[0], StringComparison.Ordinal);
-					if (compare != 0)
-					{
-						return compare;
-					}
+				List<WordInfo> samples = new List<WordInfo>(Common.Lexicon.Values);
+				samples.Sort(Program.CompateWord);
+				Common.ResultSamples = samples;
 
-					compare = x.ActualWord[0].CompareTo(y.ActualWord[0]);
-					if (compare != 0)
-					{
-						return compare;
-					}
-
-					return x.ActualWord.Length.CompareTo(y.ActualWord.Length);
-				});
-				foreach (WordInfo sample in words)
+				foreach (WordInfo sample in samples)
 				{
 #if DEBUG
 					if (sample.ActualWord == TEST_WORD)
@@ -673,7 +692,7 @@ namespace EzPinyin.Spider
 					}
 #endif
 					buffer.Append($"{sample.ActualWord}		{sample.PreferedPinyin}	#{sample.Source}");
-					if (sample.IsIntersection)
+					if (sample.IsAuxilliary)
 					{
 						buffer.Append("	X");
 					}
@@ -687,6 +706,19 @@ namespace EzPinyin.Spider
 
 			#endregion
 
+		}
+
+		private static void AddToLexicon(WordInfo word)
+		{
+			string ch = word.ActualWord.Substring(0, 1);
+			if (Common.Convertion.TryGetValue(ch[0], out char traditional))
+			{
+				Common.Dictionary[traditional.ToString()].HasLexiconItem = true;
+			}
+
+			Common.Dictionary[ch].HasLexiconItem = true;
+
+			Common.Lexicon.TryAdd(word.ActualWord, word);
 		}
 
 		private static async Task GenerateSamplesAsync()

@@ -39,15 +39,16 @@ namespace EzPinyin
 			/**
 			 * 需要验证后三个字符。
 			 */
-			if (cursor + 3 < end && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2 && *(cursor + 3) == this.char3)
+			if (cursor + 3 <= end && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2 && *(cursor + 3) == this.char3)
 			{
-				buffer.Append(this.pinyin0).Append(separator).Append(this.pinyin1).Append(separator).Append(this.pinyin2).Append(separator).Append(this.pinyin3).Append(separator);
-				cursor += 4;
-				return;
-			}
-			if (cursor + 3 == end && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2 && *(cursor + 3) == this.char3)
-			{
-				buffer.Append(this.pinyin0).Append(separator).Append(this.pinyin1).Append(separator).Append(this.pinyin2).Append(separator).Append(this.pinyin3);
+				if (separator != null && buffer.Length > 0)
+				{
+					buffer.Append(separator).Append(this.pinyin0).Append(separator).Append(this.pinyin1).Append(separator).Append(this.pinyin2).Append(separator).Append(this.pinyin3);
+				}
+				else
+				{
+					buffer.Append(this.pinyin0).Append(separator).Append(this.pinyin1).Append(separator).Append(this.pinyin2).Append(separator).Append(this.pinyin3);
+				}
 				cursor += 4;
 				return;
 			}
@@ -67,15 +68,16 @@ namespace EzPinyin
 			/**
 			 * 需要验证后三个字符。
 			 */
-			if (cursor + 3 < end && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2 && *(cursor + 3) == this.char3)
+			if (cursor + 3 <= end && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2 && *(cursor + 3) == this.char3)
 			{
-				buffer.Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]).Append(separator).Append(this.pinyin2[0]).Append(separator).Append(this.pinyin3[0]).Append(separator);
-				cursor += 4;
-				return;
-			}
-			if (cursor + 3 == end && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2 && *(cursor + 3) == this.char3)
-			{
-				buffer.Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]).Append(separator).Append(this.pinyin2[0]).Append(separator).Append(this.pinyin3[0]);
+				if (separator != null && buffer.Length > 0)
+				{
+					buffer.Append(separator).Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]).Append(separator).Append(this.pinyin2[0]).Append(separator).Append(this.pinyin3[0]);
+				}
+				else
+				{
+					buffer.Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]).Append(separator).Append(this.pinyin2[0]).Append(separator).Append(this.pinyin3[0]);
+				}
 				cursor += 4;
 				return;
 			}

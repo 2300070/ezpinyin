@@ -62,9 +62,9 @@ namespace EzPinyin.Spider
 		public static ConcurrentDictionary<string, CharacterInfo> Dictionary { get; private set; } = new ConcurrentDictionary<string, CharacterInfo>();
 
 		/// <summary>
-		/// 记录了所有繁体字及其简化字集合。
+		/// 记录了所有繁体字与简化字的转换信息。
 		/// </summary>
-		public static ConcurrentDictionary<char, char> Simplified { get; } = new ConcurrentDictionary<char, char>();
+		public static ConcurrentDictionary<char, char> Convertion { get; } = new ConcurrentDictionary<char, char>();
 
 		/// <summary>
 		/// 最终生成的词典的词汇集合。
@@ -80,6 +80,11 @@ namespace EzPinyin.Spider
 		/// 用于标记数据是否发生改变。
 		/// </summary>
 		public static bool IsDataReloaded { get; set; }
+
+		/// <summary>
+		/// 最终的词典样板集合。
+		/// </summary>
+		public static List<WordInfo> ResultSamples { get; set; }
 
 		/// <summary>
 		/// 评估时的额外的加权。

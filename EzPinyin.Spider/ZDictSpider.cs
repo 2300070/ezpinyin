@@ -48,10 +48,10 @@ namespace EzPinyin.Spider
 						{
 							case "简":
 							case "簡":
-								Common.Simplified[character[0]] = ch;
+								Common.Convertion[character[0]] = ch;
 								break;
 							default:
-								Common.Simplified[ch] = character[0];
+								Common.Convertion[ch] = character[0];
 								break;
 						}
 					}

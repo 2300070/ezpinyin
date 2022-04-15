@@ -134,10 +134,10 @@ namespace EzPinyin.Spider
 		}
 
 		/// <summary>
-		/// 用于标识此词汇是否包含与其它词汇交叉的内容。
+		/// 用于标识此词汇是否包含与其它词汇补充的内容。
 		/// </summary>
 		[JsonIgnore]
-		public bool IsIntersection { get; set; }
+		public bool IsAuxilliary { get; set; }
 
 		/// <summary>
 		/// 用于标识此词汇是否被选中为最终词典中的项目。
@@ -400,7 +400,7 @@ namespace EzPinyin.Spider
 			for (int i = 0; i < word.Length; i++)
 			{
 				char ch = word[i];
-				if (!Common.Simplified.TryGetValue(ch, out char simpilfied))
+				if (!Common.Convertion.TryGetValue(ch, out char simpilfied))
 				{
 					if (ch >= 0x4E00 && ch <= 0x9FFF || ch == '〇' //基本区+‘〇’
 						 || ch >= 0x3400 && ch <= 0x4DBF //扩展A

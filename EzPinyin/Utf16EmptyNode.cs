@@ -49,7 +49,7 @@ namespace EzPinyin
 		/// <param name="separator">额外指定的分隔符。</param>
 		public override unsafe void WritePinyin(ref char* cursor, char* end, StringBuilder buffer, string separator)
 		{
-			buffer.Append(*cursor).Append(separator);
+			buffer.Append(*cursor);
 			cursor += 1;
 		}
 
@@ -62,7 +62,7 @@ namespace EzPinyin
 		/// <param name="separator">额外指定的分隔符。</param>
 		public override unsafe void WriteInitial(ref char* cursor, char* end, StringBuilder buffer, string separator)
 		{
-			buffer.Append(*cursor).Append(separator);
+			buffer.Append(*cursor);
 			cursor += 1;
 		}
 

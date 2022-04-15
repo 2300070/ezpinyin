@@ -55,6 +55,7 @@
     <Compile Include="General.cs" />
     <Compile Include="PerformanceBenchmark.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IssuesTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

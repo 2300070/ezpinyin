@@ -12,9 +12,9 @@ namespace EzPinyin
 		{
 			try
 			{
-				Dictionary = Common.LoadDictionary("dict_basic", Common.Utf16Templates);
+				Dictionary = Common.LoadDictionary("dict_basic", Common.Utf16Templates, 0x4E00);
 
-				Common.LoadLexicon(Dictionary, 0x4E00);
+				//Common.LoadLexicon(Dictionary, 0x4E00);
 
 				Common.LoadUserFiles();
 			}

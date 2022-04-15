@@ -72,7 +72,7 @@ namespace EzPinyin.Spider
 			this.ticks = ticks;
 
 			double value = progress * 100D / this.maximum;
-			string label = $"{value:0.0}%";
+			string label = $" {value:0.0}%";
 			int num = (int)((Console.WindowWidth - 7D) * progress / this.maximum);
 			int prevLeft = Console.CursorLeft;
 
@@ -80,7 +80,7 @@ namespace EzPinyin.Spider
 
 			if (num > 0)
 			{
-				Console.Write(new string('▆', num / 2));
+				Console.Write(new string('-', num / 2));
 			}
 			Console.Write(label);
 			num = prevLeft - Console.CursorLeft;
@@ -96,8 +96,8 @@ namespace EzPinyin.Spider
 			Console.CursorVisible = true;
 			int total = Console.WindowWidth;
 			Console.SetCursorPosition(0, this.top);
-			Console.Write(new string('▆', (total - 6) / 2));
-			Console.WriteLine("100%");
+			Console.Write(new string('-', (total - 6) / 2));
+			Console.WriteLine(" 100%");
 		}
 	}
 }

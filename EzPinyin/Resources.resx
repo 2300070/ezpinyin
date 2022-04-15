@@ -118,6 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="convertion" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\convertion;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="dict_basic" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\dict_basic;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -151,6 +154,18 @@
   <data name="dict_rad" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\dict_rad;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="lex_auxilliary_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\lex_auxilliary_2;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lex_auxilliary_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\lex_auxilliary_3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lex_auxilliary_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\lex_auxilliary_4;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lex_auxilliary_x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\lex_auxilliary_x;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="lex_basic_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\lex_basic_2;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -163,22 +178,7 @@
   <data name="lex_basic_x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\lex_basic_x;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="lex_it_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\lex_it_2;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="lex_it_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\lex_it_3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="lex_it_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\lex_it_4;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="lex_it_x" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\lex_it_x;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="pinyin" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\pinyin.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="simplified" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\simplified;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

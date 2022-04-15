@@ -127,6 +127,10 @@ namespace EzPinyin.Spider
 						pinyin = info.PreferedPinyin;
 					}
 					int index = Common.PinyinList.IndexOf(pinyin) + 1;
+					if (info.HasLexiconItem)
+					{
+						index = 0x8000 | index;
+					}
 					fs.WriteByte((byte)((index & 0xFF00) >> 8));
 					fs.WriteByte((byte)(index & 0xFF));
 				}
@@ -153,11 +157,11 @@ namespace EzPinyin.Spider
 				CharacterInfo info = item.Value;
 				if (info.Simplified > 0)
 				{
-					Common.Simplified[ch] = info.Simplified;
+					Common.Convertion[ch] = info.Simplified;
 				}
 				else if (info.Traditional > 0)
 				{
-					Common.Simplified[info.Traditional] = ch;
+					Common.Convertion[info.Traditional] = ch;
 				}
 			}
 		}
