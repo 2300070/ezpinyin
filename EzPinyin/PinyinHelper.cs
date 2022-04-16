@@ -38,7 +38,7 @@ namespace EzPinyin
 					 * 一般情况下，如果某个位置是UTF16字符节点，处理完之后游标下移一个位置，如果是UTF32字符节点，则下移两个位置；如果是词汇节点，则下移的位置等于词汇中字符的数量，如果词汇包含UTF32字符，每个UTF32字符还会额外移动一个位置。
 					 * 在没有读到最后一个字符之前时，对应位置可能是UTF16字符或者UTF32字符相关节点，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
 					 */
-					PinyinNode prev = Utf16EmptyNode.Instance;
+					PinyinNode prev = UnknownNode.Instance;
 					do
 					{
 						(prev = Common.MapAnyNode(cursor)).WritePinyin(ref cursor, end, prev.FillSeperator(buffer, separator), separator);
@@ -172,7 +172,7 @@ namespace EzPinyin
 					 * 一般情况下，如果某个位置是UTF16字符节点，处理完之后游标下移一个位置，如果是UTF32字符节点，则下移两个位置；如果是词汇节点，则下移的位置等于词汇中字符的数量，如果词汇包含UTF32字符，每个UTF32字符还会额外移动一个位置。
 					 * 在没有读到最后一个字符之前时，对应位置可能是UTF16字符或者UTF32字符相关节点，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
 					 */
-					PinyinNode prev = Utf16EmptyNode.Instance;
+					PinyinNode prev = UnknownNode.Instance;
 					do
 					{
 						(prev = Common.MapAnyNode(cursor)).WriteInitial(ref cursor, end, prev.FillSeperator(buffer, separator), separator);
