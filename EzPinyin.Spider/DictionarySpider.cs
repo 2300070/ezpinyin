@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -118,6 +119,12 @@ namespace EzPinyin.Spider
 				{
 					string pinyin;
 					string ch = this.characters[i];
+					#if DEBUG
+					if (ch == Program.TEST_SAMPLE)
+					{
+						Debugger.Break();
+					}
+					#endif
 					if (!Common.Dictionary.TryGetValue(ch, out CharacterInfo info) || info.Count == 0)
 					{
 						pinyin = null;
@@ -141,9 +148,9 @@ namespace EzPinyin.Spider
 		}
 
 		/// <summary>
-		/// 建立校正信息
+		/// 更新繁简转换信息。
 		/// </summary>
-		public static void UpdateCorrection()
+		public static void UpdateConvertion()
 		{
 			foreach (KeyValuePair<string, CharacterInfo> item in Common.Dictionary)
 			{
@@ -157,11 +164,11 @@ namespace EzPinyin.Spider
 				CharacterInfo info = item.Value;
 				if (info.Simplified > 0)
 				{
-					Common.Convertion[ch] = info.Simplified;
+					Common.Simplifield[ch] = info.Simplified;
 				}
 				else if (info.Traditional > 0)
 				{
-					Common.Convertion[info.Traditional] = ch;
+					Common.Traditional[ch] = info.Traditional;
 				}
 			}
 		}

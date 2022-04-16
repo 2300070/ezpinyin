@@ -1,6 +1,4 @@
 ﻿
-using System;
-
 namespace EzPinyin
 {
 	/// <summary>
@@ -16,8 +14,6 @@ namespace EzPinyin
 			{
 				Dictionary = Common.LoadDictionary("dict_ext_a", Common.Utf16Templates, 0x3400);
 
-				//Common.LoadLexicon(Dictionary, 0x3400);
-
 				Common.LoadUserFiles();
 			}
 			finally
@@ -26,7 +22,7 @@ namespace EzPinyin
 			}
 
 #if DEBUG
-			Console.WriteLine("ExtensionA dictionary is loaded.");
+			System.Console.WriteLine("ExtensionA dictionary is loaded.");
 #endif
 		}
 	}

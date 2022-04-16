@@ -36,7 +36,7 @@
             表示字符类型的枚举。
             </summary>
         </member>
-        <member name="F:EzPinyin.CharacterType.Simpifield">
+        <member name="F:EzPinyin.CharacterType.Simplified">
             <summary>
             简体字。
             </summary>
@@ -59,6 +59,11 @@
         <member name="T:EzPinyin.Common">
             <summary>
             应用程序所需使用的公共的杂项功能集合。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.Common.LEXICON_FLAG">
+            <summary>
+            一个标记，表示节点所对应的字符包含词汇信息，在使用时需要额外处理，参看<see cref="T:EzPinyin.LexiconFakeNode"/>。
             </summary>
         </member>
         <member name="T:EzPinyin.Compatibility">
@@ -570,6 +575,14 @@
             <param name="buffer">用来存储操作结果的缓存区。</param>
             <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
         </member>
+        <member name="M:EzPinyin.PinyinNode.FillSeperator(System.Text.StringBuilder,System.String)">
+            <summary>
+            向指定的可变字符串填充一个分隔符。
+            </summary>
+            <param name="buffer">需要填充的可变字符串。</param>
+            <param name="separator">需要填充的分隔符。</param>
+            <returns>返回填充后的可变字符串。</returns>
+        </member>
         <member name="T:EzPinyin.Radicals">
             <summary>
             表示Unicode平面汉字部首扩展区、康熙字典部首区的字典。
@@ -589,6 +602,73 @@
             <summary>
             存储了所有未知UTF32字符的字典。
             </summary>
+        </member>
+        <member name="T:EzPinyin.UnknownNode">
+            <summary>
+            表示未知的拼音节点。
+            </summary>
+            <remarks>
+            与<see cref="T:EzPinyin.Utf16EmptyNode"/>与<see cref="T:EzPinyin.Utf32EmptyNode"/>不一样的是，<see cref="T:EzPinyin.UnknownNode"/>对应的是非汉字字符。
+            </remarks>
+        </member>
+        <member name="F:EzPinyin.UnknownNode.Instance">
+            <summary>
+            <see cref="T:EzPinyin.UnknownNode"/>的实例。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.UnknownNode.Pinyin">
+            <summary>
+            获得当前节点的拼音字符串。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.UnknownNode.GetPinyin(System.Char*)">
+            <summary>
+            获得拼音字符串。
+            </summary>
+            <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
+            <returns>所获得的字符串。</returns>
+        </member>
+        <member name="M:EzPinyin.UnknownNode.GetInitial(System.Char*)">
+            <summary>
+            获得拼音首字母。
+            </summary>
+            <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
+            <returns>所获得的首字母。</returns>
+        </member>
+        <member name="M:EzPinyin.UnknownNode.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
+            <param name="end">指向输入字符串最后一个字符位置的指针。</param>
+            <param name="buffer">用来存储操作结果的缓存区。</param>
+            <param name="separator">额外指定的分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.UnknownNode.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
+            <summary>
+            将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            </summary>
+            <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
+            <param name="end">指向输入字符串最后一个字符位置的指针。</param>
+            <param name="buffer">用来存储操作结果的缓存区。</param>
+            <param name="separator">额外指定的分隔符。</param>
+        </member>
+        <member name="M:EzPinyin.UnknownNode.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
+            <summary>
+            将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
+            </summary>
+            <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
+            <param name="end">指向输入字符串最后一个字符位置的指针。</param>
+            <param name="buffer">用来存储操作结果的缓存区。</param>
+            <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
+        </member>
+        <member name="M:EzPinyin.UnknownNode.FillSeperator(System.Text.StringBuilder,System.String)">
+            <summary>
+            向指定的可变字符串填充一个分隔符。
+            </summary>
+            <param name="buffer">需要填充的可变字符串。</param>
+            <param name="separator">需要填充的分隔符。</param>
+            <returns>返回填充后的可变字符串。</returns>
         </member>
         <member name="T:EzPinyin.UserFileLoader">
             <summary>

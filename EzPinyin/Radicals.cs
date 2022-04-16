@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace EzPinyin
+﻿namespace EzPinyin
 {
 	/// <summary>
 	/// 表示Unicode平面汉字部首扩展区、康熙字典部首区的字典。
@@ -20,7 +18,7 @@ namespace EzPinyin
 				Common.ResourceManager.ReleaseAllResources();
 			}
 #if DEBUG
-			Console.WriteLine("Radicals dictionary is loaded.");
+			System.Console.WriteLine("Radicals dictionary is loaded.");
 #endif
 		}
 	}

@@ -18,7 +18,7 @@ namespace EzPinyin
 		/// <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
 		/// <returns>所获得的字符串。</returns>
 		public abstract string GetPinyin(char* cursor);
-		
+
 		/// <summary>
 		/// 获得拼音首字母。
 		/// </summary>
@@ -52,5 +52,13 @@ namespace EzPinyin
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
 		/// <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
 		public abstract void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index);
+
+		/// <summary>
+		/// 向指定的可变字符串填充一个分隔符。
+		/// </summary>
+		/// <param name="buffer">需要填充的可变字符串。</param>
+		/// <param name="separator">需要填充的分隔符。</param>
+		/// <returns>返回填充后的可变字符串。</returns>
+		public virtual StringBuilder FillSeperator(StringBuilder buffer, string separator) => buffer.Length > 0 ? buffer.Append(separator) : buffer;
 	}
 }

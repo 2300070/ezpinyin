@@ -8,7 +8,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace EzPinyin.Spider
 {
@@ -62,9 +61,14 @@ namespace EzPinyin.Spider
 		public static ConcurrentDictionary<string, CharacterInfo> Dictionary { get; private set; } = new ConcurrentDictionary<string, CharacterInfo>();
 
 		/// <summary>
-		/// 记录了所有繁体字与简化字的转换信息。
+		/// 记录了繁体字到简体字的转换。
 		/// </summary>
-		public static ConcurrentDictionary<char, char> Convertion { get; } = new ConcurrentDictionary<char, char>();
+		public static ConcurrentDictionary<char, char> Simplifield { get; } = new ConcurrentDictionary<char, char>();
+
+		/// <summary>
+		/// 记录了简体字到繁体字的转换。
+		/// </summary>
+		public static ConcurrentDictionary<char, char> Traditional { get; } = new ConcurrentDictionary<char, char>();
 
 		/// <summary>
 		/// 最终生成的词典的词汇集合。

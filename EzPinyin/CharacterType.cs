@@ -8,7 +8,7 @@
 		/// <summary>
 		/// 简体字。
 		/// </summary>
-		Simpifield,
+		Simplified,
 
 		/// <summary>
 		/// 繁体字。

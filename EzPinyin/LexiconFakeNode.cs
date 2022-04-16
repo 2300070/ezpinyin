@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Threading;
 
 namespace EzPinyin
 {
@@ -87,6 +86,12 @@ namespace EzPinyin
 				if (dictionary[index] == this)
 				{
 					dictionary[index] = this.original;
+
+					//先加载简体字对应的词汇
+					if (Common.TryConvert(this.character, CharacterType.Simplified, out string simplified))
+					{
+						LexiconLoader.LoadLexicon(simplified, dictionary, index);
+					}
 					LexiconLoader.LoadLexicon(this.character, dictionary, index);
 				}
 				return dictionary[index];

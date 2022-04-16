@@ -38,14 +38,7 @@ namespace EzPinyin
 			 */
 			if (cursor + 2 <= end && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2)
 			{
-				if (separator != null && buffer.Length > 0)
-				{
-					buffer.Append(separator).Append(this.pinyin0).Append(separator).Append(this.pinyin1).Append(separator).Append(this.pinyin2);
-				}
-				else
-				{
-					buffer.Append(this.pinyin0).Append(separator).Append(this.pinyin1).Append(separator).Append(this.pinyin2);
-				}
+				buffer.Append(this.pinyin0).Append(separator).Append(this.pinyin1).Append(separator).Append(this.pinyin2);
 				cursor += 3;
 				return;
 			}
@@ -67,14 +60,7 @@ namespace EzPinyin
 			 */
 			if (cursor + 2 <= end && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2)
 			{
-				if (separator != null && buffer.Length > 0)
-				{
-					buffer.Append(separator).Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]).Append(separator).Append(this.pinyin2[0]);
-				}
-				else
-				{
-					buffer.Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]).Append(separator).Append(this.pinyin2[0]);
-				}
+				buffer.Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]).Append(separator).Append(this.pinyin2[0]);
 				cursor += 3;
 				return;
 			}

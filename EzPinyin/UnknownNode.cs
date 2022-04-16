@@ -1,23 +1,27 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace EzPinyin
 {
 	/// <summary>
-	/// 描述了一个UTF16字符的节点。
+	/// 表示未知的拼音节点。
 	/// </summary>
-	internal class Utf16Node : PinyinNode
+	/// <remarks>
+	/// 与<see cref="Utf16EmptyNode"/>与<see cref="Utf32EmptyNode"/>不一样的是，<see cref="UnknownNode"/>对应的是非汉字字符。
+	/// </remarks>
+	internal sealed class UnknownNode : PinyinNode
 	{
-		private readonly string pinyin;
+		/// <summary>
+		/// <see cref="UnknownNode"/>的实例。
+		/// </summary>
+		public static UnknownNode Instance = new UnknownNode();
 
 		/// <summary>
 		/// 获得当前节点的拼音字符串。
 		/// </summary>
-		public override string Pinyin => this.pinyin;
+		public override string Pinyin => throw new NotSupportedException();
 
-		internal Utf16Node(string pinyin)
-		{
-			this.pinyin = pinyin;
-		}
+		private UnknownNode(){}
 
 		/// <summary>
 		/// 获得拼音字符串。
@@ -26,7 +30,7 @@ namespace EzPinyin
 		/// <returns>所获得的字符串。</returns>
 		public override unsafe string GetPinyin(char* cursor)
 		{
-			return this.pinyin;
+			return new string(*cursor, 1);
 		}
 
 		/// <summary>
@@ -36,7 +40,7 @@ namespace EzPinyin
 		/// <returns>所获得的首字母。</returns>
 		public override unsafe string GetInitial(char* cursor)
 		{
-			return new string(this.pinyin[0], 1);
+			return new string(*cursor, 1);
 		}
 
 		/// <summary>
@@ -48,7 +52,7 @@ namespace EzPinyin
 		/// <param name="separator">额外指定的分隔符。</param>
 		public override unsafe void WritePinyin(ref char* cursor, char* end, StringBuilder buffer, string separator)
 		{
-			buffer.Append(this.pinyin);
+			buffer.Append(*cursor);
 			cursor += 1;
 		}
 
@@ -61,7 +65,7 @@ namespace EzPinyin
 		/// <param name="separator">额外指定的分隔符。</param>
 		public override unsafe void WriteInitial(ref char* cursor, char* end, StringBuilder buffer, string separator)
 		{
-			buffer.Append(this.pinyin[0]);
+			buffer.Append(*cursor);
 			cursor += 1;
 		}
 
@@ -74,8 +78,16 @@ namespace EzPinyin
 		/// <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
 		public override unsafe void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index)
 		{
-			buffer[index++] = this.pinyin;
+			buffer[index] = new string(*cursor, 1);
+			index += 1;
 			cursor += 1;
 		}
+		/// <summary>
+		/// 向指定的可变字符串填充一个分隔符。
+		/// </summary>
+		/// <param name="buffer">需要填充的可变字符串。</param>
+		/// <param name="separator">需要填充的分隔符。</param>
+		/// <returns>返回填充后的可变字符串。</returns>
+		public override StringBuilder FillSeperator(StringBuilder buffer, string separator) => buffer;
 	}
 }

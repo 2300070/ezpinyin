@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace EzPinyin
+﻿namespace EzPinyin
 {
 	/// <summary>
 	/// 表示Unicode平面兼容汉字区的字典。
@@ -20,7 +18,7 @@ namespace EzPinyin
 				Common.ResourceManager.ReleaseAllResources();
 			}
 #if DEBUG
-			Console.WriteLine("Compatibility dictionary is loaded.");
+			System.Console.WriteLine("Compatibility dictionary is loaded.");
 #endif
 		}
 	}

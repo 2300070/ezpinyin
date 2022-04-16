@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 
 namespace EzPinyin
@@ -23,7 +22,7 @@ namespace EzPinyin
 			{
 				Common.LoadFrom(file, LinkNodePriority.Normal);
 #if DEBUG
-				Console.WriteLine($"Load custom file: {file}.");
+				System.Console.WriteLine($"Load custom file: {file}.");
 #endif
 			}
 		}

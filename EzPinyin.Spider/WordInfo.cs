@@ -400,7 +400,7 @@ namespace EzPinyin.Spider
 			for (int i = 0; i < word.Length; i++)
 			{
 				char ch = word[i];
-				if (!Common.Convertion.TryGetValue(ch, out char simpilfied))
+				if (!Common.Simplifield.TryGetValue(ch, out char simpilfied))
 				{
 					if (ch >= 0x4E00 && ch <= 0x9FFF || ch == '〇' //基本区+‘〇’
 						 || ch >= 0x3400 && ch <= 0x4DBF //扩展A

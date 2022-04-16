@@ -117,6 +117,11 @@ namespace EzPinyin
 						}
 
 						node.Add(word, pinyin, LinkNodePriority.Low);
+
+						if (Common.TryConvert(word, CharacterType.Traditional, out string traditional) && traditional != word)
+						{
+							node.Add(traditional, pinyin, LinkNodePriority.Low);
+						}
 					}
 					else
 					{
@@ -431,9 +436,9 @@ namespace EzPinyin
 			byte[] buffer = (byte[])Common.ResourceManager.GetObject(name);
 			index <<= 1;
 			index = (buffer[index] << 8) | buffer[index + 1];
-			if ((index & 0x8000) == 0x8000)
+			if ((index & Common.LEXICON_FLAG) == Common.LEXICON_FLAG)
 			{
-				index &= 0x7FFF;
+				index &= Common.LEXICON_FLAG - 1;
 			}
 			return Common.Utf16Templates[index].Pinyin;
 		}

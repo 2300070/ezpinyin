@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace EzPinyin.Spider
 {
@@ -48,10 +45,12 @@ namespace EzPinyin.Spider
 						{
 							case "简":
 							case "簡":
-								Common.Convertion[character[0]] = ch;
+								Common.Simplifield[character[0]] = ch;
+								Common.Traditional[ch] = character[0];
 								break;
 							default:
-								Common.Convertion[ch] = character[0];
+								Common.Simplifield[ch] = character[0];
+								Common.Traditional[character[0]] = ch;
 								break;
 						}
 					}

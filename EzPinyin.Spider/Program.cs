@@ -5,7 +5,6 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace EzPinyin.Spider
 {
@@ -14,7 +13,7 @@ namespace EzPinyin.Spider
 
 
 #if DEBUG
-		private const string TEST_WORD = "朝阳";
+		public const string TEST_SAMPLE = "银";
 #endif
 		private static readonly DictionarySpider basic;
 		private static readonly DictionarySpider extA;
@@ -205,10 +204,10 @@ namespace EzPinyin.Spider
 			Console.WriteLine();
 			Console.WriteLine("生成简繁字典。");
 
-			using (FileStream fs = new FileStream("convertion", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+			using (FileStream fs = new FileStream("simplified", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
 			{
 				byte[] buffer = new byte[4];
-				foreach (KeyValuePair<char, char> item in Common.Convertion)
+				foreach (KeyValuePair<char, char> item in Common.Simplifield)
 				{
 					int val = item.Key;
 					buffer[0] = (byte)((val >> 8) & 0xFF);
@@ -243,7 +242,7 @@ namespace EzPinyin.Spider
 					foreach (WordInfo sample in samples)
 					{
 #if DEBUG
-						if (sample.ActualWord == TEST_WORD)
+						if (sample.ActualWord == TEST_SAMPLE)
 						{
 							Debugger.Break();
 						}
@@ -467,7 +466,7 @@ namespace EzPinyin.Spider
 					string key = item.Key;
 					WordInfo sample = item.Value;
 #if DEBUG
-					if (key == TEST_WORD)
+					if (key == TEST_SAMPLE)
 					{
 						Debugger.Break();
 					}
@@ -513,7 +512,7 @@ namespace EzPinyin.Spider
 				foreach (WordInfo sample in items)
 				{
 #if DEBUG
-					if (sample.ActualWord == TEST_WORD)
+					if (sample.ActualWord == TEST_SAMPLE)
 					{
 						Debugger.Break();
 					}
@@ -622,7 +621,7 @@ namespace EzPinyin.Spider
 				foreach (WordInfo sample in Common.Samples.Values)
 				{
 #if DEBUG
-					if (sample.ActualWord == TEST_WORD)
+					if (sample.ActualWord == TEST_SAMPLE)
 					{
 						Debugger.Break();
 					}
@@ -686,7 +685,7 @@ namespace EzPinyin.Spider
 				foreach (WordInfo sample in samples)
 				{
 #if DEBUG
-					if (sample.ActualWord == TEST_WORD)
+					if (sample.ActualWord == TEST_SAMPLE)
 					{
 						Debugger.Break();
 					}
@@ -711,9 +710,19 @@ namespace EzPinyin.Spider
 		private static void AddToLexicon(WordInfo word)
 		{
 			string ch = word.ActualWord.Substring(0, 1);
-			if (Common.Convertion.TryGetValue(ch[0], out char traditional))
+#if DEBUG
+			if (ch == TEST_SAMPLE)
+			{
+				Debugger.Break();
+			}
+#endif
+			if (Common.Traditional.TryGetValue(ch[0], out char traditional))
 			{
 				Common.Dictionary[traditional.ToString()].HasLexiconItem = true;
+			}
+			else if (Common.Simplifield.TryGetValue(ch[0], out char simplified))
+			{
+				Common.Dictionary[simplified.ToString()].HasLexiconItem = true;
 			}
 
 			Common.Dictionary[ch].HasLexiconItem = true;
@@ -820,7 +829,7 @@ namespace EzPinyin.Spider
 
 			Console.WriteLine("分析校正信息。");
 
-			DictionarySpider.UpdateCorrection();
+			DictionarySpider.UpdateConvertion();
 
 
 			Console.WriteLine($@"共扫描{

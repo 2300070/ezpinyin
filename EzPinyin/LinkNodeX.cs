@@ -48,11 +48,6 @@ namespace EzPinyin
 
 				string[] pinyin = this.pinyin;
 
-				if (separator != null && buffer.Length > 0)
-				{
-					buffer.Append(separator);
-				}
-
 				buffer.Append(pinyin[0]).Append(separator).Append(pinyin[1]);
 
 				length = pinyin.Length;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-
-namespace EzPinyin
+﻿namespace EzPinyin
 {
 	internal static class Basic
 	{
@@ -14,8 +10,6 @@ namespace EzPinyin
 			{
 				Dictionary = Common.LoadDictionary("dict_basic", Common.Utf16Templates, 0x4E00);
 
-				//Common.LoadLexicon(Dictionary, 0x4E00);
-
 				Common.LoadUserFiles();
 			}
 			finally
@@ -23,7 +17,7 @@ namespace EzPinyin
 				Common.ResourceManager.ReleaseAllResources();
 			}
 #if DEBUG
-			Console.WriteLine("Basic dictionary is loaded.");
+			System.Console.WriteLine("Basic dictionary is loaded.");
 #endif
 		}
 

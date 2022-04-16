@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace EzPinyin
+﻿namespace EzPinyin
 {
 	/// <summary>
 	/// 表示Unicode平面2汉字B扩展区的字典。
@@ -20,7 +18,7 @@ namespace EzPinyin
 				Common.ResourceManager.ReleaseAllResources();
 			}
 #if DEBUG
-			Console.WriteLine("ExtensionB dictionary is loaded.");
+			System.Console.WriteLine("ExtensionB dictionary is loaded.");
 #endif
 		}
 	}
