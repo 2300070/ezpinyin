@@ -83,6 +83,7 @@ namespace EzPinyin
 				{
 					return;
 				}
+
 				string word;
 				do
 				{
@@ -196,13 +197,13 @@ namespace EzPinyin
 		{
 			BEGIN:
 
-			if (cursor >= end)
+			if (cursor > end)
 			{
 				return false;
 			}
 
 			/**
-			 * 尝试通过比较头部的内容进行定位。
+			 * 检查头部。
 			 */
 			string ch = LexiconLoader.ReadCharacter(cursor, character.Length);
 			if (ch == character)
@@ -267,7 +268,7 @@ namespace EzPinyin
 
 				//否则查找左侧。
 				cursor += size;
-				end = ptr - size;
+				end = ptr;
 				goto BEGIN;
 
 			}

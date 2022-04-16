@@ -41,7 +41,8 @@ namespace EzPinyin
 					PinyinNode prev = UnknownNode.Instance;
 					do
 					{
-						(prev = Common.MapAnyNode(cursor)).WritePinyin(ref cursor, end, prev.FillSeperator(buffer, separator), separator);
+						prev.FillSeperator(buffer, separator);
+						(prev = Common.MapAnyNode(cursor)).WritePinyin(ref cursor, end, buffer, separator);
 
 					} while (cursor < end);
 
@@ -53,7 +54,8 @@ namespace EzPinyin
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
-						prev.FillSeperator(buffer, separator).Append(Common.MapUtf16Node(cursor).GetPinyin(cursor));
+						prev.FillSeperator(buffer, separator);
+						buffer.Append(Common.MapUtf16Node(cursor).GetPinyin(cursor));
 					}
 
 					return Common.ReturnBuffer(buffer);
@@ -175,7 +177,8 @@ namespace EzPinyin
 					PinyinNode prev = UnknownNode.Instance;
 					do
 					{
-						(prev = Common.MapAnyNode(cursor)).WriteInitial(ref cursor, end, prev.FillSeperator(buffer, separator), separator);
+						prev.FillSeperator(buffer, separator);
+						(prev = Common.MapAnyNode(cursor)).WriteInitial(ref cursor, end, buffer, separator);
 
 					} while (cursor < end);
 
@@ -187,7 +190,8 @@ namespace EzPinyin
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
-						prev.FillSeperator(buffer, separator).Append(Common.MapUtf16Node(cursor).GetInitial(cursor));
+						prev.FillSeperator(buffer, separator);
+						buffer.Append(Common.MapUtf16Node(cursor).GetInitial(cursor));
 					}
 
 					return Common.ReturnBuffer(buffer);
@@ -244,7 +248,7 @@ namespace EzPinyin
 			{
 				throw new ArgumentNullException(nameof(content));
 			}
-			
+
 
 			using (StringReader sr = new StringReader(content))
 			{
@@ -284,7 +288,7 @@ namespace EzPinyin
 				throw new Exception($"重写‘{character}’的拼音失败，当前支持的汉字为Unicode基本区及补充区、扩展区A-G，请检查字符是否属于此范围内。");
 			}
 		}
-		
+
 
 		/// <summary>
 		/// 根据提供的信息添加或者重新定义指定词汇的拼音。

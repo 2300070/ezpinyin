@@ -335,35 +335,7 @@ namespace EzPinyin.Spider
 			}
 		}
 
-		private static int CompateWord(WordInfo w1, WordInfo w2)
-		{
-			string x = w1.ActualWord;
-			string y = w2.ActualWord;
-
-			int a, b;
-			if (char.IsHighSurrogate(x[0]) && char.IsLowSurrogate(x[1]))
-			{
-				a = char.ConvertToUtf32(x[0], x[1]);
-			}
-			else
-			{
-				a = x[0];
-			}
-			if (char.IsHighSurrogate(y[0]) && char.IsLowSurrogate(y[1]))
-			{
-				b = char.ConvertToUtf32(y[0], y[1]);
-			}
-			else
-			{
-				b = y[0];
-			}
-
-			if (a != b)
-			{
-				return a.CompareTo(b);
-			}
-			return string.CompareOrdinal(x, y);
-		}
+		private static int CompateWord(WordInfo w1, WordInfo w2) => w1.ActualWord[0].CompareTo(w2.ActualWord[0]);
 
 		private static async Task CorrectLexiconAsync()
 		{

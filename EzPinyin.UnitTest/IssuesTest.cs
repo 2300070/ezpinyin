@@ -10,7 +10,7 @@ namespace EzPinyin.UnitTest
 		public void VerifyIssue2()
 		{
 			DateTime start = DateTime.Now;
-			Console.WriteLine(PinyinHelper.GetPinyin("藏宝室"));
+			Console.WriteLine(PinyinHelper.GetPinyin("川藏"));
 			Console.WriteLine($"{DateTime.Now - start}");
 			Console.WriteLine(PinyinHelper.GetPinyin("Hello,World!!"));
 			Console.WriteLine(PinyinHelper.GetPinyin("世界你好!!Hello,World!!"));

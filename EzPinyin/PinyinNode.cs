@@ -58,7 +58,12 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="buffer">需要填充的可变字符串。</param>
 		/// <param name="separator">需要填充的分隔符。</param>
-		/// <returns>返回填充后的可变字符串。</returns>
-		public virtual StringBuilder FillSeperator(StringBuilder buffer, string separator) => buffer.Length > 0 ? buffer.Append(separator) : buffer;
+		public virtual void FillSeperator(StringBuilder buffer, string separator)
+		{
+			if (buffer.Length > 0)
+			{
+				buffer.Append(separator);
+			}
+		}
 	}
 }

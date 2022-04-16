@@ -177,9 +177,9 @@
             </summary>
         </member>
         <member name="T:EzPinyin.LexiconNode">
-            当前算法并未考虑UTF32词汇导致的杂凑效率降低的问题:
-            1.当第一个字符是UTF32字符时，由于读取的第二个char是第一个字符的低半代理，必然导致所有的链表节点获得一样的杂凑码，从而导致只有一个链表生效。
-            2.当第一个字符为UTF16字符，而第二个字符是UTF32字符时，由于读取的第二个char是第二个字符的高半代理，因此同样容易出现杂凑效果严重下降的问题。，
+            当前算法并未考虑UTF32词汇导致的散列效率降低的问题:
+            1.当第一个字符是UTF32字符时，由于读取的第二个char是第一个字符的低半代理，必然导致所有的链表节点获得一样的散列码，从而导致只有一个链表生效。
+            2.当第一个字符为UTF16字符，而第二个字符是UTF32字符时，由于读取的第二个char是第二个字符的高半代理，因此同样容易出现散列效果严重下降的问题。，
             但由于目前基本没有UTF32词汇，个别词汇不会影响整体效果，因此暂时不做修补。
             <summary>
             表示一个词汇节点。
@@ -581,7 +581,6 @@
             </summary>
             <param name="buffer">需要填充的可变字符串。</param>
             <param name="separator">需要填充的分隔符。</param>
-            <returns>返回填充后的可变字符串。</returns>
         </member>
         <member name="T:EzPinyin.Radicals">
             <summary>
@@ -668,7 +667,6 @@
             </summary>
             <param name="buffer">需要填充的可变字符串。</param>
             <param name="separator">需要填充的分隔符。</param>
-            <returns>返回填充后的可变字符串。</returns>
         </member>
         <member name="T:EzPinyin.UserFileLoader">
             <summary>

@@ -21,7 +21,7 @@ namespace EzPinyin
 		/// </summary>
 		public override string Pinyin => throw new NotSupportedException();
 
-		private UnknownNode(){}
+		private UnknownNode() { }
 
 		/// <summary>
 		/// 获得拼音字符串。
@@ -82,12 +82,12 @@ namespace EzPinyin
 			index += 1;
 			cursor += 1;
 		}
+
 		/// <summary>
 		/// 向指定的可变字符串填充一个分隔符。
 		/// </summary>
 		/// <param name="buffer">需要填充的可变字符串。</param>
 		/// <param name="separator">需要填充的分隔符。</param>
-		/// <returns>返回填充后的可变字符串。</returns>
-		public override StringBuilder FillSeperator(StringBuilder buffer, string separator) => buffer;
+		public override void FillSeperator(StringBuilder buffer, string separator) { }
 	}
 }
