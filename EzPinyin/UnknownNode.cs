@@ -12,6 +12,11 @@ namespace EzPinyin
 	internal sealed class UnknownNode : PinyinNode
 	{
 		/// <summary>
+		/// 指示是否包含拼音。
+		/// </summary>
+		public override bool HasPinyin => false;
+
+		/// <summary>
 		/// <see cref="UnknownNode"/>的实例。
 		/// </summary>
 		public static UnknownNode Instance = new UnknownNode();
@@ -28,20 +33,14 @@ namespace EzPinyin
 		/// </summary>
 		/// <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
 		/// <returns>所获得的字符串。</returns>
-		public override unsafe string GetPinyin(char* cursor)
-		{
-			return new string(*cursor, 1);
-		}
+		public override unsafe string GetPinyin(char* cursor) => new string(*cursor, 1);
 
 		/// <summary>
 		/// 获得拼音首字母。
 		/// </summary>
 		/// <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
 		/// <returns>所获得的首字母。</returns>
-		public override unsafe string GetInitial(char* cursor)
-		{
-			return new string(*cursor, 1);
-		}
+		public override unsafe string GetInitial(char* cursor) => new string(*cursor, 1);
 
 		/// <summary>
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
@@ -83,11 +82,5 @@ namespace EzPinyin
 			cursor += 1;
 		}
 
-		/// <summary>
-		/// 向指定的可变字符串填充一个分隔符。
-		/// </summary>
-		/// <param name="buffer">需要填充的可变字符串。</param>
-		/// <param name="separator">需要填充的分隔符。</param>
-		public override void FillSeperator(StringBuilder buffer, string separator) { }
 	}
 }

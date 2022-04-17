@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Resources;
@@ -15,7 +16,7 @@ namespace EzPinyin
 	{
 		private const int BUFFER_SIZE = 0x100;
 		private static readonly StringBuilder[] buffers = new StringBuilder[Environment.ProcessorCount];
-		private static readonly Dictionary<char, CharacterInfo> convertion = new Dictionary<char, CharacterInfo>();
+		private static readonly Dictionary<char, CharacterInfo> variants = new Dictionary<char, CharacterInfo>();
 
 		/// <summary>
 		/// 一个标记，表示节点所对应的字符包含词汇信息，在使用时需要额外处理，参看<see cref="LexiconFakeNode"/>。
@@ -81,7 +82,7 @@ namespace EzPinyin
 
 			foreach (string file in files)
 			{
-				Common.LoadFrom(file, LinkNodePriority.Normal);
+				Common.LoadFrom(file, PinyinPriority.High);
 #if DEBUG
 				Console.WriteLine($"Load custom file: {file}.");
 #endif
@@ -374,6 +375,23 @@ namespace EzPinyin
 				return result;
 			}
 			return UnknownNode.Instance;
+
+
+			switch (char.GetUnicodeCategory(ch))
+			{
+				//字母
+				case UnicodeCategory.UppercaseLetter:
+				case UnicodeCategory.LowercaseLetter:
+				case UnicodeCategory.TitlecaseLetter:
+				case UnicodeCategory.ModifierLetter:
+				case UnicodeCategory.OtherLetter:
+				//数字
+				case UnicodeCategory.DecimalDigitNumber:
+				case UnicodeCategory.LetterNumber:
+				case UnicodeCategory.OtherNumber:
+					return LetterOrNumberNode.Instance;
+			}
+			return UnknownNode.Instance;
 		}
 
 		internal static unsafe PinyinNode MapUtf16Node(char* cursor)
@@ -415,6 +433,27 @@ namespace EzPinyin
 				 * 部首及部首扩展区
 				 */
 				return Radicals.Dictionary[ch - 0x2E80];
+			}
+
+			//匹配其它无法匹配的情况
+			if (ch < 0x100)
+			{
+				return Ascii.Dictionary[ch];
+			}
+
+			switch (char.GetUnicodeCategory(ch))
+			{
+				//字母
+				case UnicodeCategory.UppercaseLetter:
+				case UnicodeCategory.LowercaseLetter:
+				case UnicodeCategory.TitlecaseLetter:
+				case UnicodeCategory.ModifierLetter:
+				case UnicodeCategory.OtherLetter:
+				//数字
+				case UnicodeCategory.DecimalDigitNumber:
+				case UnicodeCategory.LetterNumber:
+				case UnicodeCategory.OtherNumber:
+					return LetterOrNumberNode.Instance;
 			}
 			return UnknownNode.Instance;
 		}
@@ -470,19 +509,8 @@ namespace EzPinyin
 			return result;
 		}
 
-		internal static string Convert(string text, CharacterType type)
-		{
-			/**
-			 * 转换指定字符串中的简体字或繁体字。
-			 */
-			if (Common.TryConvert(text, type, out string result))
-			{
-				return result;
-			}
-			return text;
-		}
-
-		internal static bool TryConvert(string text, CharacterType type, out string result)
+		internal static bool TryGetVariant(char ch, out CharacterInfo variant) => variants.TryGetValue(ch, out variant);
+		internal static bool TryGetVariant(string text, CharacterType type, out string result)
 		{
 			/**
 			 * 转换指定字符串中的简体字或繁体字。
@@ -492,7 +520,7 @@ namespace EzPinyin
 
 			for (int i = chars.Length - 1; i > -1; i--)
 			{
-				if (convertion.TryGetValue(chars[i], out CharacterInfo info) && info.CharacterType == type)
+				if (variants.TryGetValue(chars[i], out CharacterInfo info) && info.CharacterType == type)
 				{
 					succ = true;
 					chars[i] = info.Character;
@@ -503,7 +531,7 @@ namespace EzPinyin
 			return succ;
 		}
 
-		internal static void LoadFrom(string file, LinkNodePriority priority)
+		internal static void LoadFrom(string file, PinyinPriority priority)
 		{
 			/**
 			 * 从指定的文件加载自定义的拼音定义，并且更新到对应的字典中。
@@ -515,7 +543,7 @@ namespace EzPinyin
 			}
 		}
 
-		internal static void LoadFrom(TextReader reader, LinkNodePriority priority)
+		internal static void LoadFrom(TextReader reader, PinyinPriority priority)
 		{
 			int row = 0;
 
@@ -721,11 +749,11 @@ namespace EzPinyin
 			return false;
 		}
 
-		internal static bool OverrideLexicon(string word, string[] pinyin, LinkNodePriority priority)
+		internal static bool OverrideLexicon(string word, string[] pinyin, PinyinPriority priority)
 		{
 			if (Common.OverrideLexiconItem(word, pinyin, priority))
 			{
-				if (Common.TryConvert(word, CharacterType.Traditional, out string traditional))
+				if (Common.TryGetVariant(word, CharacterType.Traditional, out string traditional))
 				{
 					Common.OverrideLexiconItem(traditional, pinyin, priority);
 				}
@@ -736,7 +764,7 @@ namespace EzPinyin
 
 
 
-		private static bool OverrideLexiconItem(string word, string[] pinyin, LinkNodePriority priority)
+		private static bool OverrideLexiconItem(string word, string[] pinyin, PinyinPriority priority)
 		{
 			int code;
 
@@ -882,17 +910,17 @@ namespace EzPinyin
 			/**
 			 * 加载所有的简体字、繁体字的转换字典。
 			 */
-			byte[] buffer = (byte[])ResourceManager.GetObject("simplified");
+			byte[] buffer = (byte[])ResourceManager.GetObject("variants");
 			for (int i = 0; i < buffer.Length; i += 4)
 			{
 				char cht = (char)((buffer[i] << 8) | buffer[i + 1]);
 				char chs = (char)((buffer[i + 2] << 8) | buffer[i + 3]);
-				convertion[chs] = new CharacterInfo(cht, CharacterType.Traditional);
-				convertion[cht] = new CharacterInfo(chs, CharacterType.Simplified);
+				variants[chs] = new CharacterInfo(cht, CharacterType.Traditional);
+				variants[cht] = new CharacterInfo(chs, CharacterType.Simplified);
 			}
 		}
 
-		private static void AddLexiconNode(PinyinNode[] dictionary, int index, string word, string[] pinyin, LinkNodePriority priority)
+		private static void AddLexiconNode(PinyinNode[] dictionary, int index, string word, string[] pinyin, PinyinPriority priority)
 		{
 			if (dictionary[index] is LexiconFakeNode fake)
 			{

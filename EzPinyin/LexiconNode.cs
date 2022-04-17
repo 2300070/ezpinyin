@@ -44,7 +44,7 @@ namespace EzPinyin
 		/// <param name="word">需要注册的词汇。</param>
 		/// <param name="pinyin">该词汇对应的拼音。</param>
 		/// <param name="priority">优先级别。</param>
-		public void Add(string word, string[] pinyin, LinkNodePriority priority)
+		public void Add(string word, string[] pinyin, PinyinPriority priority)
 		{
 			if (string.IsNullOrEmpty(word))
 			{
@@ -74,7 +74,7 @@ namespace EzPinyin
 		/// <param name="word">需要注册的词汇。</param>
 		/// <param name="pinyin">该词汇对应的拼音。</param>
 		/// <param name="priority">优先级别。</param>
-		public void Add(string word, string pinyin, LinkNodePriority priority) => this.Add(word, pinyin.Split(Common.CharacterSeparator, StringSplitOptions.RemoveEmptyEntries), priority);
+		public void Add(string word, string pinyin, PinyinPriority priority) => this.Add(word, pinyin.Split(Common.CharacterSeparator, StringSplitOptions.RemoveEmptyEntries), priority);
 
 		/// <summary>
 		/// 获得拼音字符串。

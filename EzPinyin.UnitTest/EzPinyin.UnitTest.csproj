@@ -52,6 +52,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extension.cs" />
     <Compile Include="General.cs" />
     <Compile Include="PerformanceBenchmark.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

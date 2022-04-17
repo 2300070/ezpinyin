@@ -14,13 +14,13 @@ namespace EzPinyin
 		{
 
 			/**
-		 * 搜索并应用用户的自定义字典文件
-		 */
+			 * 搜索并应用用户的自定义字典文件
+			 */
 			string[] files = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*dict*");
 
 			foreach (string file in files)
 			{
-				Common.LoadFrom(file, LinkNodePriority.Normal);
+				Common.LoadFrom(file, PinyinPriority.High);
 #if DEBUG
 				System.Console.WriteLine($"Load custom file: {file}.");
 #endif

@@ -1,5 +1,8 @@
 ﻿namespace EzPinyin
 {
+	/// <summary>
+	/// 表示基本汉字的字典。
+	/// </summary>
 	internal static class Basic
 	{
 		internal static readonly PinyinNode[] Dictionary;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace EzPinyin
 {
@@ -71,6 +72,10 @@ namespace EzPinyin
 
 		private static unsafe void LoadLexicon(byte[] buffer, string character, PinyinNode[] dictionary, int index, int size, bool auxilliary = false)
 		{
+			/**
+			 * 从指定的词典数据中以规则的方式解析指定字符开始的词条。
+			 */
+
 			fixed (byte* ptr = buffer)
 			{
 				byte* cursor = ptr;
@@ -84,13 +89,15 @@ namespace EzPinyin
 					return;
 				}
 
+				/**
+				 * 轮流读取词汇与对应拼音进行注册，直到读取的词汇不满足条件为止。
+				 */
 				string word;
 				do
 				{
-					/**
-					 * 轮流读取词汇与对应拼音进行注册，直到读取的词汇不满足条件为止。
-					 */
 					word = LexiconLoader.ReadCharacter(ref cursor, size);
+
+					//读取词汇
 					if (word.StartsWith(character))
 					{
 
@@ -108,21 +115,7 @@ namespace EzPinyin
 #endif
 						}
 
-						LexiconNode node = dictionary[index] as LexiconNode;
-						if (node == null)
-						{
-							/**
-							 * 如果当前的节点不是词典节点，则创建一个新的词典节点。
-							 */
-							dictionary[index] = node = new LexiconNode(dictionary[index]);
-						}
-
-						node.Add(word, pinyin, LinkNodePriority.Low);
-
-						if (Common.TryConvert(word, CharacterType.Traditional, out string traditional) && traditional != word)
-						{
-							node.Add(traditional, pinyin, LinkNodePriority.Low);
-						}
+						LexiconLoader.AddLexicon(word, pinyin, dictionary, index);
 					}
 					else
 					{
@@ -136,20 +129,27 @@ namespace EzPinyin
 
 		private static unsafe void LoadExtraLexicon(byte[] buffer, string character, PinyinNode[] dictionary, int index, bool auxilliary = false)
 		{
+			/**
+			 * 从指定的词典数据中以不规则的方式解析指定字符开始的词条。
+			 */
+
 			fixed (byte* ptr = buffer)
 			{
 				byte* cursor = ptr;
 				byte* end = ptr + buffer.Length;
 
 
+				/**
+				 * 轮流读取词汇与对应拼音进行注册，直到读取的词汇不满足条件为止。
+				 */
 				string word;
 				do
 				{
-					/**
-					 * 轮流读取词汇与对应拼音进行注册，直到读取的词汇不满足条件为止。
-					 */
 
+					//读取一个字节以获取词汇长度
 					int size = *(cursor++);
+
+					//读取词汇
 					word = LexiconLoader.ReadCharacter(ref cursor, size);
 					if (word.StartsWith(character))
 					{
@@ -168,16 +168,7 @@ namespace EzPinyin
 #endif
 						}
 
-						LexiconNode node = dictionary[index] as LexiconNode;
-						if (node == null)
-						{
-							/**
-							 * 如果当前的节点不是词典节点，则创建一个新的词典节点。
-							 */
-							dictionary[index] = node = new LexiconNode(dictionary[index]);
-						}
-
-						node.Add(word, pinyin, LinkNodePriority.Low);
+						LexiconLoader.AddLexicon(word, pinyin, dictionary, index);
 					}
 					else if (string.CompareOrdinal(word, character) > 0)
 					{
@@ -191,6 +182,55 @@ namespace EzPinyin
 				} while (cursor < end);
 			}
 
+		}
+
+		private static void AddLexicon(string word, string[] pinyin, PinyinNode[] dictionary, int index)
+		{
+			LexiconNode node = dictionary[index] as LexiconNode;
+			if (node == null)
+			{
+				/**
+				 * 如果当前的节点不是词典节点，则创建一个新的词典节点。
+				 */
+				dictionary[index] = node = new LexiconNode(dictionary[index]);
+			}
+
+			node.Add(word, pinyin, PinyinPriority.Normal);
+
+			string[] variants = LexiconLoader.GetVariantWords(word);
+			foreach (string variant in variants)
+			{
+				node.Add(variant, pinyin, PinyinPriority.Low);
+			}
+		}
+
+		private static string[] GetVariantWords(string word)
+		{
+			List<string> words = new List<string>(1);
+			StringBuilder buffer = new StringBuilder().Append(word[0]);
+
+			LexiconLoader.SearchVariantWords(word, buffer, 1, words);
+
+			return words.ToArray();
+		}
+
+		private static void SearchVariantWords(string word, StringBuilder buffer, int index, List<string> words)
+		{
+			if (index >= word.Length)
+			{
+				string newWord = buffer.ToString();
+				if (newWord != word)
+				{
+					words.Add(newWord);
+				}
+				return;
+			}
+			char ch = word[index];
+			if (Common.TryGetVariant(ch, out CharacterInfo variant))
+			{
+				LexiconLoader.SearchVariantWords(word, new StringBuilder(buffer.ToString()).Append(variant.Character), index + 1, words);
+			}
+			LexiconLoader.SearchVariantWords(word, buffer.Append(ch), index + 1, words);
 		}
 
 		private static unsafe bool TryLocate(ref byte* cursor, byte* end, string character, int size)
@@ -276,7 +316,6 @@ namespace EzPinyin
 			return false;
 		}
 
-
 		private static unsafe byte* LocateFirstNode(byte* cursor, byte* start, string character, int size)
 		{
 			/**
@@ -297,6 +336,9 @@ namespace EzPinyin
 
 		private static unsafe string[] ReadPinyinArrayDirectly(string word)
 		{
+			/**
+			 * 直接从资源包加载拼音信息，而不从相应的API读取，避免触发各Unicode平面相关类型的初始化，导致不必要的内存占用。
+			 */
 			List<string> list = new List<string>();
 			fixed (char* p = word)
 			{
@@ -317,9 +359,6 @@ namespace EzPinyin
 
 		private static unsafe string ReadPinyinDirectly(ref char* cursor, char* end)
 		{
-			/**
-			 * 直接从资源包加载拼音信息，而不从相应的API读取，避免触发各Unicode平面相关类型的初始化，导致不必要的内存占用。
-			 */
 			PinyinNode node;
 			char ch = *cursor;
 			if (ch > 0x4DFF && ch < 0xA000)

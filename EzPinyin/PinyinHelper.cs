@@ -41,8 +41,14 @@ namespace EzPinyin
 					PinyinNode prev = UnknownNode.Instance;
 					do
 					{
-						prev.FillSeperator(buffer, separator);
-						(prev = Common.MapAnyNode(cursor)).WritePinyin(ref cursor, end, buffer, separator);
+						PinyinNode current = Common.MapAnyNode(cursor);
+						if (prev.HasPinyin || buffer.Length > 0 && current.HasPinyin)
+						{
+							buffer.Append(separator);
+						}
+
+						current.WritePinyin(ref cursor, end, buffer, separator);
+						prev = current;
 
 					} while (cursor < end);
 
@@ -54,7 +60,10 @@ namespace EzPinyin
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
-						prev.FillSeperator(buffer, separator);
+						if (prev.HasPinyin)
+						{
+							buffer.Append(separator);
+						}
 						buffer.Append(Common.MapUtf16Node(cursor).GetPinyin(cursor));
 					}
 
@@ -177,8 +186,16 @@ namespace EzPinyin
 					PinyinNode prev = UnknownNode.Instance;
 					do
 					{
-						prev.FillSeperator(buffer, separator);
-						(prev = Common.MapAnyNode(cursor)).WriteInitial(ref cursor, end, buffer, separator);
+
+
+						PinyinNode current = Common.MapAnyNode(cursor);
+						if (prev.HasPinyin || buffer.Length > 0 && current.HasPinyin)
+						{
+							buffer.Append(separator);
+						}
+
+						current.WriteInitial(ref cursor, end, buffer, separator);
+						prev = current;
 
 					} while (cursor < end);
 
@@ -190,7 +207,10 @@ namespace EzPinyin
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
-						prev.FillSeperator(buffer, separator);
+						if (prev.HasPinyin)
+						{
+							buffer.Append(separator);
+						}
 						buffer.Append(Common.MapUtf16Node(cursor).GetInitial(cursor));
 					}
 
@@ -230,7 +250,7 @@ namespace EzPinyin
 
 			using (StreamReader sr = new StreamReader(path, Encoding.UTF8, true))
 			{
-				Common.LoadFrom(sr, LinkNodePriority.High);
+				Common.LoadFrom(sr, PinyinPriority.High);
 			}
 		}
 
@@ -252,7 +272,7 @@ namespace EzPinyin
 
 			using (StringReader sr = new StringReader(content))
 			{
-				Common.LoadFrom(sr, LinkNodePriority.High);
+				Common.LoadFrom(sr, PinyinPriority.High);
 			}
 		}
 
@@ -262,7 +282,8 @@ namespace EzPinyin
 		/// <param name="character">字符信息。</param>
 		/// <param name="pinyin">拼音信息。</param>
 		/// <remarks>
-		/// 如果字典中已经存在输入字符的拼音信息，则该信息将被覆盖；对于重复定义的情形，以最后一次有效操作为准。
+		/// <para>如果字典中已经存在输入字符的拼音信息，则该信息将被覆盖；对于重复定义的情形，以最后一次有效操作为准。</para>
+		/// <para>此方法不具备线程安全性，因此请注意线程同步。</para>
 		/// </remarks>
 		public static void Define(string character, string pinyin)
 		{
@@ -310,7 +331,7 @@ namespace EzPinyin
 				throw new ArgumentNullException(nameof(pinyin));
 			}
 
-			if (!Common.OverrideLexicon(word, pinyin, LinkNodePriority.High))
+			if (!Common.OverrideLexicon(word, pinyin, PinyinPriority.High))
 			{
 				throw new Exception($"重写‘{word}’的拼音失败，当前支持的汉字为Unicode基本区及补充区、扩展区A-G，请检查首字符是否属于此范围内。");
 			}

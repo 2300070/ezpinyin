@@ -1,35 +1,39 @@
-﻿using System.Text;
+﻿using System;
+using System.Globalization;
+using System.Text;
 
 namespace EzPinyin
 {
 	/// <summary>
-	/// 表示一个拼音节点的基类。
+	/// 表示字母或者数字的拼音节点
 	/// </summary>
-	internal abstract unsafe class PinyinNode
+	internal sealed class LetterOrNumberNode : PinyinNode
 	{
 		/// <summary>
-		/// 指示是否包含拼音。
+		/// 获得<see cref="LetterOrNumberNode"/>的全局实例。
 		/// </summary>
-		public virtual bool HasPinyin => true;
+		public static readonly LetterOrNumberNode Instance = new LetterOrNumberNode();
 
 		/// <summary>
 		/// 获得当前节点的拼音字符串。
 		/// </summary>
-		public abstract string Pinyin { get; }
+		public override string Pinyin => throw new NotSupportedException();
+
+		private LetterOrNumberNode(){}
 
 		/// <summary>
 		/// 获得拼音字符串。
 		/// </summary>
 		/// <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
 		/// <returns>所获得的字符串。</returns>
-		public abstract string GetPinyin(char* cursor);
+		public override unsafe string GetPinyin(char* cursor) => new string(*cursor, 1);
 
 		/// <summary>
 		/// 获得拼音首字母。
 		/// </summary>
 		/// <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
 		/// <returns>所获得的首字母。</returns>
-		public abstract string GetInitial(char* cursor);
+		public override unsafe string GetInitial(char* cursor) => new string(*cursor, 1);
 
 		/// <summary>
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
@@ -38,7 +42,10 @@ namespace EzPinyin
 		/// <param name="end">指向输入字符串最后一个字符位置的指针。</param>
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
 		/// <param name="separator">额外指定的分隔符。</param>
-		public abstract void WritePinyin(ref char* cursor, char* end, StringBuilder buffer, string separator);
+		public override unsafe void WritePinyin(ref char* cursor, char* end, StringBuilder buffer, string separator)
+		{
+			buffer.Append(*(cursor++));
+		}
 
 		/// <summary>
 		/// 将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
@@ -47,7 +54,10 @@ namespace EzPinyin
 		/// <param name="end">指向输入字符串最后一个字符位置的指针。</param>
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
 		/// <param name="separator">额外指定的分隔符。</param>
-		public abstract void WriteInitial(ref char* cursor, char* end, StringBuilder buffer, string separator);
+		public override unsafe void WriteInitial(ref char* cursor, char* end, StringBuilder buffer, string separator)
+		{
+			buffer.Append(*(cursor++));
+		}
 
 		/// <summary>
 		/// 将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
@@ -56,6 +66,11 @@ namespace EzPinyin
 		/// <param name="end">指向输入字符串最后一个字符位置的指针。</param>
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
 		/// <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
-		public abstract void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index);
+		public override unsafe void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index)
+		{
+			buffer[index] = new string(*cursor, 1);
+			index += 1;
+			cursor += 1;
+		}
 	}
 }

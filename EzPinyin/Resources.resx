@@ -178,7 +178,7 @@
   <data name="pinyin" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\pinyin.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="simplified" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\simplified;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="variants" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\variants;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

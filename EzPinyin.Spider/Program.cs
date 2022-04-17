@@ -204,7 +204,7 @@ namespace EzPinyin.Spider
 			Console.WriteLine();
 			Console.WriteLine("生成简繁字典。");
 
-			using (FileStream fs = new FileStream("simplified", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+			using (FileStream fs = new FileStream("variants", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
 			{
 				byte[] buffer = new byte[4];
 				foreach (KeyValuePair<char, char> item in Common.Simplifield)
@@ -219,6 +219,7 @@ namespace EzPinyin.Spider
 
 					fs.Write(buffer, 0, 4);
 				}
+				fs.SetLength(fs.Position);
 			}
 
 
