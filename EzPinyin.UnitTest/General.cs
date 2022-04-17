@@ -18,11 +18,26 @@ namespace EzPinyin.UnitTest
 			Console.WriteLine(PinyinHelper.GetPinyin("〇").AssertToBe("ling"));
 			Console.WriteLine(PinyinHelper.GetPinyin("重庆银行川藏大区成都分行朝阳区长厦路重工大厦行动处九楼张朝阳董事长藏宝室").AssertToBe("chong qing yin hang chuan zang da qu cheng du fen hang chao yang qu chang xia lu zhong gong da sha xing dong chu jiu lou zhang chao yang dong shi zhang cang bao shi"));
 			Console.WriteLine(PinyinHelper.GetPinyin("长城重工").AssertToBe("chang cheng zhong gong"));
-			Console.WriteLine(PinyinHelper.GetPinyin("厦门和兴铝材").AssertToBe("xia men he xing lv cai"));
 			Console.WriteLine(PinyinHelper.GetPinyin("一埄憈歌甐绔袘鉜鰠龥㐀㲒䔤䶵龦鿕").AssertToBe("yi beng qu ge lin ku yi fu sao yu qiu bao pa chi chang dan"));
 			Console.WriteLine(PinyinHelper.GetPinyin("㐀㲒䔤䶵").AssertToBe("qiu bao pa chi"));
 			Console.WriteLine(PinyinHelper.GetPinyin("𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝").AssertToBe("he gan feng cha wei duan gui zhu miao li li dai juan lang ke shen peng deng cong 𫜴 wu bie"));
 			Console.WriteLine(PinyinHelper.GetPinyin("㐀㲒䔤䶵𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝𫠠𫿰𬟀𬺰𭡫𮈦𰀀𱍊").AssertToBe("qiu bao pa chi he gan feng cha wei duan gui zhu miao li li dai juan lang ke shen peng deng cong 𫜴 wu bie yi shou teng 𬺰 𭡫 ling zui chang"));
+		}
+		[TestMethod]
+		public void GetInitial()
+		{
+			Console.WriteLine(PinyinHelper.GetInitial("川藏", " ").AssertToBe("c z"));
+			Console.WriteLine(PinyinHelper.GetInitial("兙呣瓱", " ").AssertToBe("s m m"));
+			Console.WriteLine(PinyinHelper.GetInitial("朝阳", " ").AssertToBe("c y"));
+			Console.WriteLine(PinyinHelper.GetInitial("一鿿", " ").AssertToBe("y y"));
+			Console.WriteLine(PinyinHelper.GetInitial("成都", " ").AssertToBe("c d"));
+			Console.WriteLine(PinyinHelper.GetInitial("〇", " ").AssertToBe("l"));
+			Console.WriteLine(PinyinHelper.GetInitial("重庆银行川藏大区成都分行朝阳区长厦路重工大厦行动处九楼张朝阳董事长藏宝室").AssertToBe("cqyhczdqcdfhcyqcxlzgdsxdcjlzcydszcbs"));
+			Console.WriteLine(PinyinHelper.GetInitial("长城重工").AssertToBe("cczg"));
+			Console.WriteLine(PinyinHelper.GetInitial("一埄憈歌甐绔袘鉜鰠龥㐀㲒䔤䶵龦鿕").AssertToBe("ybqglkyfsyqbpccd"));
+			Console.WriteLine(PinyinHelper.GetInitial("㐀㲒䔤䶵").AssertToBe("qbpc"));
+			Console.WriteLine(PinyinHelper.GetInitial("𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝").AssertToBe("hgfcwdgzmlldjlkspdc𫜴wb"));
+			Console.WriteLine(PinyinHelper.GetInitial("㐀㲒䔤䶵𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝𫠠𫿰𬟀𬺰𭡫𮈦𰀀𱍊").AssertToBe("qbpchgfcwdgzmlldjlkspdc𫜴wbyst𬺰𭡫lzc"));
 		}
 
 		[TestMethod]

@@ -10,10 +10,10 @@
     <SignAssembly>false</SignAssembly>
     <PackageProjectUrl>https://www.nuget.org/packages/EzPinyin/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/2300070/ezpinyin</RepositoryUrl>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
-    <FileVersion>1.0.0.1</FileVersion>
+    <AssemblyVersion>1.1.0.1</AssemblyVersion>
+    <FileVersion>1.1.0.1</FileVersion>
     <PackageIconUrl></PackageIconUrl>
-    <Version>1.1.000</Version>
+    <Version>1.1.001</Version>
     <PackageTags>pinyin;bopomofo;拼音;汉字</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <UserSecretsId>18b9bc79-5bc3-48c8-9367-de42dedcb0c0</UserSecretsId>

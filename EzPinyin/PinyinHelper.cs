@@ -39,9 +39,10 @@ namespace EzPinyin
 					 * 在没有读到最后一个字符之前时，对应位置可能是UTF16字符或者UTF32字符相关节点，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
 					 */
 					PinyinNode prev = UnknownNode.Instance;
+					PinyinNode node;
 					do
 					{
-						PinyinNode node = Common.MapAnyNode(cursor);
+						node = Common.MapAnyNode(cursor);
 						node.WritePinyin(ref cursor, end, node.FillSeparator(prev, buffer, separator), separator);
 						prev = node;
 
@@ -55,7 +56,7 @@ namespace EzPinyin
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
-						PinyinNode node = Common.MapUtf16Node(cursor);
+						node = Common.MapUtf16Node(cursor);
 						node.FillSeparator(prev, buffer, separator).Append(node.GetPinyin(cursor));
 					}
 
@@ -176,18 +177,15 @@ namespace EzPinyin
 					 * 在没有读到最后一个字符之前时，对应位置可能是UTF16字符或者UTF32字符相关节点，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
 					 */
 					PinyinNode prev = UnknownNode.Instance;
+					PinyinNode node;
 					do
 					{
 
 
-						PinyinNode current = Common.MapAnyNode(cursor);
-						//if (prev.RightSeparator || prev.LeftSeparator && current.RightSeparator)
-						//{
-						//	buffer.Append(separator);
-						//}
 
-						current.WriteInitial(ref cursor, end, buffer, separator);
-						prev = current;
+						node = Common.MapAnyNode(cursor);
+						node.WriteInitial(ref cursor, end, node.FillSeparator(prev, buffer, separator), separator);
+						prev = node;
 
 					} while (cursor < end);
 
@@ -199,11 +197,9 @@ namespace EzPinyin
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
-						//if (prev.RightSeparator)
-						//{
-						//	buffer.Append(separator);
-						//}
-						buffer.Append(Common.MapUtf16Node(cursor).GetInitial(cursor));
+
+						node = Common.MapUtf16Node(cursor);
+						node.FillSeparator(prev, buffer, separator).Append(node.GetInitial(cursor));
 					}
 
 					return Common.ReturnBuffer(buffer);
