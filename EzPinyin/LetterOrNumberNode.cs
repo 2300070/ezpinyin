@@ -72,5 +72,14 @@ namespace EzPinyin
 			index += 1;
 			cursor += 1;
 		}
+
+		/// <summary>
+		/// 填充分隔符。
+		/// </summary>
+		/// <param name="prev">当前节点的前一个节点，如果当前节点为字符串第一个节点，则此参数值为<see cref="UnknownNode.Instance"/>。</param>
+		/// <param name="buffer">需要填充分隔符的可变字符串。</param>
+		/// <param name="separator">需要填充的分隔符。</param>
+		/// <returns>填充分隔符之后的可变字符串。</returns>
+		public override StringBuilder FillSeparator(PinyinNode prev, StringBuilder buffer, string separator) => prev == this || prev == UnknownNode.Instance ? buffer : buffer.Append(separator);
 	}
 }

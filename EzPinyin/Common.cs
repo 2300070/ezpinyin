@@ -374,8 +374,12 @@ namespace EzPinyin
 			{
 				return result;
 			}
-			return UnknownNode.Instance;
 
+			//匹配其它无法匹配的情况
+			if (ch < 0x100)
+			{
+				return Ascii.Dictionary[ch];
+			}
 
 			switch (char.GetUnicodeCategory(ch))
 			{

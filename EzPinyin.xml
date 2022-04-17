@@ -581,6 +581,11 @@
             指示是否包含拼音。
             </summary>
         </member>
+        <member name="P:EzPinyin.PinyinNode.HasMeaning">
+            <summary>
+            指示当前节点是否是字符或者数字等有意义的文字。
+            </summary>
+        </member>
         <member name="P:EzPinyin.PinyinNode.Pinyin">
             <summary>
             获得当前节点的拼音字符串。
@@ -680,6 +685,11 @@
             指示是否包含拼音。
             </summary>
         </member>
+        <member name="P:EzPinyin.UnknownNode.HasMeaning">
+            <summary>
+            指示当前节点是否是字符或者数字等有意义的文字。
+            </summary>
+        </member>
         <member name="F:EzPinyin.UnknownNode.Instance">
             <summary>
             <see cref="T:EzPinyin.UnknownNode"/>的实例。
@@ -739,6 +749,11 @@
         <member name="T:EzPinyin.Utf16EmptyNode">
             <summary>
             表示空的UTF16字符节点。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.Utf16EmptyNode.HasPinyin">
+            <summary>
+            指示是否包含拼音。
             </summary>
         </member>
         <member name="F:EzPinyin.Utf16EmptyNode.Instance">
@@ -846,6 +861,11 @@
         <member name="T:EzPinyin.Utf32EmptyNode">
             <summary>
             表示空的UTF32字符节点。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.Utf32EmptyNode.HasPinyin">
+            <summary>
+            指示是否包含拼音。
             </summary>
         </member>
         <member name="F:EzPinyin.Utf32EmptyNode.Instance">

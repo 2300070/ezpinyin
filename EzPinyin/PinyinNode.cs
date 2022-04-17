@@ -8,7 +8,7 @@ namespace EzPinyin
 	internal abstract unsafe class PinyinNode
 	{
 		/// <summary>
-		/// 指示是否包含拼音。
+		/// 指示是否拥有解析拼音。
 		/// </summary>
 		public virtual bool HasPinyin => true;
 
@@ -57,5 +57,14 @@ namespace EzPinyin
 		/// <param name="buffer">用来存储操作结果的缓存区。</param>
 		/// <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
 		public abstract void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index);
+
+		/// <summary>
+		/// 填充分隔符。
+		/// </summary>
+		/// <param name="prev">当前节点的前一个节点，如果当前节点为字符串第一个节点，则此参数值为<see cref="UnknownNode.Instance"/>。</param>
+		/// <param name="buffer">需要填充分隔符的可变字符串。</param>
+		/// <param name="separator">需要填充的分隔符。</param>
+		/// <returns>填充分隔符之后的可变字符串。</returns>
+		public virtual StringBuilder FillSeparator(PinyinNode prev, StringBuilder buffer, string separator) => prev == UnknownNode.Instance ? buffer : buffer.Append(separator);
 	}
 }
