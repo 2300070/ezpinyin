@@ -37,13 +37,13 @@ namespace EzPinyin
 					 * 循环映射字符串每个位置对应的节点，通知节点进行对应的操作，并且将游标移动游标到下一个需要处理的位置。
 					 * 一般情况下，如果某个位置是UTF16字符节点，处理完之后游标下移一个位置，如果是UTF32字符节点，则下移两个位置；如果是词汇节点，则下移的位置等于词汇中字符的数量，如果词汇包含UTF32字符，每个UTF32字符还会额外移动一个位置。
 					 * 在没有读到最后一个字符之前时，对应位置可能是UTF16字符或者UTF32字符相关节点，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
+					 * 为了适配中英文混排的格式，在插入分隔符时不再机械的在每个字符后面插入分隔符，而是改成由后一个节点根据前一个节点来决定如何处理分隔符。
 					 */
 					PinyinNode prev = UnknownNode.Instance;
 					PinyinNode node;
 					do
 					{
-						node = Common.MapAnyNode(cursor);
-						node.WritePinyin(ref cursor, end, node.FillSeparator(prev, buffer, separator), separator);
+						(node = Common.MapAnyNode(cursor)).WritePinyin(ref cursor, end, node.FillSeparator(prev, buffer, separator), separator);
 						prev = node;
 
 					} while (cursor < end);
@@ -56,8 +56,7 @@ namespace EzPinyin
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
-						node = Common.MapUtf16Node(cursor);
-						node.FillSeparator(prev, buffer, separator).Append(node.GetPinyin(cursor));
+						(node).FillSeparator(prev, buffer, separator).Append(node.GetPinyin(cursor));
 					}
 
 					return Common.ReturnBuffer(buffer);
@@ -175,16 +174,13 @@ namespace EzPinyin
 					 * 循环映射字符串每个位置对应的节点，通知节点进行对应的操作，并且将游标移动游标到下一个需要处理的位置。
 					 * 一般情况下，如果某个位置是UTF16字符节点，处理完之后游标下移一个位置，如果是UTF32字符节点，则下移两个位置；如果是词汇节点，则下移的位置等于词汇中字符的数量，如果词汇包含UTF32字符，每个UTF32字符还会额外移动一个位置。
 					 * 在没有读到最后一个字符之前时，对应位置可能是UTF16字符或者UTF32字符相关节点，所以调用<see cref="Common.MapAnyNode(char*)"/>方法。
+					 * 为了适配中英文混排的格式，在插入分隔符时不再机械的在每个字符后面插入分隔符，而是改成由后一个节点根据前一个节点来决定如何处理分隔符。
 					 */
 					PinyinNode prev = UnknownNode.Instance;
 					PinyinNode node;
 					do
 					{
-
-
-
-						node = Common.MapAnyNode(cursor);
-						node.WriteInitial(ref cursor, end, node.FillSeparator(prev, buffer, separator), separator);
+						(node = Common.MapAnyNode(cursor)).WriteInitial(ref cursor, end, node.FillSeparator(prev, buffer, separator), separator);
 						prev = node;
 
 					} while (cursor < end);
@@ -198,8 +194,7 @@ namespace EzPinyin
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
 
-						node = Common.MapUtf16Node(cursor);
-						node.FillSeparator(prev, buffer, separator).Append(node.GetInitial(cursor));
+						(node = Common.MapUtf16Node(cursor)).FillSeparator(prev, buffer, separator).Append(node.GetInitial(cursor));
 					}
 
 					return Common.ReturnBuffer(buffer);
