@@ -177,6 +177,15 @@
             <param name="buffer">用来存储操作结果的缓存区。</param>
             <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
         </member>
+        <member name="M:EzPinyin.LetterOrNumberNode.FillSeparator(EzPinyin.PinyinNode,System.Text.StringBuilder,System.String)">
+            <summary>
+            填充分隔符。
+            </summary>
+            <param name="prev">当前节点的前一个节点，如果当前节点为字符串第一个节点，则此参数值为<see cref="F:EzPinyin.UnknownNode.Instance"/>。</param>
+            <param name="buffer">需要填充分隔符的可变字符串。</param>
+            <param name="separator">需要填充的分隔符。</param>
+            <returns>填充分隔符之后的可变字符串。</returns>
+        </member>
         <member name="T:EzPinyin.LexiconFakeNode">
             <summary>
             表示“虚假”的，仅仅用来临时标记词典节点的节点。
@@ -578,12 +587,7 @@
         </member>
         <member name="P:EzPinyin.PinyinNode.HasPinyin">
             <summary>
-            指示是否包含拼音。
-            </summary>
-        </member>
-        <member name="P:EzPinyin.PinyinNode.HasMeaning">
-            <summary>
-            指示当前节点是否是字符或者数字等有意义的文字。
+            指示是否拥有解析拼音。
             </summary>
         </member>
         <member name="P:EzPinyin.PinyinNode.Pinyin">
@@ -632,6 +636,15 @@
             <param name="buffer">用来存储操作结果的缓存区。</param>
             <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
         </member>
+        <member name="M:EzPinyin.PinyinNode.FillSeparator(EzPinyin.PinyinNode,System.Text.StringBuilder,System.String)">
+            <summary>
+            填充分隔符。
+            </summary>
+            <param name="prev">当前节点的前一个节点，如果当前节点为字符串第一个节点，则此参数值为<see cref="F:EzPinyin.UnknownNode.Instance"/>。</param>
+            <param name="buffer">需要填充分隔符的可变字符串。</param>
+            <param name="separator">需要填充的分隔符。</param>
+            <returns>填充分隔符之后的可变字符串。</returns>
+        </member>
         <member name="T:EzPinyin.PinyinPriority">
             <summary>
             表示链表中的某个词汇节点所定义的拼音的优先级别。
@@ -679,16 +692,6 @@
             <remarks>
             与<see cref="T:EzPinyin.Utf16EmptyNode"/>与<see cref="T:EzPinyin.Utf32EmptyNode"/>不一样的是，<see cref="T:EzPinyin.UnknownNode"/>对应的是非汉字字符。
             </remarks>
-        </member>
-        <member name="P:EzPinyin.UnknownNode.HasPinyin">
-            <summary>
-            指示是否包含拼音。
-            </summary>
-        </member>
-        <member name="P:EzPinyin.UnknownNode.HasMeaning">
-            <summary>
-            指示当前节点是否是字符或者数字等有意义的文字。
-            </summary>
         </member>
         <member name="F:EzPinyin.UnknownNode.Instance">
             <summary>
@@ -741,6 +744,15 @@
             <param name="buffer">用来存储操作结果的缓存区。</param>
             <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
         </member>
+        <member name="M:EzPinyin.UnknownNode.FillSeparator(EzPinyin.PinyinNode,System.Text.StringBuilder,System.String)">
+            <summary>
+            填充分隔符。
+            </summary>
+            <param name="prev">当前节点的前一个节点，如果当前节点为字符串第一个节点，则此参数值为<see cref="F:EzPinyin.UnknownNode.Instance"/>。</param>
+            <param name="buffer">需要填充分隔符的可变字符串。</param>
+            <param name="separator">需要填充的分隔符。</param>
+            <returns>填充分隔符之后的可变字符串。</returns>
+        </member>
         <member name="T:EzPinyin.UserFileLoader">
             <summary>
             表示用来加载用户自定义拼音的类。
@@ -749,11 +761,6 @@
         <member name="T:EzPinyin.Utf16EmptyNode">
             <summary>
             表示空的UTF16字符节点。
-            </summary>
-        </member>
-        <member name="P:EzPinyin.Utf16EmptyNode.HasPinyin">
-            <summary>
-            指示是否包含拼音。
             </summary>
         </member>
         <member name="F:EzPinyin.Utf16EmptyNode.Instance">
@@ -861,11 +868,6 @@
         <member name="T:EzPinyin.Utf32EmptyNode">
             <summary>
             表示空的UTF32字符节点。
-            </summary>
-        </member>
-        <member name="P:EzPinyin.Utf32EmptyNode.HasPinyin">
-            <summary>
-            指示是否包含拼音。
             </summary>
         </member>
         <member name="F:EzPinyin.Utf32EmptyNode.Instance">
