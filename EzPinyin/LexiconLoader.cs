@@ -209,12 +209,12 @@ namespace EzPinyin
 			List<string> words = new List<string>(1);
 			StringBuilder buffer = new StringBuilder().Append(word[0]);
 
-			LexiconLoader.SearchVariantWords(word, buffer, 1, words);
+			LexiconLoader.AnalyseVariantWords(word, buffer, 1, words);
 
 			return words.ToArray();
 		}
 
-		private static void SearchVariantWords(string word, StringBuilder buffer, int index, List<string> words)
+		private static void AnalyseVariantWords(string word, StringBuilder buffer, int index, List<string> words)
 		{
 			if (index >= word.Length)
 			{
@@ -228,9 +228,9 @@ namespace EzPinyin
 			char ch = word[index];
 			if (Common.TryGetVariant(ch, out CharacterInfo variant))
 			{
-				LexiconLoader.SearchVariantWords(word, new StringBuilder(buffer.ToString()).Append(variant.Character), index + 1, words);
+				LexiconLoader.AnalyseVariantWords(word, new StringBuilder(buffer.ToString()).Append(variant.Character), index + 1, words);
 			}
-			LexiconLoader.SearchVariantWords(word, buffer.Append(ch), index + 1, words);
+			LexiconLoader.AnalyseVariantWords(word, buffer.Append(ch), index + 1, words);
 		}
 
 		private static unsafe bool TryLocate(ref byte* cursor, byte* end, string character, int size)

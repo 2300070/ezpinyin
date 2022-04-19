@@ -56,7 +56,7 @@ namespace EzPinyin
 						/**
 						 * 由于是最后一个字符，肯定不存在UTF-32字符的可能性，也无词汇节点的可能性，所以调用<see cref="Common.MapUtf16Node(char*)"/>方法简单处理即可。
 						 */
-						(node).FillSeparator(prev, buffer, separator).Append(node.GetPinyin(cursor));
+						(node = Common.MapUtf16Node(cursor)).FillSeparator(prev, buffer, separator).Append(node.GetPinyin(cursor));
 					}
 
 					return Common.ReturnBuffer(buffer);

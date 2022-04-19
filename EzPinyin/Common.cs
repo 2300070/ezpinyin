@@ -439,6 +439,11 @@ namespace EzPinyin
 				return Radicals.Dictionary[ch - 0x2E80];
 			}
 
+			if (Unknown.Utf16Nodes.TryGetValue(ch, out PinyinNode result))
+			{
+				return result;
+			}
+
 			//匹配其它无法匹配的情况
 			if (ch < 0x100)
 			{
