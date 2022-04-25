@@ -75,18 +75,6 @@ namespace EzPinyin
 			Common.LoadConvertionDictionary();
 
 
-			/**
-			 * 搜索并应用用户的自定义字典文件
-			 */
-			string[] files = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*dict*");
-
-			foreach (string file in files)
-			{
-				Common.LoadFrom(file, PinyinPriority.High);
-#if DEBUG
-				Console.WriteLine($"Load custom file: {file}.");
-#endif
-			}
 		}
 
 		internal static PinyinNode[] LoadDictionary(string resourceName, PinyinNode[] templates, int head)
@@ -546,9 +534,16 @@ namespace EzPinyin
 			 * 从指定的文件加载自定义的拼音定义，并且更新到对应的字典中。
 			 */
 
-			using (StreamReader sr = new StreamReader(file, Encoding.UTF8, true))
+			try
 			{
-				Common.LoadFrom(sr, priority);
+				using (StreamReader sr = new StreamReader(file, Encoding.UTF8, true))
+				{
+					Common.LoadFrom(sr, priority);
+				}
+			}
+			catch
+			{
+				//可能因访问权限原因而被拒绝。
 			}
 		}
 

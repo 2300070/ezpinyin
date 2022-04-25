@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 
 namespace EzPinyin
@@ -12,11 +13,31 @@ namespace EzPinyin
 
 		static UserFileLoader()
 		{
+			UserFileLoader.InternalLoad();
+		}
 
+		public static void LoadAll()
+		{
 			/**
-			 * 搜索并应用用户的自定义字典文件
+			 * 静态方法中已经完成加载
 			 */
-			string[] files = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*dict*");
+		}
+
+		private static void InternalLoad()
+		{
+			string[] files;
+			try
+			{
+				/**
+				 * 搜索并应用用户的自定义字典文件
+				 */
+				files = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*dict*");
+			}
+			catch
+			{
+				//可能因访问权限原因而被拒绝。
+				return;
+			}
 
 			foreach (string file in files)
 			{
@@ -25,10 +46,6 @@ namespace EzPinyin
 				System.Console.WriteLine($"Load custom file: {file}.");
 #endif
 			}
-		}
-
-		public static void LoadAll()
-		{
 		}
 	}
 }
