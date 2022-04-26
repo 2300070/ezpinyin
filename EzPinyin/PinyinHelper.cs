@@ -260,6 +260,45 @@ namespace EzPinyin
 		}
 
 		/// <summary>
+		/// 从指定的文本读取器加载指定的拼音配置。
+		/// </summary>
+		/// <param name="reader">用来读取配置内容的文本读取器。</param>
+		/// <remarks>
+		/// <para>此方法提供了一种通用的直接加载配置内容的方法，提供了一种比<see cref="PinyinHelper.Load(string)"/>适应性更广的方式以加载配置内容。</para>
+		/// <para>此方法不具备线程安全性，因此请注意线程同步。</para>
+		/// </remarks>
+		public static void Load(TextReader reader)
+		{
+			if (reader == null)
+			{
+				throw new ArgumentNullException(nameof(reader));
+			}
+			Common.LoadFrom(reader, PinyinPriority.High);
+		}
+
+		/// <summary>
+		/// 从指定的数据流加载指定的拼音配置。
+		/// </summary>
+		/// <param name="stream">用来读取配置内容的数据流。</param>
+		/// <param name="encoding">额外指示一个字符编码，默认使用UTF-8编码</param>
+		/// <remarks>
+		/// <para>此方法提供了一种比<see cref="PinyinHelper.LoadFrom(string)"/>更细致的解决方案，特别是访问某些有限制条件的资源。</para>
+		/// <para>此方法不具备线程安全性，因此请注意线程同步。</para>
+		/// </remarks>
+		public static void Load(Stream stream, Encoding encoding = null)
+		{
+			if (stream == null)
+			{
+				throw new ArgumentNullException(nameof(stream));
+			}
+
+			using (StreamReader sr = new StreamReader(stream, encoding??Encoding.UTF8))
+			{
+				Common.LoadFrom(sr, PinyinPriority.High);
+			}
+		}
+
+		/// <summary>
 		/// 根据提供的信息添加或者重新定义指定字符的拼音。
 		/// </summary>
 		/// <param name="character">字符信息。</param>
