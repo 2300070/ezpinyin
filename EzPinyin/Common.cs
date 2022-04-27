@@ -539,7 +539,7 @@ namespace EzPinyin
 				throw new ArgumentNullException(nameof(file));
 			}
 
-			if (File.Exists(file))
+			if (!File.Exists(file))
 			{
 				throw new FileNotFoundException(file);
 			}
