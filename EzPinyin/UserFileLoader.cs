@@ -13,7 +13,14 @@ namespace EzPinyin
 
 		static UserFileLoader()
 		{
-			UserFileLoader.InternalLoad();
+			try
+			{
+				UserFileLoader.InternalLoad();
+			}
+			catch
+			{
+				//可能因访问权限原因而被拒绝。
+			}
 		}
 
 		public static void LoadAll()
@@ -26,18 +33,11 @@ namespace EzPinyin
 		private static void InternalLoad()
 		{
 			string[] files;
-			try
-			{
-				/**
-				 * 搜索并应用用户的自定义字典文件
-				 */
-				files = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*dict*");
-			}
-			catch
-			{
-				//可能因访问权限原因而被拒绝。
-				return;
-			}
+
+			/**
+			 * 搜索并应用用户的自定义字典文件
+			 */
+			files = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*dict*");
 
 			foreach (string file in files)
 			{

@@ -534,16 +534,19 @@ namespace EzPinyin
 			 * 从指定的文件加载自定义的拼音定义，并且更新到对应的字典中。
 			 */
 
-			try
+			if (string.IsNullOrEmpty(file))
 			{
-				using (StreamReader sr = new StreamReader(file, Encoding.UTF8, true))
-				{
-					Common.LoadFrom(sr, priority);
-				}
+				throw new ArgumentNullException(nameof(file));
 			}
-			catch
+
+			if (File.Exists(file))
 			{
-				//可能因访问权限原因而被拒绝。
+				throw new FileNotFoundException(file);
+			}
+
+			using (StreamReader sr = new StreamReader(file, Encoding.UTF8, true))
+			{
+				Common.LoadFrom(sr, priority);
 			}
 		}
 
