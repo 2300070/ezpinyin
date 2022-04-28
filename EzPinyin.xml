@@ -501,7 +501,7 @@
         </member>
         <member name="P:EzPinyin.PinyinNode.IsSymbol">
             <summary>
-            指示是否是否是一个符号。
+            指示是否是一个符号。
             </summary>
         </member>
         <member name="P:EzPinyin.PinyinNode.NoPinyin">
@@ -619,7 +619,7 @@
         </member>
         <member name="P:EzPinyin.UnknownNode.IsSymbol">
             <summary>
-            指示是否是否是一个符号。
+            指示是否是一个符号。
             </summary>
         </member>
         <member name="P:EzPinyin.UnknownNode.NoPinyin">
@@ -699,7 +699,7 @@
         </member>
         <member name="P:EzPinyin.Utf16EmptyNode.IsSymbol">
             <summary>
-            指示是否是否是一个符号。
+            指示是否是一个符号。
             </summary>
         </member>
         <member name="P:EzPinyin.Utf16EmptyNode.NoPinyin">
@@ -825,7 +825,7 @@
         </member>
         <member name="P:EzPinyin.Utf32EmptyNode.IsSymbol">
             <summary>
-            指示是否是否是一个符号。
+            指示是否是一个符号。
             </summary>
         </member>
         <member name="P:EzPinyin.Utf32EmptyNode.NoPinyin">

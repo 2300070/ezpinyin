@@ -14,7 +14,7 @@ namespace EzPinyin
 		public static readonly Utf16EmptyNode Instance = new Utf16EmptyNode();
 
 		/// <summary>
-		/// 指示是否是否是一个符号。
+		/// 指示是否是一个符号。
 		/// </summary>
 		public override bool IsSymbol => false;
 

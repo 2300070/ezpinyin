@@ -17,7 +17,7 @@ namespace EzPinyin
 		public static UnknownNode Instance = new UnknownNode();
 
 		/// <summary>
-		/// 指示是否是否是一个符号。
+		/// 指示是否是一个符号。
 		/// </summary>
 		public override bool IsSymbol => true;
 
