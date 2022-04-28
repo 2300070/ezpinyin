@@ -28,7 +28,7 @@ namespace EzPinyin
 					case UnicodeCategory.DecimalDigitNumber:
 					case UnicodeCategory.LetterNumber:
 					case UnicodeCategory.OtherNumber:
-						Dictionary[i] = LetterOrNumberNode.Instance;
+						Dictionary[i] = Utf16EmptyNode.Instance;
 						break;
 					default:
 						Dictionary[i] = UnknownNode.Instance;

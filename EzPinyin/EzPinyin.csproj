@@ -32,6 +32,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="LetterOrNumberNode.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="EzPinyin.xml" />
   </ItemGroup>
 

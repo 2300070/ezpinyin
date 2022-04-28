@@ -1,9 +1,9 @@
 ﻿namespace EzPinyin
 {
 	/// <summary>
-	/// 用来标记字符特性的类。
+	/// 用来表示某个异体字特性的类。
 	/// </summary>
-	internal sealed class CharacterInfo
+	internal sealed class VariantInfo
 	{
 		/// <summary>
 		/// 对应文本形式的字符。
@@ -11,24 +11,24 @@
 		public string Text => new string(this.Character, 1);
 
 		/// <summary>
-		/// 对应字符。
+		/// 异体字字符。
 		/// </summary>
 		public char Character { get; }
 
 		/// <summary>
-		/// 字符类型。
+		/// 异体字字符的类型。
 		/// </summary>
-		public CharacterType CharacterType { get; }
+		public VariantType VariantType { get; }
 
 		/// <summary>
-		/// 实例化新的<see cref="CharacterInfo"/>。
+		/// 实例化新的<see cref="VariantInfo"/>。
 		/// </summary>
 		/// <param name="character">字符信息。</param>
-		/// <param name="characterType">字符类型。</param>
-		public CharacterInfo(char character, CharacterType characterType)
+		/// <param name="variantType">字符类型。</param>
+		public VariantInfo(char character, VariantType variantType)
 		{
 			this.Character = character;
-			this.CharacterType = characterType;
+			this.VariantType = variantType;
 		}
 	}
 }

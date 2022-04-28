@@ -17,6 +17,16 @@ namespace EzPinyin
 		public static UnknownNode Instance = new UnknownNode();
 
 		/// <summary>
+		/// 指示是否是否是一个符号。
+		/// </summary>
+		public override bool IsSymbol => true;
+
+		/// <summary>
+		/// 指示是否不包含拼音信息。
+		/// </summary>
+		public override bool NoPinyin => true;
+
+		/// <summary>
 		/// 获得当前节点的拼音字符串。
 		/// </summary>
 		public override string Pinyin => throw new NotSupportedException();

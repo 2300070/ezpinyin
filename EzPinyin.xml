@@ -14,48 +14,6 @@
             表示基本汉字的字典。
             </summary>
         </member>
-        <member name="T:EzPinyin.CharacterInfo">
-            <summary>
-            用来标记字符特性的类。
-            </summary>
-        </member>
-        <member name="P:EzPinyin.CharacterInfo.Text">
-            <summary>
-            对应文本形式的字符。
-            </summary>
-        </member>
-        <member name="P:EzPinyin.CharacterInfo.Character">
-            <summary>
-            对应字符。
-            </summary>
-        </member>
-        <member name="P:EzPinyin.CharacterInfo.CharacterType">
-            <summary>
-            字符类型。
-            </summary>
-        </member>
-        <member name="M:EzPinyin.CharacterInfo.#ctor(System.Char,EzPinyin.CharacterType)">
-            <summary>
-            实例化新的<see cref="T:EzPinyin.CharacterInfo"/>。
-            </summary>
-            <param name="character">字符信息。</param>
-            <param name="characterType">字符类型。</param>
-        </member>
-        <member name="T:EzPinyin.CharacterType">
-            <summary>
-            表示字符类型的枚举。
-            </summary>
-        </member>
-        <member name="F:EzPinyin.CharacterType.Simplified">
-            <summary>
-            简体字。
-            </summary>
-        </member>
-        <member name="F:EzPinyin.CharacterType.Traditional">
-            <summary>
-            繁体字。
-            </summary>
-        </member>
         <member name="T:EzPinyin.Check">
             <summary>
             用于检验一些信息。
@@ -120,71 +78,6 @@
             <summary>
             表示Unicode平面2汉字G扩展区的字典。
             </summary>
-        </member>
-        <member name="T:EzPinyin.LetterOrNumberNode">
-            <summary>
-            表示字母或者数字的拼音节点
-            </summary>
-        </member>
-        <member name="F:EzPinyin.LetterOrNumberNode.Instance">
-            <summary>
-            获得<see cref="T:EzPinyin.LetterOrNumberNode"/>的全局实例。
-            </summary>
-        </member>
-        <member name="P:EzPinyin.LetterOrNumberNode.Pinyin">
-            <summary>
-            获得当前节点的拼音字符串。
-            </summary>
-        </member>
-        <member name="M:EzPinyin.LetterOrNumberNode.GetPinyin(System.Char*)">
-            <summary>
-            获得拼音字符串。
-            </summary>
-            <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
-            <returns>所获得的字符串。</returns>
-        </member>
-        <member name="M:EzPinyin.LetterOrNumberNode.GetInitial(System.Char*)">
-            <summary>
-            获得拼音首字母。
-            </summary>
-            <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
-            <returns>所获得的首字母。</returns>
-        </member>
-        <member name="M:EzPinyin.LetterOrNumberNode.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
-            <summary>
-            将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
-            </summary>
-            <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
-            <param name="end">指向输入字符串最后一个字符位置的指针。</param>
-            <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">额外指定的分隔符。</param>
-        </member>
-        <member name="M:EzPinyin.LetterOrNumberNode.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
-            <summary>
-            将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
-            </summary>
-            <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
-            <param name="end">指向输入字符串最后一个字符位置的指针。</param>
-            <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="separator">额外指定的分隔符。</param>
-        </member>
-        <member name="M:EzPinyin.LetterOrNumberNode.WritePinyin(System.Char*@,System.Char*,System.String[],System.Int32@)">
-            <summary>
-            将拼音字符串写入到指定的缓存区，并且自动移动游标与索引到下一个字符的位置。
-            </summary>
-            <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
-            <param name="end">指向输入字符串最后一个字符位置的指针。</param>
-            <param name="buffer">用来存储操作结果的缓存区。</param>
-            <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
-        </member>
-        <member name="M:EzPinyin.LetterOrNumberNode.FillSeparator(EzPinyin.PinyinNode,System.Text.StringBuilder,System.String)">
-            <summary>
-            填充分隔符。
-            </summary>
-            <param name="prev">当前节点的前一个节点，如果当前节点为字符串第一个节点，则此参数值为<see cref="F:EzPinyin.UnknownNode.Instance"/>。</param>
-            <param name="buffer">需要填充分隔符的可变字符串。</param>
-            <param name="separator">需要填充的分隔符。</param>
-            <returns>填充分隔符之后的可变字符串。</returns>
         </member>
         <member name="T:EzPinyin.LexiconFakeNode">
             <summary>
@@ -606,9 +499,14 @@
             表示一个拼音节点的基类。
             </summary>
         </member>
-        <member name="P:EzPinyin.PinyinNode.HasPinyin">
+        <member name="P:EzPinyin.PinyinNode.IsSymbol">
             <summary>
-            指示是否拥有解析拼音。
+            指示是否是否是一个符号。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.PinyinNode.NoPinyin">
+            <summary>
+            指示是否不包含拼音信息。
             </summary>
         </member>
         <member name="P:EzPinyin.PinyinNode.Pinyin">
@@ -719,6 +617,16 @@
             <see cref="T:EzPinyin.UnknownNode"/>的实例。
             </summary>
         </member>
+        <member name="P:EzPinyin.UnknownNode.IsSymbol">
+            <summary>
+            指示是否是否是一个符号。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.UnknownNode.NoPinyin">
+            <summary>
+            指示是否不包含拼音信息。
+            </summary>
+        </member>
         <member name="P:EzPinyin.UnknownNode.Pinyin">
             <summary>
             获得当前节点的拼音字符串。
@@ -789,6 +697,16 @@
             获得空白的UTF16字符节点的实例。
             </summary>
         </member>
+        <member name="P:EzPinyin.Utf16EmptyNode.IsSymbol">
+            <summary>
+            指示是否是否是一个符号。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.Utf16EmptyNode.NoPinyin">
+            <summary>
+            指示是否不包含拼音信息。
+            </summary>
+        </member>
         <member name="P:EzPinyin.Utf16EmptyNode.Pinyin">
             <summary>
             设计用于获得当前节点的拼音字符串，此处总是抛出<see cref="T:System.NotSupportedException"/>。
@@ -810,7 +728,7 @@
         </member>
         <member name="M:EzPinyin.Utf16EmptyNode.WritePinyin(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
             <summary>
-            将游标处的字符写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            将拼音字符串写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
@@ -819,7 +737,7 @@
         </member>
         <member name="M:EzPinyin.Utf16EmptyNode.WriteInitial(System.Char*@,System.Char*,System.Text.StringBuilder,System.String)">
             <summary>
-            将游标处的字符写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
+            将拼音首字母写入到指定的缓存区，并且自动移动游标到下一个字符的位置。
             </summary>
             <param name="cursor">指向输入字符串当前位置的指针，可以作为游标来遍历整个字符串。</param>
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
@@ -834,6 +752,15 @@
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
             <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
+        </member>
+        <member name="M:EzPinyin.Utf16EmptyNode.FillSeparator(EzPinyin.PinyinNode,System.Text.StringBuilder,System.String)">
+            <summary>
+            填充分隔符。
+            </summary>
+            <param name="prev">当前节点的前一个节点，如果当前节点为字符串第一个节点，则此参数值为<see cref="F:EzPinyin.UnknownNode.Instance"/>。</param>
+            <param name="buffer">需要填充分隔符的可变字符串。</param>
+            <param name="separator">需要填充的分隔符。</param>
+            <returns>填充分隔符之后的可变字符串。</returns>
         </member>
         <member name="T:EzPinyin.Utf16Node">
             <summary>
@@ -896,6 +823,16 @@
             获得空白的UTF32字符节点的实例。
             </summary>
         </member>
+        <member name="P:EzPinyin.Utf32EmptyNode.IsSymbol">
+            <summary>
+            指示是否是否是一个符号。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.Utf32EmptyNode.NoPinyin">
+            <summary>
+            指示是否不包含拼音信息。
+            </summary>
+        </member>
         <member name="P:EzPinyin.Utf32EmptyNode.Pinyin">
             <summary>
             设计用于获得当前节点的拼音字符串，此处总是抛出<see cref="T:System.NotSupportedException"/>。
@@ -941,6 +878,15 @@
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
             <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
+        </member>
+        <member name="M:EzPinyin.Utf32EmptyNode.FillSeparator(EzPinyin.PinyinNode,System.Text.StringBuilder,System.String)">
+            <summary>
+            填充分隔符。
+            </summary>
+            <param name="prev">当前节点的前一个节点，如果当前节点为字符串第一个节点，则此参数值为<see cref="F:EzPinyin.UnknownNode.Instance"/>。</param>
+            <param name="buffer">需要填充分隔符的可变字符串。</param>
+            <param name="separator">需要填充的分隔符。</param>
+            <returns>填充分隔符之后的可变字符串。</returns>
         </member>
         <member name="T:EzPinyin.Utf32Node">
             <summary>
@@ -992,6 +938,48 @@
             <param name="end">指向输入字符串最后一个字符位置的指针。</param>
             <param name="buffer">用来存储操作结果的缓存区。</param>
             <param name="index">指示操作结果在缓存区中存储位置的索引值。</param>
+        </member>
+        <member name="T:EzPinyin.VariantInfo">
+            <summary>
+            用来表示某个异体字特性的类。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.VariantInfo.Text">
+            <summary>
+            对应文本形式的字符。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.VariantInfo.Character">
+            <summary>
+            异体字字符。
+            </summary>
+        </member>
+        <member name="P:EzPinyin.VariantInfo.VariantType">
+            <summary>
+            异体字字符的类型。
+            </summary>
+        </member>
+        <member name="M:EzPinyin.VariantInfo.#ctor(System.Char,EzPinyin.VariantType)">
+            <summary>
+            实例化新的<see cref="T:EzPinyin.VariantInfo"/>。
+            </summary>
+            <param name="character">字符信息。</param>
+            <param name="variantType">字符类型。</param>
+        </member>
+        <member name="T:EzPinyin.VariantType">
+            <summary>
+            表示异体字类型的枚举。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.VariantType.Simplified">
+            <summary>
+            简体字。
+            </summary>
+        </member>
+        <member name="F:EzPinyin.VariantType.Traditional">
+            <summary>
+            繁体字。
+            </summary>
         </member>
     </members>
 </doc>

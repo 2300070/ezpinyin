@@ -14,6 +14,16 @@ namespace EzPinyin
 		public static readonly Utf32EmptyNode Instance = new Utf32EmptyNode();
 
 		/// <summary>
+		/// 指示是否是否是一个符号。
+		/// </summary>
+		public override bool IsSymbol => false;
+
+		/// <summary>
+		/// 指示是否不包含拼音信息。
+		/// </summary>
+		public override bool NoPinyin => true;
+
+		/// <summary>
 		/// 设计用于获得当前节点的拼音字符串，此处总是抛出<see cref="NotSupportedException"/>。
 		/// </summary>
 		public override string Pinyin => throw new NotSupportedException();
@@ -78,5 +88,14 @@ namespace EzPinyin
 			buffer[index++] = new string(cursor, 0, 2);
 			cursor += 2;
 		}
+
+		/// <summary>
+		/// 填充分隔符。
+		/// </summary>
+		/// <param name="prev">当前节点的前一个节点，如果当前节点为字符串第一个节点，则此参数值为<see cref="UnknownNode.Instance"/>。</param>
+		/// <param name="buffer">需要填充分隔符的可变字符串。</param>
+		/// <param name="separator">需要填充的分隔符。</param>
+		/// <returns>填充分隔符之后的可变字符串。</returns>
+		public override StringBuilder FillSeparator(PinyinNode prev, StringBuilder buffer, string separator) => prev.IsSymbol || prev.NoPinyin ? buffer : buffer.Append(separator);
 	}
 }

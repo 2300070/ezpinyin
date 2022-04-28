@@ -21,7 +21,7 @@ namespace EzPinyin.UnitTest
 			Console.WriteLine(PinyinHelper.GetPinyin("一埄憈歌甐绔袘鉜鰠龥㐀㲒䔤䶵龦鿕").AssertToBe("yi beng qu ge lin ku yi fu sao yu qiu bao pa chi chang dan"));
 			Console.WriteLine(PinyinHelper.GetPinyin("㐀㲒䔤䶵").AssertToBe("qiu bao pa chi"));
 			Console.WriteLine(PinyinHelper.GetPinyin("𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝").AssertToBe("he gan feng cha wei duan gui zhu miao li li dai juan lang ke shen peng deng cong 𫜴 wu bie"));
-			Console.WriteLine(PinyinHelper.GetPinyin("㐀㲒䔤䶵𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝𫠠𫿰𬟀𬺰𭡫𮈦𰀀𱍊").AssertToBe("qiu bao pa chi he gan feng cha wei duan gui zhu miao li li dai juan lang ke shen peng deng cong 𫜴 wu bie yi shou teng 𬺰 𭡫 ling zui chang"));
+			Console.WriteLine(PinyinHelper.GetPinyin("㐀㲒䔤䶵𠀀𠧄𡎈𡵌𢜐𣃔𣪘𤑜𤸠𥟤𦆨𦭬𧔰𧻴𨢸𩉼𩱀𪜀𪻐𫜴𫝀𫠝𫠠𫿰𬟀𬺰𭡫𮈦𰀀𱍊").AssertToBe("qiu bao pa chi he gan feng cha wei duan gui zhu miao li li dai juan lang ke shen peng deng cong 𫜴 wu bie yi shou teng 𬺰𭡫 ling zui chang"));
 		}
 		[TestMethod]
 		public void GetInitial()
@@ -104,6 +104,18 @@ namespace EzPinyin.UnitTest
 		{
 			Console.WriteLine(PinyinHelper.GetPinyin("到什么山上唱什么歌").AssertToBe("dao shen me shan shang chang shen me ge"));
 			Console.WriteLine(PinyinHelper.GetPinyin("到什么山上唱什么歌Test Word到什么山上唱什么歌").AssertToBe("dao shen me shan shang chang shen me ge Test Word dao shen me shan shang chang shen me ge"));
+		}
+
+		[TestMethod]
+		public void TestMixed()
+		{
+			Console.WriteLine(PinyinHelper.GetPinyin("Tony老师说：“你这个发型很cool！”").AssertToBe("Tony lao shi shuo：“ni zhe ge fa xing hen cool！”"));
+		}
+
+		[TestMethod]
+		public void TestMixedWithExtended()
+		{
+			Console.WriteLine(PinyinHelper.GetPinyin("Tony老师说：“你这个发型很𐌂𐌏𐌏𐌉！”").AssertToBe("Tony lao shi shuo：“ni zhe ge fa xing hen 𐌂𐌏𐌏𐌉！”"));
 		}
 
 		[TestMethod]

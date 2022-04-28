@@ -16,7 +16,7 @@ namespace EzPinyin
 	{
 		private const int BUFFER_SIZE = 0x100;
 		private static readonly StringBuilder[] buffers = new StringBuilder[Environment.ProcessorCount];
-		private static readonly Dictionary<char, CharacterInfo> variants = new Dictionary<char, CharacterInfo>();
+		private static readonly Dictionary<char, VariantInfo> variants = new Dictionary<char, VariantInfo>();
 
 		/// <summary>
 		/// 一个标记，表示节点所对应的字符包含词汇信息，在使用时需要额外处理，参看<see cref="LexiconFakeNode"/>。
@@ -72,7 +72,7 @@ namespace EzPinyin
 			/**
 			 * 加载繁体字字典
 			 */
-			Common.LoadConvertionDictionary();
+			Common.LoadVariantDictionary();
 
 
 		}
@@ -381,7 +381,7 @@ namespace EzPinyin
 				case UnicodeCategory.DecimalDigitNumber:
 				case UnicodeCategory.LetterNumber:
 				case UnicodeCategory.OtherNumber:
-					return LetterOrNumberNode.Instance;
+					return Utf16EmptyNode.Instance;
 			}
 			return UnknownNode.Instance;
 		}
@@ -450,7 +450,7 @@ namespace EzPinyin
 				case UnicodeCategory.DecimalDigitNumber:
 				case UnicodeCategory.LetterNumber:
 				case UnicodeCategory.OtherNumber:
-					return LetterOrNumberNode.Instance;
+					return Utf16EmptyNode.Instance;
 			}
 			return UnknownNode.Instance;
 		}
@@ -506,8 +506,8 @@ namespace EzPinyin
 			return result;
 		}
 
-		internal static bool TryGetVariant(char ch, out CharacterInfo variant) => variants.TryGetValue(ch, out variant);
-		internal static bool TryGetVariant(string text, CharacterType type, out string result)
+		internal static bool TryGetVariant(char ch, out VariantInfo variant) => variants.TryGetValue(ch, out variant);
+		internal static bool TryGetVariant(string text, VariantType type, out string result)
 		{
 			/**
 			 * 转换指定字符串中的简体字或繁体字。
@@ -517,7 +517,7 @@ namespace EzPinyin
 
 			for (int i = chars.Length - 1; i > -1; i--)
 			{
-				if (variants.TryGetValue(chars[i], out CharacterInfo info) && info.CharacterType == type)
+				if (variants.TryGetValue(chars[i], out VariantInfo info) && info.VariantType == type)
 				{
 					succ = true;
 					chars[i] = info.Character;
@@ -760,7 +760,7 @@ namespace EzPinyin
 		{
 			if (Common.OverrideLexiconItem(word, pinyin, priority))
 			{
-				if (Common.TryGetVariant(word, CharacterType.Traditional, out string traditional))
+				if (Common.TryGetVariant(word, VariantType.Traditional, out string traditional))
 				{
 					Common.OverrideLexiconItem(traditional, pinyin, priority);
 				}
@@ -912,7 +912,7 @@ namespace EzPinyin
 			return -1;
 		}
 
-		private static void LoadConvertionDictionary()
+		private static void LoadVariantDictionary()
 		{
 			/**
 			 * 加载所有的简体字、繁体字的转换字典。
@@ -922,8 +922,8 @@ namespace EzPinyin
 			{
 				char cht = (char)((buffer[i] << 8) | buffer[i + 1]);
 				char chs = (char)((buffer[i + 2] << 8) | buffer[i + 3]);
-				variants[chs] = new CharacterInfo(cht, CharacterType.Traditional);
-				variants[cht] = new CharacterInfo(chs, CharacterType.Simplified);
+				variants[chs] = new VariantInfo(cht, VariantType.Traditional);
+				variants[cht] = new VariantInfo(chs, VariantType.Simplified);
 			}
 		}
 

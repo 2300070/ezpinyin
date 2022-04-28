@@ -1,9 +1,9 @@
 ﻿namespace EzPinyin
 {
 	/// <summary>
-	/// 表示字符类型的枚举。
+	/// 表示异体字类型的枚举。
 	/// </summary>
-	public enum CharacterType
+	public enum VariantType
 	{
 		/// <summary>
 		/// 简体字。

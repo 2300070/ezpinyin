@@ -15,6 +15,16 @@ namespace EzPinyin
 		public static readonly LetterOrNumberNode Instance = new LetterOrNumberNode();
 
 		/// <summary>
+		/// 指示是否是否是一个符号。
+		/// </summary>
+		public override bool IsSymbol => false;
+
+		/// <summary>
+		/// 指示是否不包含拼音信息。
+		/// </summary>
+		public override bool NoPinyin => true;
+
+		/// <summary>
 		/// 获得当前节点的拼音字符串。
 		/// </summary>
 		public override string Pinyin => throw new NotSupportedException();
@@ -80,6 +90,6 @@ namespace EzPinyin
 		/// <param name="buffer">需要填充分隔符的可变字符串。</param>
 		/// <param name="separator">需要填充的分隔符。</param>
 		/// <returns>填充分隔符之后的可变字符串。</returns>
-		public override StringBuilder FillSeparator(PinyinNode prev, StringBuilder buffer, string separator) => prev == this || prev == UnknownNode.Instance ? buffer : buffer.Append(separator);
+		public override StringBuilder FillSeparator(PinyinNode prev, StringBuilder buffer, string separator) => prev.IsSymbol || prev.NoPinyin ? buffer : buffer.Append(separator);
 	}
 }
