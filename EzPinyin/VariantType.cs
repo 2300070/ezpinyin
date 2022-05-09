@@ -3,7 +3,7 @@
 	/// <summary>
 	/// 表示异体字类型的枚举。
 	/// </summary>
-	public enum VariantType
+	internal enum VariantType
 	{
 		/// <summary>
 		/// 简体字。
