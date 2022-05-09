@@ -61,7 +61,7 @@ namespace EzPinyin.Spider
 			cmpSup = new DictionarySpider("兼容汉字扩展", "dict_cmp_sup", 0x2F800, 0x2FA1F);
 		}
 
-		static void Main(string[] args)
+		static void Main()
 		{
 			Task.Run(async delegate
 				{

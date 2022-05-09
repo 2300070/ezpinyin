@@ -682,7 +682,7 @@
             <param name="separator">需要填充的分隔符。</param>
             <returns>填充分隔符之后的可变字符串。</returns>
         </member>
-        <member name="T:EzPinyin.UserFileLoader">
+        <member name="T:EzPinyin.UserConfigurationLoader">
             <summary>
             表示用来加载用户自定义拼音的类。
             </summary>

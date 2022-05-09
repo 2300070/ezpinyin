@@ -123,12 +123,12 @@ namespace EzPinyin
 			return result;
 		}
 
-		internal static void LoadUserFiles()
+		internal static void LoadUserConfiguration()
 		{
 			/**
 			 * 加载用户自定义的配置文件。
 			 */
-			UserFileLoader.LoadAll();
+			UserConfigurationLoader.LoadAll();
 		}
 
 		internal static string FixPinyin(string pinyin)
@@ -528,26 +528,37 @@ namespace EzPinyin
 			return succ;
 		}
 
-		internal static void LoadFrom(string file, PinyinPriority priority)
+		internal static void LoadFrom(string path, PinyinPriority priority)
 		{
 			/**
 			 * 从指定的文件加载自定义的拼音定义，并且更新到对应的字典中。
 			 */
 
-			if (string.IsNullOrEmpty(file))
+			if (string.IsNullOrEmpty(path))
 			{
-				throw new ArgumentNullException(nameof(file));
+				throw new ArgumentNullException(nameof(path));
 			}
 
-			if (!File.Exists(file))
+			if (Directory.Exists(path))
 			{
-				throw new FileNotFoundException(file);
+				foreach (string file in Directory.GetFiles(path))
+				{
+					Common.LoadFrom(file, priority);
+				}
+
+				return;
 			}
 
-			using (StreamReader sr = new StreamReader(file, Encoding.UTF8, true))
+			if (!File.Exists(path))
+			{
+				throw new FileNotFoundException(path);
+			}
+
+			using (StreamReader sr = new StreamReader(path, Encoding.UTF8, true))
 			{
 				Common.LoadFrom(sr, priority);
 			}
+
 		}
 
 		internal static void LoadFrom(TextReader reader, PinyinPriority priority)
@@ -560,6 +571,7 @@ namespace EzPinyin
 			while (reader.Peek() > -1)
 			{
 				string line = reader.ReadLine();
+
 				row++;
 
 				/**
@@ -569,6 +581,7 @@ namespace EzPinyin
 				{
 					continue;
 				}
+
 
 				/**
 				 * 检查该行是否有注释
@@ -933,8 +946,8 @@ namespace EzPinyin
 			{
 				fake.LoadActualNode();
 			}
-			LexiconNode node = dictionary[index] as LexiconNode;
-			if (node == null)
+
+			if (!(dictionary[index] is LexiconNode node))
 			{
 				/**
 				 * 如果当前的节点不是词典节点，则创建一个新的词典节点。

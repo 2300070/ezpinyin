@@ -14,7 +14,7 @@ namespace EzPinyin
 			{
 				Dictionary = Common.LoadDictionary("dict_ext_a", Common.Utf16Templates, 0x3400);
 
-				Common.LoadUserFiles();
+				Common.LoadUserConfiguration();
 			}
 			finally
 			{

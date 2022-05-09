@@ -13,7 +13,7 @@
 			{
 				Dictionary = Common.LoadDictionary("dict_basic", Common.Utf16Templates, 0x4E00);
 
-				Common.LoadUserFiles();
+				Common.LoadUserConfiguration();
 			}
 			finally
 			{

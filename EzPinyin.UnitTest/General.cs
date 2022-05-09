@@ -72,16 +72,6 @@ namespace EzPinyin.UnitTest
 		}
 
 		[TestMethod]
-		public void GetFirstLetter()
-		{
-			Console.WriteLine(PinyinHelper.GetInitial("一").AssertToBe("y"));
-			Console.WriteLine(PinyinHelper.GetInitial("1234567").AssertToBe("1234567"));
-			Console.WriteLine(PinyinHelper.GetInitial("1234567", " ").AssertToBe("1234567"));
-			Console.WriteLine(PinyinHelper.GetInitial("一鿕").AssertToBe("yd"));
-			Console.WriteLine(PinyinHelper.GetInitial("成都", " ").AssertToBe("c d"));
-		}
-
-		[TestMethod]
 		public void Test3CharacterWord()
 		{
 			Console.WriteLine(PinyinHelper.GetPinyin("当涂县").AssertToBe("dang tu xian"));
@@ -177,6 +167,16 @@ namespace EzPinyin.UnitTest
 			 * 此处测试需要启用dictionary模板中的配置。
 			 */
 			Console.WriteLine(PinyinHelper.GetPinyin("啊博"));
+		}
+
+		[TestMethod]
+		public void TestCustomLexiconInEmbedResources()
+		{
+			/**
+			 * 测试使用嵌入的资源存储的自定义模版
+			 * 此处“上班”的拼音在“test_embed_resource_dict.txt”文件中已经被更改。
+			 */
+			Console.WriteLine(PinyinHelper.GetPinyin("上班").AssertToBe("shang bang"));
 		}
 
 	}

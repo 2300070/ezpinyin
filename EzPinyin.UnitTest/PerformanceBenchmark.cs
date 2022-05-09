@@ -98,7 +98,7 @@ namespace EzPinyin.UnitTest
 			Console.WriteLine($"GetPinyin {PinyinHelper.GetPinyin(text)}");
 			Console.WriteLine($"GetInitial {PinyinHelper.GetInitial(text)}");
 			Console.WriteLine($"TinyPinyin {TinyPinyinHelper.GetPinyin(text)}");//##当文字包含UTF32汉字时，如果执行这一个方法，通过Reshaprer调用的测试会导致测试终止的异常，然而通过VS自带的测试管理器就不会。
-			const int TIMES = 0xFFFFF;
+			const int TIMES = 0x1FFFFF;
 
 			long max = 0;
 

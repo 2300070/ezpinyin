@@ -27,18 +27,16 @@ namespace EzPinyin
 
 			StackTrace trace = new StackTrace();
 			StackFrame[] frames = trace.GetFrames();
-			Assembly ez = Assembly.GetExecutingAssembly();
-			string dir = Path.GetDirectoryName(ez.Location);
+			Assembly current = Assembly.GetExecutingAssembly();
 			foreach (StackFrame frame in frames)
 			{
 				Assembly assembly = frame.GetMethod().DeclaringType.Assembly;
-				if (assembly == ez || Path.GetDirectoryName(assembly.Location) != dir)
+				if (assembly == current)
 				{
 					continue;
 				}
 
-				object[] attributes = assembly.GetCustomAttributes(typeof(DebuggableAttribute), true);
-				if (attributes.Length > 0)
+				if (assembly.GetCustomAttributes(typeof(DebuggableAttribute), true).Length > 0)
 				{
 					return true;
 				}
