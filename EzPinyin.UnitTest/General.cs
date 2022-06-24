@@ -179,5 +179,12 @@ namespace EzPinyin.UnitTest
 			Console.WriteLine(PinyinHelper.GetPinyin("上班").AssertToBe("shang bang"));
 		}
 
+		[TestMethod]
+		public void TestMixedWithEnglish()
+		{
+			Console.WriteLine(PinyinHelper.GetPinyin("大家一起说hello!").AssertToBe("da jia yi qi shuo hello!"));
+			Console.WriteLine(PinyinHelper.GetPinyin("大家一起说:hello!").AssertToBe("da jia yi qi shuo:hello!"));
+		}
+
 	}
 }

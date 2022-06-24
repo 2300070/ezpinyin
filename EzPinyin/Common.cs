@@ -82,6 +82,12 @@ namespace EzPinyin
 			/**
 			 * 从指定的资源字典加载拼音集合作为字典。
 			 */
+
+			/**
+			 * 首先读取字典数据，这个数据是一串拼音索引的序列，每个索引占两个字节，若区块中某个位置的统一码对应的不是汉字，则该位置的索引值为0。基本上，字典数据与某个统一码平面中的某个汉字分区中的汉字一一对应，除了‘〇’需要额外处理。对于多音字而言，仅存储这个多音字最常见的拼音，遇到例外的情况，则使用词典匹配。
+			 * 例如，若加载平面1中的基本汉字分区的字典时，buffer所存储的就是这个区中的所有汉字的拼音的索引。
+			 * 若某个汉字存在词汇信息，则该位置的索引值的高位为1，否则为0。
+			 */
 			byte[] buffer = (byte[])ResourceManager.GetObject(resourceName);
 
 			int length = buffer.Length;
@@ -92,6 +98,9 @@ namespace EzPinyin
 				int index = i >> 1;
 				if ((pinyinIndex & Common.LEXICON_FLAG) == Common.LEXICON_FLAG)
 				{
+					/**
+					 * 处理包含词汇的汉字节点，请参考LexiconFakeNode类的文档以了解更多信息。
+					 */
 					string character;
 					if (head < 0xFFFF)
 					{
