@@ -121,4 +121,8 @@
     <value>#</value>
     <comment>测试资源配置</comment>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="test_embed_dict" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\test_embed_dict.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
 </root>

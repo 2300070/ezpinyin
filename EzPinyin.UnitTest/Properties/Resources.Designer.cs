@@ -68,5 +68,14 @@ namespace EzPinyin.UnitTest.Properties {
                 return ResourceManager.GetString("test_dict_a", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似  的本地化字符串。
+        /// </summary>
+        internal static string test_embed_dict {
+            get {
+                return ResourceManager.GetString("test_embed_dict", resourceCulture);
+            }
+        }
     }
 }

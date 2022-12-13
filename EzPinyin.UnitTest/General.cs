@@ -175,8 +175,10 @@ namespace EzPinyin.UnitTest
 			/**
 			 * 测试使用嵌入的资源存储的自定义模版
 			 * 此处“上班”的拼音在“test_embed_resource_dict.txt”文件中已经被更改。
+			 * 此处“上供”的拼音在“resources.resx”文件中的“test_embed_dict”中已经被更改。
 			 */
 			Console.WriteLine(PinyinHelper.GetPinyin("上班").AssertToBe("shang bang"));
+			Console.WriteLine(PinyinHelper.GetPinyin("上供").AssertToBe("shang bang"));
 		}
 
 		[TestMethod]

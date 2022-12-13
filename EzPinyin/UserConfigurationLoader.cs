@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Reflection;
+using System.Resources;
 
 namespace EzPinyin
 {
@@ -9,7 +11,7 @@ namespace EzPinyin
 	/// </summary>
 	internal static class UserConfigurationLoader
 	{
-
+		private const string RESOURCE_KEYWORD = "dict";
 
 		static UserConfigurationLoader()
 		{
@@ -20,6 +22,9 @@ namespace EzPinyin
 			catch
 			{
 				//可能因访问权限原因而被拒绝。
+#if DEBUG
+				throw;
+#endif
 			}
 
 			UserConfigurationLoader.LoadConfigurationResources();
@@ -65,7 +70,26 @@ namespace EzPinyin
 				string[] names = assembly.GetManifestResourceNames();
 				foreach (string name in names)
 				{
-					if (name.Contains("dict"))
+					if (name.EndsWith(".resources"))
+					{
+						using (ResourceReader reader = new ResourceReader(assembly.GetManifestResourceStream(name)))
+						{
+							IDictionaryEnumerator enumerator = reader.GetEnumerator();
+							while (enumerator.MoveNext())
+							{
+								string key = enumerator.Key.ToString();
+								if (key.Contains(RESOURCE_KEYWORD) && enumerator.Value is string content)
+								{
+									using (StringReader sr = new StringReader(content))
+									{
+										Common.LoadFrom(sr, PinyinPriority.High);
+									}
+								}
+							}
+						}
+						System.Console.WriteLine($"Load from resx file: {name}.");
+					}
+					else if (name.Contains(RESOURCE_KEYWORD))
 					{
 						using (StreamReader sr = new StreamReader(assembly.GetManifestResourceStream(name)))
 						{
