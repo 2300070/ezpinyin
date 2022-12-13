@@ -687,6 +687,11 @@
             表示用来加载用户自定义拼音的类。
             </summary>
         </member>
+        <member name="M:EzPinyin.UserConfigurationLoader.LoadAll">
+            <summary>
+            触发加载用户自定义配置过程。
+            </summary>
+        </member>
         <member name="T:EzPinyin.Utf16EmptyNode">
             <summary>
             表示空的UTF16字符节点。

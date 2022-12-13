@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Reflection;
+using System.Resources;
 
 namespace EzPinyin
 {
@@ -9,7 +11,7 @@ namespace EzPinyin
 	/// </summary>
 	internal static class UserConfigurationLoader
 	{
-
+		private const string RESOURCE_KEYWORD = "dict";
 
 		static UserConfigurationLoader()
 		{
@@ -20,9 +22,22 @@ namespace EzPinyin
 			catch
 			{
 				//可能因访问权限原因而被拒绝。
+#if DEBUG
+				throw;
+#endif
 			}
 
 			UserConfigurationLoader.LoadConfigurationResources();
+		}
+
+		/// <summary>
+		/// 触发加载用户自定义配置过程。
+		/// </summary>
+		public static void LoadAll()
+		{
+			/**
+			 * 静态方法中已经完成加载
+			 */
 		}
 
 		private static void LoadConfigurationResources()
@@ -65,33 +80,76 @@ namespace EzPinyin
 				string[] names = assembly.GetManifestResourceNames();
 				foreach (string name in names)
 				{
-					if (name.Contains("dict"))
+					if (name.EndsWith(".resources"))
 					{
-						using (StreamReader sr = new StreamReader(assembly.GetManifestResourceStream(name)))
-						{
-							Common.LoadFrom(sr, PinyinPriority.High);
-						}
-#if DEBUG
-						System.Console.WriteLine($"Load custom resource: {name}.");
-#endif
+						UserConfigurationLoader.LoadFromResXStream(assembly, name);
+					}
+					else if (name.Contains(RESOURCE_KEYWORD))
+					{
+						UserConfigurationLoader.LoadFromResourceStream(assembly, name);
 					}
 				}
 			}
 			catch
 			{
+				//直接略过所有异常。
 #if DEBUG
 				throw;
 #endif
-				//直接略过所有异常。
 			}
 		}
 
-
-		public static void LoadAll()
+		private static void LoadFromResXStream(Assembly assembly, string name)
 		{
-			/**
-			 * 静态方法中已经完成加载
-			 */
+			try
+			{
+				using (ResourceReader reader = new ResourceReader(assembly.GetManifestResourceStream(name)))
+				{
+					IDictionaryEnumerator enumerator = reader.GetEnumerator();
+					while (enumerator.MoveNext())
+					{
+						string key = enumerator.Key.ToString();
+						if (key.Contains(RESOURCE_KEYWORD) && enumerator.Value is string content)
+						{
+							using (StringReader sr = new StringReader(content))
+							{
+								Common.LoadFrom(sr, PinyinPriority.High);
+							}
+						}
+					}
+				}
+#if DEBUG
+				System.Console.WriteLine($"Load from resx file: {name}.");
+#endif
+			}
+			catch
+			{
+				//直接略过所有异常。
+#if DEBUG
+				throw new Exception($"读取此应用程序的内嵌资源失败：{assembly.GetName().Name}，'{name}'。");
+#endif
+			}
+		}
+
+		private static void LoadFromResourceStream(Assembly assembly, string name)
+		{
+			try
+			{
+				using (StreamReader sr = new StreamReader(assembly.GetManifestResourceStream(name)))
+				{
+					Common.LoadFrom(sr, PinyinPriority.High);
+				}
+#if DEBUG
+				System.Console.WriteLine($"Load custom resource: {name}.");
+#endif
+			}
+			catch
+			{
+				//直接略过所有异常。
+#if DEBUG
+				throw new Exception($"读取此应用程序的内嵌资源失败：{assembly.GetName().Name}，'{name}'。");
+#endif
+			}
 		}
 
 		private static void LoadConfigurationFiles()
