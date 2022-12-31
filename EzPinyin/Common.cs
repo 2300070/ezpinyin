@@ -563,10 +563,20 @@ namespace EzPinyin
 				throw new FileNotFoundException(path);
 			}
 
-			using (StreamReader sr = new StreamReader(path, Encoding.UTF8, true))
+			FileStream fs;
+			try
+			{
+				fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			}
+			catch
+			{
+				return;
+			}
+			using (StreamReader sr = new StreamReader(fs, Encoding.UTF8, true))
 			{
 				Common.LoadFrom(sr, priority);
 			}
+
 
 		}
 

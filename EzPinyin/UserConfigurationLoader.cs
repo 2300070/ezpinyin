@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Resources;
@@ -159,7 +160,25 @@ namespace EzPinyin
 			/**
 			 * 搜索并应用用户的自定义字典文件
 			 */
-			files = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*dict*");
+
+			string path = Assembly.GetExecutingAssembly().Location;
+
+			if (string.IsNullOrEmpty(path))
+			{
+				/**
+				 * 可能出现无法正常读取应用程序路径的情况，在这种情形下当然也可以考虑直接以应用程序目录或者应用程序域的基础目录予以替代，然而经过权衡后决定放弃。
+				 */
+				return;
+			}
+
+			try
+			{
+				files = Directory.GetFiles(Path.GetDirectoryName(path), "*dict*");
+			}
+			catch
+			{
+				return;
+			}
 
 			foreach (string file in files)
 			{

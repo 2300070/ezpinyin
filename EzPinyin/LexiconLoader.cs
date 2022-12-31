@@ -226,7 +226,7 @@ namespace EzPinyin
 				return;
 			}
 			char ch = word[index];
-			if (Common.TryGetVariant(ch, out VariantInfo variant))
+			if (index > 0 && Common.TryGetVariant(ch, out VariantInfo variant))
 			{
 				LexiconLoader.AnalyseVariantWords(word, new StringBuilder(buffer.ToString()).Append(variant.Character), index + 1, words);
 			}

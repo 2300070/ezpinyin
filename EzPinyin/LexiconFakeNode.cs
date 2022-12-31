@@ -6,7 +6,7 @@ namespace EzPinyin
 	/// 表示“虚假”的，仅仅用来临时标记词典节点的节点。
 	/// </summary>
 	/// <remarks>
-	/// 如果一开始即加载所有的词典节点，将导致应用程序启动时出现较大的延迟，为此，在初始化时，将所有与词条相关的节点标记为需要加载词典节点的节点，当需要真正解析节点对应的字符时，再由该节点加载词典来完成真正的解析任务。
+	/// 如果一开始即加载所有的词典节点，将导致应用程序启动时出现较大的延迟，为此，在初始化时，将所有与词条相关的节点标记为需要加载词典节点的节点，初始化时使用这个类临时代替，当真正需要时，这个类将为真正可以解析的节点加载词典数据，接着使用该节点取代自身的位置，接着继续完成解析任务。
 	/// </remarks>
 	internal sealed class LexiconFakeNode : PinyinNode
 	{
@@ -70,7 +70,7 @@ namespace EzPinyin
 		public override unsafe void WritePinyin(ref char* cursor, char* end, string[] buffer, ref int index) => this.LoadActualNode().WritePinyin(ref cursor, end, buffer, ref index);
 
 		/// <summary>
-		/// 加载当前节点真正需要用来处理业务的节点。
+		/// 加载当前节点对应的真正可以进行拼音解析的节点。
 		/// </summary>
 		/// <returns>实际加载的节点。</returns>
 		public PinyinNode LoadActualNode()
