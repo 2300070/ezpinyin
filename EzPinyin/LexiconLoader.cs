@@ -207,9 +207,9 @@ namespace EzPinyin
 		private static string[] GetVariantWords(string word)
 		{
 			List<string> words = new List<string>(1);
-			StringBuilder buffer = new StringBuilder().Append(word[0]);
+			StringBuilder buffer = new StringBuilder();
 
-			LexiconLoader.AnalyseVariantWords(word, buffer, 1, words);
+			LexiconLoader.AnalyseVariantWords(word, buffer, 0, words);
 
 			return words.ToArray();
 		}
@@ -226,7 +226,7 @@ namespace EzPinyin
 				return;
 			}
 			char ch = word[index];
-			if (index > 0 && Common.TryGetVariant(ch, out VariantInfo variant))
+			if (Common.TryGetVariant(ch, out VariantInfo variant))
 			{
 				LexiconLoader.AnalyseVariantWords(word, new StringBuilder(buffer.ToString()).Append(variant.Character), index + 1, words);
 			}

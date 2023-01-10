@@ -56,7 +56,7 @@ namespace EzPinyin.UnitTest
 			Console.WriteLine(PinyinHelper.GetPinyin("厂长").AssertToBe("chang zhang"));
 			PinyinHelper.Define("厂长", new[] { "chang", "chang" });
 			Console.WriteLine(PinyinHelper.GetPinyin("厂长").AssertToBe("chang chang"));//此处应该输出chang chang
-			Console.WriteLine(PinyinHelper.GetPinyin("廠長"));//此处应该同样输出chang chang，因为定义简体词汇会应用到繁体。
+			Console.WriteLine(PinyinHelper.GetPinyin("廠長").AssertToBe("chang chang"));//此处应该同样输出chang chang，因为定义简体词汇会应用到繁体。
 			PinyinHelper.Define("廠長", new[] { "chang", "zhang" });
 			Console.WriteLine(PinyinHelper.GetPinyin("廠長").AssertToBe("chang zhang"));//此处应该输出chang zhang，因为繁体已经重新定义。
 		}
@@ -149,6 +149,7 @@ namespace EzPinyin.UnitTest
 		public void TestTraditionalChinese()
 		{
 			string pinyin = "chong qing yin hang chuan zang da qu cheng du fen hang chao yang qu chang xia lu zhi hang zhong gong da sha ban shi chu jiu lou dong shi zhang ban gong shi";
+
 			Console.WriteLine(PinyinHelper.GetPinyin("重庆银行川藏大区成都分行朝阳区长厦路支行重工大厦办事处九楼董事长办公室").AssertToBe(pinyin));
 			Console.WriteLine(PinyinHelper.GetPinyin("重慶銀行川藏大區成都分行朝陽區長廈路支行重工大廈辦事處九樓董事長辦公室").AssertToBe(pinyin));
 			Console.WriteLine(PinyinHelper.GetPinyin("重慶銀行川藏大區成都分行朝阳區长廈路支行重工大廈辦事处九樓董事長辦公室").AssertToBe(pinyin));

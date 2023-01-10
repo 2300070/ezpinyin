@@ -35,7 +35,7 @@ namespace EzPinyin
 			 */
 			if (cursor + length - 1 <= end && *(cursor + 1) == word[1] && *(cursor + 2) == word[2])
 			{
-				for (int i = length - 1; i > 2; i--)
+				for (int i = length - 1; i > -1; i--)
 				{
 					if (*(cursor + i) != word[i])
 					{

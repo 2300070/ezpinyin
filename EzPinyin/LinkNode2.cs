@@ -7,6 +7,7 @@ namespace EzPinyin
 	/// </summary>
 	internal sealed class LinkNode2 : LinkNode
 	{
+		private readonly char char0;
 		private readonly char char1;
 		private readonly string pinyin0;
 		private readonly string pinyin1;
@@ -14,6 +15,7 @@ namespace EzPinyin
 		internal LinkNode2(string word, string[] pinyin, PinyinPriority priority)
 			: base(word, priority)
 		{
+			this.char0 = word[0];
 			this.char1 = word[1];
 			this.pinyin0 = pinyin[0];
 			this.pinyin1 = pinyin[1];
@@ -31,7 +33,7 @@ namespace EzPinyin
 			/**
 			 * 只需验证后一个字符。
 			 */
-			if (cursor + 1 <= end && *(cursor + 1) == this.char1)
+			if (cursor + 1 <= end && *cursor == this.char0 && *(cursor + 1) == this.char1)
 			{
 				buffer.Append(this.pinyin0).Append(separator).Append(this.pinyin1);
 				cursor += 2;
@@ -53,7 +55,7 @@ namespace EzPinyin
 			/**
 			 * 只需验证后一个字符。
 			 */
-			if (cursor + 1 <= end && *(cursor + 1) == this.char1)
+			if (cursor + 1 <= end && *cursor == this.char0 && *(cursor + 1) == this.char1)
 			{
 				buffer.Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]);
 				cursor += 2;
@@ -76,7 +78,7 @@ namespace EzPinyin
 			/**
 			 * 只需验证后一个字符。
 			 */
-			if (cursor + 1 <= end && *(cursor + 1) == this.char1)
+			if (cursor + 1 <= end && *cursor == this.char0 && *(cursor + 1) == this.char1)
 			{
 				buffer[index] = this.pinyin0;
 				buffer[index + 1] = this.pinyin1;

@@ -7,6 +7,7 @@ namespace EzPinyin
 	/// </summary>
 	internal sealed class LinkNode3 : LinkNode
 	{
+		private readonly char char0;
 		private readonly char char1;
 		private readonly char char2;
 		private readonly string pinyin0;
@@ -16,6 +17,7 @@ namespace EzPinyin
 		internal LinkNode3(string word, string[] pinyin, PinyinPriority priority)
 			: base(word, priority)
 		{
+			this.char0 = word[0];
 			this.char1 = word[1];
 			this.char2 = word[2];
 
@@ -36,7 +38,7 @@ namespace EzPinyin
 			/**
 			 * 需要验证后两个字符。
 			 */
-			if (cursor + 2 <= end && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2)
+			if (cursor + 2 <= end && *cursor == this.char0 && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2)
 			{
 				buffer.Append(this.pinyin0).Append(separator).Append(this.pinyin1).Append(separator).Append(this.pinyin2);
 				cursor += 3;
@@ -58,7 +60,7 @@ namespace EzPinyin
 			/**
 			 * 需要验证后两个字符。
 			 */
-			if (cursor + 2 <= end && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2)
+			if (cursor + 2 <= end && *cursor == this.char0 && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2)
 			{
 				buffer.Append(this.pinyin0[0]).Append(separator).Append(this.pinyin1[0]).Append(separator).Append(this.pinyin2[0]);
 				cursor += 3;
@@ -80,7 +82,7 @@ namespace EzPinyin
 			/**
 			 * 需要验证后两个字符。
 			 */
-			if (cursor + 2 <= end && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2)
+			if (cursor + 2 <= end && *cursor == this.char0 && *(cursor + 1) == this.char1 && *(cursor + 2) == this.char2)
 			{
 				buffer[index] = this.pinyin0;
 				buffer[index + 1] = this.pinyin1;
