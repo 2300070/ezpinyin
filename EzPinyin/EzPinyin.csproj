@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;net20</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>wudexiang</Authors>
-    <Description>拼音组件，支持汉字转拼音、汉字转声母（首字母）。具备极快的速度、较小的体积、自带经过优化的高质量字典与词典、支持繁简、支持重定义、支持自定义。</Description>
+    <Description>拼音组件，支持汉字转拼音、汉字转声母（首字母）。具备极快的速度、较小的体积、能识别常见的多音词、支持繁简、支持重定义、支持自定义。</Description>
     <Copyright>Copyright 2021 wudexiang, all rights reserved.</Copyright>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SignAssembly>False</SignAssembly>
