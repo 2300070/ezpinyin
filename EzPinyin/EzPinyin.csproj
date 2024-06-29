@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net20</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net20;net5.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>wudexiang</Authors>
     <Description>拼音组件，支持汉字转拼音、汉字转声母（首字母）。具备极快的速度、较小的体积、能识别常见的多音词、支持繁简、支持重定义、支持自定义。</Description>
@@ -10,10 +10,10 @@
     <SignAssembly>False</SignAssembly>
     <PackageProjectUrl>https://www.nuget.org/packages/EzPinyin/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/2300070/ezpinyin</RepositoryUrl>
-    <AssemblyVersion>1.1.0.1</AssemblyVersion>
-    <FileVersion>1.1.0.1</FileVersion>
+    <AssemblyVersion>1.1.0.2</AssemblyVersion>
+    <FileVersion>1.1.0.2</FileVersion>
     <PackageIconUrl></PackageIconUrl>
-    <Version>1.1.001</Version>
+    <Version>1.1.002</Version>
     <PackageTags>pinyin;bopomofo;拼音;汉字</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <UserSecretsId>18b9bc79-5bc3-48c8-9367-de42dedcb0c0</UserSecretsId>
